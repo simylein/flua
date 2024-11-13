@@ -1,0 +1,70 @@
+#include "config.h"
+#include "logger.h"
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]) {
+  int errors = configure(argc, argv);
+  if (errors != 0) {
+    fatal("config contains %d errors\n", errors);
+    return EXIT_FAILURE;
+  }
+
+  int server_sock;
+  struct sockaddr_in server_addr;
+
+  if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    fatal("failed to create socket\n");
+    return EXIT_FAILURE;
+  }
+
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_addr.s_addr = INADDR_ANY;
+  server_addr.sin_port = htons(port);
+
+  if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
+    fatal("failed to bind to socket\n");
+    return EXIT_FAILURE;
+  }
+
+  if (listen(server_sock, backlog) == -1) {
+    fatal("failed to listen on socket\n");
+    return EXIT_FAILURE;
+  }
+
+  info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
+
+  while (1) {
+    struct sockaddr_in client_addr;
+    int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
+
+    if (client_sock == -1) {
+      error("failed to accept client\n");
+      continue;
+    }
+
+    char request[2048];
+    ssize_t bytes_received = recv(client_sock, request, sizeof(request) - 1, 0);
+    trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr),
+          ntohs(client_addr.sin_port));
+
+    if (bytes_received == -1) {
+      error("failed to receive data from client\n");
+      close(client_sock);
+      continue;
+    }
+    if (bytes_received == 0) {
+      warn("client disconnected without sending data\n");
+      close(client_sock);
+      continue;
+    }
+
+    char *response = "HTTP/1.1 200 OK\r\n\r\n";
+    ssize_t bytes_sent = send(client_sock, response, strlen(response), 0);
+    trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+
+    close(client_sock);
+  }
+}
