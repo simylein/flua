@@ -8,9 +8,12 @@
 
 int main(int argc, char *argv[]) {
   int cf_errors = configure(argc, argv);
-  if (cf_errors != 0) {
+  if (cf_errors > 0) {
     fatal("config contains %d errors\n", cf_errors);
     return EXIT_FAILURE;
+  }
+  if (cf_errors == -1) {
+    return EXIT_SUCCESS;
   }
 
   sqlite3 *database;
