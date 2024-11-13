@@ -1,6 +1,7 @@
 #include <errno.h>
+#include <sqlite3.h>
 
-char *errstr(void) {
+char *errno_str(void) {
   switch (errno) {
   case EPERM:
     return "operation not permitted";
@@ -140,6 +141,73 @@ char *errstr(void) {
     return "too many users";
   case EDQUOT:
     return "disc quota exceeded";
+  default:
+    return "???";
+  }
+}
+
+char *sqlite_str(int val) {
+  switch (val) {
+  case SQLITE_ERROR:
+    return "generic error";
+  case SQLITE_INTERNAL:
+    return "internal logic error in sqlite";
+  case SQLITE_PERM:
+    return "access permission denied";
+  case SQLITE_ABORT:
+    return "callback routine requested an abort";
+  case SQLITE_BUSY:
+    return "the database file is locked";
+  case SQLITE_LOCKED:
+    return "a table in the database is locked";
+  case SQLITE_NOMEM:
+    return "a memory allocation failed";
+  case SQLITE_READONLY:
+    return "attempt to write a readonly database";
+  case SQLITE_INTERRUPT:
+    return "operation terminated by sqlite interrupt";
+  case SQLITE_IOERR:
+    return "some kind of disk io error occurred";
+  case SQLITE_CORRUPT:
+    return "the database disk image is malformed";
+  case SQLITE_NOTFOUND:
+    return "unknown opcode in sqlite file control";
+  case SQLITE_FULL:
+    return "insertion failed because database is full";
+  case SQLITE_CANTOPEN:
+    return "unable to open the database file";
+  case SQLITE_PROTOCOL:
+    return "database lock protocol error";
+  case SQLITE_EMPTY:
+    return "internal use only";
+  case SQLITE_SCHEMA:
+    return "the database schema changed";
+  case SQLITE_TOOBIG:
+    return "string or blob exceeds size limit";
+  case SQLITE_CONSTRAINT:
+    return "abort due to constraint violation";
+  case SQLITE_MISMATCH:
+    return "data type mismatch";
+  case SQLITE_MISUSE:
+    return "library used incorrectly";
+  case SQLITE_NOLFS:
+    return "uses os features not supported on host";
+  case SQLITE_AUTH:
+    return "authorization denied";
+  case SQLITE_FORMAT:
+    return "not used";
+  case SQLITE_RANGE:
+    return "second parameter to sqlite bind out of range";
+  case SQLITE_NOTADB:
+    return "file opened that is not a database file";
+  case SQLITE_NOTICE:
+    return "notifications from sqlite log";
+  case SQLITE_WARNING:
+    return "warnings from sqlite log";
+  case SQLITE_ROW:
+    return "sqlite step has another row ready";
+  case SQLITE_DONE:
+    return "sqlite step has finished executing";
   default:
     return "???";
   }
