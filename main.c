@@ -67,8 +67,7 @@ int main(int argc, char *argv[]) {
 
     char request[2048];
     ssize_t bytes_received = recv(client_sock, request, sizeof(request) - 1, 0);
-    trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr),
-          ntohs(client_addr.sin_port));
+    trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
     if (bytes_received == -1) {
       error("%s\n", errno_str());
@@ -77,9 +76,13 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
+    req("incoming request\n");
+
     char *response = "HTTP/1.1 200 OK\r\n\r\n";
     ssize_t bytes_sent = send(client_sock, response, strlen(response), 0);
     trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+
+    res("outgoing response\n");
 
     if (bytes_sent == -1) {
       error("%s\n", errno_str());
