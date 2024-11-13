@@ -13,7 +13,7 @@ const char *bold = "\x1b[1m";
 const char *normal = "\x1b[22m";
 const char *reset = "\x1b[39m";
 
-char buffer[8] = "??:??:??";
+char timestamp_buffer[8] = "??:??:??";
 
 char *timestamp(void) {
   time_t now = time(NULL);
@@ -21,13 +21,13 @@ char *timestamp(void) {
   int seconds = elapsed % 60;
   int minutes = elapsed / 60 % 60;
   int hours = elapsed / 3600;
-  buffer[0] = (char)hours / 10 + 48;
-  buffer[1] = (char)hours % 10 + 48;
-  buffer[3] = (char)minutes / 10 + 48;
-  buffer[4] = (char)minutes % 10 + 48;
-  buffer[6] = (char)seconds / 10 + 48;
-  buffer[7] = (char)seconds % 10 + 48;
-  return buffer;
+  timestamp_buffer[0] = (char)hours / 10 + 48;
+  timestamp_buffer[1] = (char)hours % 10 + 48;
+  timestamp_buffer[3] = (char)minutes / 10 + 48;
+  timestamp_buffer[4] = (char)minutes % 10 + 48;
+  timestamp_buffer[6] = (char)seconds / 10 + 48;
+  timestamp_buffer[7] = (char)seconds % 10 + 48;
+  return timestamp_buffer;
 }
 
 void req(const char *message, ...) {
