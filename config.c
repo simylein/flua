@@ -75,42 +75,51 @@ int parse_log_level(char *arg, char *name, int *value) {
     return 1;
   }
 
-  int new_value;
   if (strcmp(arg, "panic") == 0) {
-    new_value = 1;
+    *value = 1;
   } else if (strcmp(arg, "error") == 0) {
-    new_value = 2;
+    *value = 2;
   } else if (strcmp(arg, "warn") == 0) {
-    new_value = 3;
+    *value = 3;
   } else if (strcmp(arg, "info") == 0) {
-    new_value = 4;
+    *value = 4;
   } else if (strcmp(arg, "debug") == 0) {
-    new_value = 5;
+    *value = 5;
   } else if (strcmp(arg, "trace") == 0) {
-    new_value = 6;
+    *value = 6;
   } else {
     error("%s must be one of trace debug info warn error panic\n", name);
     return 1;
   }
 
-  *value = new_value;
   return 0;
+}
+
+char *human_bool(int val) {
+  switch (val) {
+  case 0:
+    return "false";
+  case 1:
+    return "true";
+  default:
+    return "???";
+  }
 }
 
 char *human_log_level(int level) {
   switch (level) {
-  case 6:
-    return "trace";
-  case 5:
-    return "debug";
-  case 4:
-    return "info";
-  case 3:
-    return "warn";
-  case 2:
-    return "fault";
   case 1:
     return "panic";
+  case 2:
+    return "error";
+  case 3:
+    return "warn";
+  case 4:
+    return "info";
+  case 5:
+    return "debug";
+  case 6:
+    return "trace";
   default:
     return "???";
   }
@@ -126,12 +135,12 @@ int configure(int argc, char *argv[]) {
       info("--port           -p   int between 1 and 65535            (%d)\n", port);
       info("--backlog        -b   int between 2 and 256              (%d)\n", backlog);
       info("--database-file  -df  path to sqlite database file       (%s)\n", database_file);
-      info("--log-level      -ll  trace debug info warn fault panic  (%s)\n", human_log_level(log_level));
-      info("--log-requests   -lq  bool true or false                 (%s)\n", log_requests >= 1 ? "true" : "false");
-      info("--log-responses  -ls  bool true or false                 (%s)\n", log_responses >= 1 ? "true" : "false");
+      info("--log-level      -ll  trace debug info warn error panic  (%s)\n", human_log_level(log_level));
+      info("--log-requests   -lq  bool true or false                 (%s)\n", human_bool(log_requests));
+      info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
       return -1;
     } else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-      info("flua flights version 0.0.0\n");
+      info("flua flights version 0.0.1\n");
       info("written by simylein in c\n");
       return -1;
     } else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
