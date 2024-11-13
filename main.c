@@ -1,16 +1,27 @@
 #include "config.h"
 #include "logger.h"
 #include <arpa/inet.h>
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  int errors = configure(argc, argv);
-  if (errors != 0) {
-    fatal("config contains %d errors\n", errors);
+  int cf_errors = configure(argc, argv);
+  if (cf_errors != 0) {
+    fatal("config contains %d errors\n", cf_errors);
     return EXIT_FAILURE;
   }
+
+  sqlite3 *database;
+
+  int db_error = sqlite3_open(database_file, &database);
+  if (db_error != 0) {
+    fatal("failed to open database %s\n", database_file);
+    return EXIT_FAILURE;
+  }
+
+  info("using database %s\n", database_file);
 
   int server_sock;
   struct sockaddr_in server_addr;

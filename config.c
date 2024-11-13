@@ -5,6 +5,8 @@
 int port = 1681;
 int backlog = 16;
 
+char *database_file = "flua.sqlite";
+
 int log_level = 4;
 int log_requests = 1;
 int log_responses = 1;
