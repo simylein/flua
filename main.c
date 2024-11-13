@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 
   int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
   if (db_error != 0) {
-    fatal("failed to open database %s (%s)\n", database_file, sqlite_str(db_error));
+    fatal("failed to open database %s (%s)\n", database_file, sqlite3_errmsg(database));
     return EXIT_FAILURE;
   }
 
