@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 
   sqlite3 *database;
 
-  int db_error = sqlite3_open(database_file, &database);
+  int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
   if (db_error != 0) {
     fatal("failed to open database %s\n", database_file);
     return EXIT_FAILURE;
