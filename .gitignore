@@ -1,0 +1,11 @@
+# operating system
+.DS_Store
+
+# objects
+*.o
+
+# executable
+flua
+
+# logs
+*.log
