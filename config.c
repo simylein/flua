@@ -41,17 +41,31 @@ int parse_bool(char *arg, char *name, int *value) {
     return 1;
   }
 
-  int new_value;
   if (strcmp(arg, "false") == 0) {
-    new_value = 0;
+    *value = 0;
   } else if (strcmp(arg, "true") == 0) {
-    new_value = 1;
+    *value = 1;
   } else {
     error("%s must be either true or false\n", name);
     return 1;
   }
 
-  *value = new_value;
+  return 0;
+}
+
+int parse_str(char *arg, char *name, unsigned int min, unsigned int max, char **value) {
+  if (arg == NULL) {
+    error("please provide a value for %s\n", name);
+    return 1;
+  }
+
+  int len = strlen(arg);
+  if (len < min || len > max) {
+    error("%s must be between %d and %d characters\n", name, min, max);
+    return 1;
+  }
+
+  *value = arg;
   return 0;
 }
 
@@ -94,6 +108,9 @@ int configure(int argc, char *argv[]) {
     } else if (strcmp(flag, "--backlog") == 0 || strcmp(flag, "-b") == 0) {
       char *arg = next_arg(argc, argv, &ind);
       errors += parse_int(arg, "backlog", 2, 256, &backlog);
+    } else if (strcmp(flag, "--database-file") == 0 || strcmp(flag, "-df") == 0) {
+      char *arg = next_arg(argc, argv, &ind);
+      errors += parse_str(arg, "database file", 4, 64, &database_file);
     } else if (strcmp(flag, "--log-level") == 0 || strcmp(flag, "-ll") == 0) {
       char *arg = next_arg(argc, argv, &ind);
       errors += parse_log_level(arg, "log level", &log_level);
