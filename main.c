@@ -21,7 +21,8 @@ int main(int argc, char *argv[]) {
 
   int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
   if (db_error != 0) {
-    fatal("failed to open database %s (%s)\n", database_file, sqlite3_errmsg(database));
+    error("%s\n", sqlite3_errmsg(database));
+    fatal("failed to open database %s\n", database_file);
     return EXIT_FAILURE;
   }
 
@@ -31,7 +32,8 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in server_addr;
 
   if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-    fatal("failed to create socket (%s)\n", errno_str());
+    error("%s\n", errno_str());
+    fatal("failed to create socket\n");
     return EXIT_FAILURE;
   }
 
@@ -40,12 +42,14 @@ int main(int argc, char *argv[]) {
   server_addr.sin_port = htons(port);
 
   if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
-    fatal("failed to bind to socket (%s)\n", errno_str());
+    error("%s\n", errno_str());
+    fatal("failed to bind to socket\n");
     return EXIT_FAILURE;
   }
 
   if (listen(server_sock, backlog) == -1) {
-    fatal("failed to listen on socket (%s)\n", errno_str());
+    error("%s\n", errno_str());
+    fatal("failed to listen on socket\n");
     return EXIT_FAILURE;
   }
 
@@ -56,7 +60,8 @@ int main(int argc, char *argv[]) {
     int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
     if (client_sock == -1) {
-      error("failed to accept client (%s)\n", errno_str());
+      error("%s\n", errno_str());
+      error("failed to accept client\n");
       continue;
     }
 
@@ -66,7 +71,8 @@ int main(int argc, char *argv[]) {
           ntohs(client_addr.sin_port));
 
     if (bytes_received == -1) {
-      error("failed to receive data from client (%s)\n", errno_str());
+      error("%s\n", errno_str());
+      error("failed to receive data from client\n");
       close(client_sock);
       continue;
     }
@@ -76,11 +82,13 @@ int main(int argc, char *argv[]) {
     trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
     if (bytes_sent == -1) {
-      error("failed to send data to client (%s)\n", errno_str());
+      error("%s\n", errno_str());
+      error("failed to send data to client\n");
     }
 
     if (close(client_sock) == -1) {
-      error("failed to close client socket (%s)\n", errno_str());
+      error("%s\n", errno_str());
+      error("failed to close client socket\n");
     }
   }
 }
