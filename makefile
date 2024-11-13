@@ -10,7 +10,7 @@ all: $(target)
 
 $(target): $(objects)
 	@echo "linking $(target)..."
-	@$(cc) $(flags) -o $(target) $(objects)
+	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3
 
 %.o: %.c
 	@echo "compiling $<..."
