@@ -1,4 +1,5 @@
 #include "config.h"
+#include "errstr.h"
 #include "logger.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in server_addr;
 
   if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-    fatal("failed to create socket\n");
+    fatal("failed to create socket (%s)\n", errstr());
     return EXIT_FAILURE;
   }
 
@@ -39,12 +40,12 @@ int main(int argc, char *argv[]) {
   server_addr.sin_port = htons(port);
 
   if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
-    fatal("failed to bind to socket\n");
+    fatal("failed to bind to socket (%s)\n", errstr());
     return EXIT_FAILURE;
   }
 
   if (listen(server_sock, backlog) == -1) {
-    fatal("failed to listen on socket\n");
+    fatal("failed to listen on socket (%s)\n", errstr());
     return EXIT_FAILURE;
   }
 
@@ -55,7 +56,7 @@ int main(int argc, char *argv[]) {
     int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
     if (client_sock == -1) {
-      error("failed to accept client\n");
+      error("failed to accept client (%s)\n", errstr());
       continue;
     }
 
@@ -65,12 +66,7 @@ int main(int argc, char *argv[]) {
           ntohs(client_addr.sin_port));
 
     if (bytes_received == -1) {
-      error("failed to receive data from client\n");
-      close(client_sock);
-      continue;
-    }
-    if (bytes_received == 0) {
-      warn("client disconnected without sending data\n");
+      error("failed to receive data from client (%s)\n", errstr());
       close(client_sock);
       continue;
     }
@@ -79,6 +75,12 @@ int main(int argc, char *argv[]) {
     ssize_t bytes_sent = send(client_sock, response, strlen(response), 0);
     trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
-    close(client_sock);
+    if (bytes_sent == -1) {
+      error("failed to send data to client (%s)\n", errstr());
+    }
+
+    if (close(client_sock) == -1) {
+      error("failed to close client socket (%s)\n", errstr());
+    }
   }
 }
