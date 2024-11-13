@@ -1,5 +1,5 @@
 #include "config.h"
-#include "errstr.h"
+#include "error.h"
 #include "logger.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
