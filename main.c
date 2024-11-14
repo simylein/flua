@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     }
 
     struct Request reqs = request(&request_buffer);
-    req("%s %s %d\n", reqs.method, reqs.pathname, reqs.status);
+    req("%s %s\n", reqs.method, reqs.pathname);
 
     char *response_buffer = "HTTP/1.1 200 OK\r\n\r\n";
     ssize_t bytes_sent = send(client_sock, response_buffer, strlen(response_buffer), 0);
