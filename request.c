@@ -72,7 +72,7 @@ Request request(char (*buffer)[2048], ssize_t length) {
     if (byte >= 'A' && byte <= 'Z') {
       req.protocol[protocol_index] = byte + 32;
     }
-    if ((byte >= '0' && byte <= '9') || byte == '/') {
+    if ((byte >= '0' && byte <= '9') || byte == '.' || byte == '/') {
       req.protocol[protocol_index] = byte;
     }
     if (byte == '\r') {
