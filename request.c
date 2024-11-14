@@ -81,7 +81,7 @@ Request request(char (*buffer)[2048], ssize_t length) {
     if (byte == '\n') {
       stage = 5;
     }
-    search_index++;
+    protocol_index++;
     global_index++;
   }
   req.protocol[protocol_index] = '\0';
