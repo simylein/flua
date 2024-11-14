@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     }
 
     char request_buffer[2048];
-    ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer) - 1, 0);
+    ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
     trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
     if (bytes_received == -1) {
