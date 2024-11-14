@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    struct Request reqs = request(&request_buffer);
+    struct Request reqs = request(&request_buffer, bytes_received);
     req("%s %s\n", reqs.method, reqs.pathname);
 
     char *response_buffer = "HTTP/1.1 200 OK\r\n\r\n";

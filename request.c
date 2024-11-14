@@ -1,16 +1,18 @@
 #include "request.h"
+#include <arpa/inet.h>
 
-Request request(char (*buffer)[2048]) {
-  struct Request req;
+Request request(char (*buffer)[2048], ssize_t length) {
+  struct Request req = {.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .headers = {0}, .status = 0};
 
-  unsigned short stage = 0;
+  unsigned int stage = 0;
 
-  unsigned long global_index = 0;
-  unsigned long method_index = 0;
-  unsigned long pathname_index = 0;
-  unsigned long search_index = 0;
+  unsigned int global_index = 0;
+  unsigned int method_index = 0;
+  unsigned int pathname_index = 0;
+  unsigned int search_index = 0;
+  unsigned int protocol_index = 0;
 
-  while (stage == 0 && method_index < sizeof(req.method) - 1 && global_index < sizeof(*buffer)) {
+  while (stage == 0 && method_index < sizeof(req.method) - 1 && global_index < length) {
     char byte = (*buffer)[global_index];
     if (byte >= 'A' && byte <= 'Z') {
       req.method[method_index] = byte + 32;
@@ -27,7 +29,7 @@ Request request(char (*buffer)[2048]) {
     return req;
   }
 
-  while (stage == 1 && pathname_index < sizeof(req.pathname) - 1 && global_index < sizeof(*buffer)) {
+  while (stage == 1 && pathname_index < sizeof(req.pathname) - 1 && global_index < length) {
     char byte = (*buffer)[global_index];
     if ((byte >= 'A' && byte <= 'Z') || (byte >= 'a' && byte <= 'z') || byte == '-' || byte == '/') {
       req.pathname[pathname_index] = byte;
@@ -47,7 +49,7 @@ Request request(char (*buffer)[2048]) {
     return req;
   }
 
-  while (stage == 2 && search_index < sizeof(req.search) - 1 && global_index < sizeof(*buffer)) {
+  while (stage == 2 && search_index < sizeof(req.search) - 1 && global_index < length) {
     char byte = (*buffer)[global_index];
     if ((byte >= 'A' && byte <= 'Z') || (byte >= 'a' && byte <= 'z') || (byte >= '0' && byte <= '9') || byte == '=' ||
         byte == '&' || byte == '%') {
@@ -59,11 +61,38 @@ Request request(char (*buffer)[2048]) {
     search_index++;
     global_index++;
   }
+  req.search[search_index] = '\0';
   if (stage == 2) {
     req.status = 414;
     return req;
   }
 
-  req.status = 0;
+  while ((stage == 3 || stage == 4) && protocol_index < sizeof(req.protocol) - 1 && global_index < length) {
+    char byte = (*buffer)[global_index];
+    if (byte >= 'A' && byte <= 'Z') {
+      req.protocol[protocol_index] = byte + 32;
+    }
+    if ((byte >= '0' && byte <= '9') || byte == '/') {
+      req.protocol[protocol_index] = byte;
+    }
+    if (byte == '\r') {
+      stage = 4;
+    }
+    if (byte == '\n') {
+      stage = 5;
+    }
+    search_index++;
+    global_index++;
+  }
+  req.protocol[protocol_index] = '\0';
+  if (stage == 3) {
+    req.status = 505;
+    return req;
+  }
+  if (stage == 4) {
+    req.status = 400;
+    return req;
+  }
+
   return req;
 }

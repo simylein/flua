@@ -1,3 +1,5 @@
+#include <arpa/inet.h>
+
 typedef struct Request {
   char method[8];
   char pathname[64];
@@ -7,4 +9,4 @@ typedef struct Request {
   int status;
 } Request;
 
-Request request(char (*buffer)[2048]);
+Request request(char (*buffer)[2048], ssize_t length);
