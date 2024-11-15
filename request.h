@@ -5,8 +5,9 @@ typedef struct Request {
   char pathname[64];
   char search[128];
   char protocol[16];
-  char headers[1024];
+  char header[1024];
+  char body[4096];
   int status;
 } Request;
 
-Request request(char (*buffer)[2048], ssize_t length);
+Request request(char (*buffer)[8192], ssize_t length);

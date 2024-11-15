@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    char request_buffer[2048] = {0};
+    char request_buffer[8192] = {0};
     ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
     trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
       resp.status = reqs.status;
     }
 
-    char response_buffer[2048] = {0};
+    char response_buffer[8192] = {0};
     int response_length = response(&response_buffer, &resp);
 
     ssize_t bytes_sent = send(client_sock, response_buffer, (size_t)response_length, 0);
