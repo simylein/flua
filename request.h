@@ -6,7 +6,7 @@ typedef struct Request {
   char search[128];
   char protocol[16];
   char header[1024];
-  char body[4096];
+  char body[6144];
   int status;
 } Request;
 
