@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int port = 1681;
+int port = 2254;
 int backlog = 16;
 
 char *database_file = "flua.sqlite";
@@ -140,7 +140,7 @@ int configure(int argc, char *argv[]) {
       info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
       return -1;
     } else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-      info("flua flights version 0.0.2\n");
+      info("flua flights version 0.0.3\n");
       info("written by simylein in c\n");
       return -1;
     } else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
