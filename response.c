@@ -6,6 +6,8 @@ char *status_text(int status) {
   switch (status) {
   case 200:
     return "OK";
+  case 413:
+    return "Content Too Large";
   case 414:
     return "URI Too Long";
   case 431:
