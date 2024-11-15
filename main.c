@@ -1,7 +1,7 @@
+#include "app.h"
 #include "config.h"
 #include "error.h"
 #include "logger.h"
-#include "request.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
 #include <stdlib.h>
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    char request_buffer[2048];
+    char request_buffer[2048] = {0};
     ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
     trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
@@ -80,11 +80,20 @@ int main(int argc, char *argv[]) {
     struct Request reqs = request(&request_buffer, bytes_received);
     req("%s %s\n", reqs.method, reqs.pathname);
 
-    char *response_buffer = "HTTP/1.1 200 OK\r\n\r\n";
-    ssize_t bytes_sent = send(client_sock, response_buffer, strlen(response_buffer), 0);
+    struct Response resp = {.status = 0};
+    if (reqs.status == 0) {
+      handle(&reqs, &resp);
+    } else {
+      resp.status = reqs.status;
+    }
+
+    char response_buffer[2048] = {0};
+    int response_length = response(&response_buffer, &resp);
+
+    ssize_t bytes_sent = send(client_sock, response_buffer, (size_t)response_length, 0);
     trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
-    res("outgoing response\n");
+    res("%d\n", resp.status);
 
     if (bytes_sent == -1) {
       error("%s\n", errno_str());
