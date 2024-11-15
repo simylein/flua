@@ -7,6 +7,8 @@ char *status_text(int status) {
     return "OK";
   case 414:
     return "URI Too Long";
+  case 431:
+    return "Request Header Fields Too Large";
   case 501:
     return "Not Implemented";
   case 505:
