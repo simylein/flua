@@ -6,6 +6,7 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -60,6 +61,9 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in client_addr;
     int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
+    struct timespec start;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     if (client_sock == -1) {
       error("%s\n", errno_str());
       error("failed to accept client\n");
@@ -93,7 +97,10 @@ int main(int argc, char *argv[]) {
     ssize_t bytes_sent = send(client_sock, response_buffer, (size_t)response_length, 0);
     trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
-    res("%d\n", resp.status);
+    struct timespec stop;
+    clock_gettime(CLOCK_MONOTONIC, &stop);
+
+    res("%d %ldns\n", resp.status, stop.tv_nsec - start.tv_nsec);
 
     if (bytes_sent == -1) {
       error("%s\n", errno_str());
