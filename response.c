@@ -6,12 +6,19 @@
 int response(char (*buffer)[8192], Response *res) {
 	int bytes = 0;
 	bytes += snprintf(*buffer + bytes, (int)sizeof(*buffer) - bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
-	if (strlen(res->header) > 0) {
-		bytes += snprintf(*buffer + bytes, (int)sizeof(*buffer) - bytes, "%s", res->header);
+	size_t header_len = strlen(res->header);
+	if (header_len > 0) {
+		memcpy(*buffer + bytes, res->header, header_len);
+		bytes += header_len;
 	}
-	if (strlen(res->body) > 0) {
-		bytes += snprintf(*buffer + bytes, (int)sizeof(*buffer) - bytes, "%s", res->body);
+	size_t body_len = strlen(res->body);
+	if (body_len > 0) {
+		memcpy(*buffer + bytes, res->body, body_len);
+		bytes += body_len;
 	}
-	bytes += snprintf(*buffer + bytes, (int)sizeof(*buffer) - bytes, "\r\n");
+	char *end = "\r\n";
+	size_t end_len = strlen(end);
+	memcpy(*buffer + bytes, end, end_len);
+	bytes += end_len;
 	return bytes;
 }
