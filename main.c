@@ -3,11 +3,8 @@
 #include "error.h"
 #include "format.h"
 #include "logger.h"
-#include <arpa/inet.h>
 #include <sqlite3.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
