@@ -1,6 +1,7 @@
 #include "app.h"
 #include "config.h"
 #include "error.h"
+#include "format.h"
 #include "logger.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
@@ -100,7 +101,7 @@ int main(int argc, char *argv[]) {
     struct timespec stop;
     clock_gettime(CLOCK_MONOTONIC, &stop);
 
-    res("%d %ldns\n", resp.status, stop.tv_nsec - start.tv_nsec);
+    res("%d %s\n", resp.status, human_duration(stop.tv_nsec - start.tv_nsec));
 
     if (bytes_sent == -1) {
       error("%s\n", errno_str());
