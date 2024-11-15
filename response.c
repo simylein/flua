@@ -10,15 +10,16 @@ int response(char (*buffer)[8192], Response *res) {
 	if (header_len > 0) {
 		memcpy(*buffer + bytes, res->header, header_len);
 		bytes += header_len;
+	} else {
+		char *end = "\r\n";
+		size_t end_len = strlen(end);
+		memcpy(*buffer + bytes, end, end_len);
+		bytes += end_len;
 	}
 	size_t body_len = strlen(res->body);
 	if (body_len > 0) {
 		memcpy(*buffer + bytes, res->body, body_len);
 		bytes += body_len;
 	}
-	char *end = "\r\n";
-	size_t end_len = strlen(end);
-	memcpy(*buffer + bytes, end, end_len);
-	bytes += end_len;
 	return bytes;
 }
