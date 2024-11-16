@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <string.h>
 
-int response(char (*buffer)[8192], Response *res) {
-	int bytes = 0;
-	bytes += snprintf(*buffer + bytes, (int)sizeof(*buffer) - bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
+size_t response(char (*buffer)[8192], Response *res) {
+	size_t bytes = 0;
+	bytes += (size_t)sprintf(*buffer + bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
 	size_t header_len = strlen(res->header);
 	if (header_len > 0) {
 		memcpy(*buffer + bytes, res->header, header_len);

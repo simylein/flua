@@ -90,9 +90,9 @@ int main(int argc, char *argv[]) {
 		}
 
 		char response_buffer[8192] = {0};
-		int response_length = response(&response_buffer, &resp);
+		size_t response_length = response(&response_buffer, &resp);
 
-		ssize_t bytes_sent = send(client_sock, response_buffer, (size_t)response_length, 0);
+		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
 		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		struct timespec stop;
