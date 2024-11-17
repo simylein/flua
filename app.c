@@ -56,6 +56,10 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
+			if (strlen(request->search) > 0) {
+				response->status = 400;
+				return;
+			}
 			response->status = 200;
 			send_file("home.html", response);
 		}
@@ -63,10 +67,18 @@ void handle(Request *request, Response *response) {
 
 	if (pathname_found == 0 && method_found == 0) {
 		response->status = 404;
-		send_file("404.html", response);
 	}
 	if (pathname_found == 1 && method_found == 0) {
 		response->status = 405;
+	}
+
+	if (response->status == 400) {
+		send_file("400.html", response);
+	}
+	if (response->status == 404) {
+		send_file("404.html", response);
+	}
+	if (response->status == 405) {
 		send_file("405.html", response);
 	}
 	if (response->status == 500) {
