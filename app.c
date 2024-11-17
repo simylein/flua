@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void send_file(const char *file_path, Response *response) {
+void file(const char *file_path, Response *response) {
 	char buffer[6144] = {0};
 
 	int file_fd = open(file_path, O_RDONLY);
@@ -60,7 +60,7 @@ void handle(Request *request, Response *response) {
 				response->status = 400;
 			} else {
 				response->status = 200;
-				send_file("home.html", response);
+				file("home.html", response);
 			}
 		}
 	}
@@ -73,15 +73,15 @@ void handle(Request *request, Response *response) {
 	}
 
 	if (response->status == 400) {
-		send_file("400.html", response);
+		file("400.html", response);
 	}
 	if (response->status == 404) {
-		send_file("404.html", response);
+		file("404.html", response);
 	}
 	if (response->status == 405) {
-		send_file("405.html", response);
+		file("405.html", response);
 	}
 	if (response->status == 500) {
-		send_file("500.html", response);
+		file("500.html", response);
 	}
 }
