@@ -58,6 +58,8 @@ char *status_text(int status) {
 		return "Too Many Requests";
 	case 431:
 		return "Request Header Fields Too Large";
+	case 500:
+		return "Internal Server Error";
 	case 501:
 		return "Not Implemented";
 	case 502:
