@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 		struct Request reqs = request(&request_buffer, bytes_received);
 		req("%s %s\n", reqs.method, reqs.pathname);
 
-		struct Response resp = {.status = 0};
+		struct Response resp = {.status = 0, .header = {0}, .body = {0}};
 		if (reqs.status == 0) {
 			handle(&reqs, &resp);
 		} else {
