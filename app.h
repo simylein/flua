@@ -1,4 +1,4 @@
 #include "request.h"
 #include "response.h"
 
-void handle(Request *req, Response *res);
+void handle(Request *request, Response *response);
