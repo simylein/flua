@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
 		clock_gettime(CLOCK_MONOTONIC, &start);
 
 		struct Request reqs = request(&request_buffer, bytes_received);
-		req("%s %s\n", reqs.method, reqs.pathname);
+		req("%s %s %s\n", reqs.method, reqs.pathname, human_bytes((size_t)bytes_received));
 
 		struct Response resp = {.status = 0, .header = {0}, .body = {0}};
 		if (reqs.status == 0) {
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 		struct timespec stop;
 		clock_gettime(CLOCK_MONOTONIC, &stop);
 
-		res("%d %s\n", resp.status, human_duration(&start, &stop));
+		res("%d %s %s\n", resp.status, human_duration(&start, &stop), human_bytes(response_length));
 
 		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
 		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
