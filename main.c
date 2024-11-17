@@ -59,9 +59,6 @@ int main(int argc, char *argv[]) {
 		struct sockaddr_in client_addr;
 		int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
-		struct timespec start;
-		clock_gettime(CLOCK_MONOTONIC, &start);
-
 		if (client_sock == -1) {
 			error("%s\n", errno_str());
 			error("failed to accept client\n");
@@ -79,6 +76,9 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
+		struct timespec start;
+		clock_gettime(CLOCK_MONOTONIC, &start);
+
 		struct Request reqs = request(&request_buffer, bytes_received);
 		req("%s %s\n", reqs.method, reqs.pathname);
 
@@ -92,13 +92,13 @@ int main(int argc, char *argv[]) {
 		char response_buffer[8192] = {0};
 		size_t response_length = response(&response_buffer, &resp);
 
-		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
-		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-
 		struct timespec stop;
 		clock_gettime(CLOCK_MONOTONIC, &stop);
 
 		res("%d %s\n", resp.status, human_duration(&start, &stop));
+
+		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
+		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		if (bytes_sent == -1) {
 			error("%s\n", errno_str());
