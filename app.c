@@ -58,10 +58,10 @@ void handle(Request *request, Response *response) {
 			method_found = 1;
 			if (strlen(request->search) > 0) {
 				response->status = 400;
-				return;
+			} else {
+				response->status = 200;
+				send_file("home.html", response);
 			}
-			response->status = 200;
-			send_file("home.html", response);
 		}
 	}
 
