@@ -3,7 +3,8 @@
 #include <string.h>
 
 Request request(char (*buffer)[8192], ssize_t length) {
-	struct Request req = {.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .status = 0};
+	struct Request req = {
+			.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .body = {0}, .status = 0};
 
 	int stage = 0;
 	size_t index = 0;
