@@ -12,3 +12,6 @@ flua.sqlite
 
 # logs
 *.log
+
+# tailwind
+tailwind.config.ts
