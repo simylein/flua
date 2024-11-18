@@ -9,7 +9,7 @@ void find_flights(char *year, Response *response) {
 
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select id, starts_at, ends_at from flight "
+	const char *sql = "select starts_at, ends_at from flight "
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
 
@@ -27,16 +27,13 @@ void find_flights(char *year, Response *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const int id = sqlite3_column_int(stmt, 0);
-			const int starts_at = sqlite3_column_int(stmt, 1);
-			const int ends_at = sqlite3_column_int(stmt, 2);
-			if (response->body_len + sizeof(id) + sizeof(starts_at) + sizeof(ends_at) > sizeof(response->body)) {
+			const int starts_at = sqlite3_column_int(stmt, 0);
+			const int ends_at = sqlite3_column_int(stmt, 1);
+			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
 				goto partial;
 			}
-			memcpy(response->body + response->body_len, &id, sizeof(id));
-			response->body_len += sizeof(id);
 			memcpy(response->body + response->body_len, &starts_at, sizeof(starts_at));
 			response->body_len += sizeof(starts_at);
 			memcpy(response->body + response->body_len, &ends_at, sizeof(ends_at));
