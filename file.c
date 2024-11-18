@@ -39,7 +39,7 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
-	trace("sending file %s\n", file_path);
+	debug("sending file %s\n", file_path);
 	sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
 	memcpy(response->body, buffer, bytes_read);
 	response->body_len += (size_t)bytes_read;
