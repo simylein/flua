@@ -1,5 +1,6 @@
 #include "app.h"
 #include "config.h"
+#include "database.h"
 #include "error.h"
 #include "format.h"
 #include "logger.h"
@@ -18,8 +19,6 @@ int main(int argc, char *argv[]) {
 	if (cf_errors == -1) {
 		return EXIT_SUCCESS;
 	}
-
-	sqlite3 *database;
 
 	int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
 	if (db_error != 0) {
