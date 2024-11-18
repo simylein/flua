@@ -16,10 +16,9 @@ size_t response(char (*buffer)[8192], Response *res) {
 		memcpy(*buffer + bytes, end, end_len);
 		bytes += end_len;
 	}
-	size_t body_len = strlen(res->body);
-	if (body_len > 0) {
-		memcpy(*buffer + bytes, res->body, body_len);
-		bytes += body_len;
+	if (res->body_len > 0) {
+		memcpy(*buffer + bytes, res->body, res->body_len);
+		bytes += res->body_len;
 	}
 	return bytes;
 }
