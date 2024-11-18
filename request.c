@@ -139,11 +139,11 @@ void request(char (*buffer)[8192], ssize_t length, Request *req, Response *res) 
 	}
 
 	size_t body_length = (size_t)length - index;
-	if (body_length > sizeof(req->body) - 1) {
+	if (body_length > sizeof(req->body)) {
 		res->status = 413;
 		return;
 	}
 
 	memcpy(req->body, &(*buffer)[index], body_length);
-	req->body[body_length] = '\0';
+	req->body_len = body_length;
 }

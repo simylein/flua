@@ -9,6 +9,7 @@ typedef struct Request {
 	char protocol[16];
 	char header[1024];
 	char body[6144];
+	size_t body_len;
 } Request;
 
 void request(char (*buffer)[8192], ssize_t length, Request *req, Response *res);

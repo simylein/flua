@@ -83,7 +83,8 @@ int main(int argc, char *argv[]) {
 		struct timespec start;
 		clock_gettime(CLOCK_MONOTONIC, &start);
 
-		struct Request reqs = {.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .body = {0}};
+		struct Request reqs = {
+				.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .body = {0}, .body_len = 0};
 		struct Response resp = {.status = 0, .header = {0}, .body = {0}, .body_len = 0};
 
 		request(&request_buffer, bytes_received, &reqs, &resp);
