@@ -8,6 +8,7 @@
 #include "response.h"
 #include <sqlite3.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -78,6 +79,22 @@ int main(int argc, char *argv[]) {
 		if (bytes_received == 0) {
 			warn("client did not send any data\n");
 			goto cleanup;
+		}
+
+		const char *length_name = "content-length:";
+		char *length_index = strcasestr(request_buffer, length_name);
+		char *body_index = strcasestr(request_buffer, "\r\n\r\n");
+		if (length_index && body_index) {
+			length_index += strlen(length_name);
+			size_t content_length = (size_t)atoi(length_index);
+			size_t body_length = (size_t)bytes_received - (size_t)(body_index - request_buffer + 4);
+
+			while (body_length < content_length) {
+				bytes_received +=
+						recv(client_sock, &request_buffer[bytes_received], sizeof(request_buffer) - (size_t)bytes_received, 0);
+				trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+				body_length += (size_t)bytes_received;
+			}
 		}
 
 		struct timespec start;
