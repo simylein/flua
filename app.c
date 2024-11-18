@@ -1,6 +1,6 @@
+#include "auth.h"
 #include "file.h"
 #include "flight.h"
-#include "logger.h"
 #include "request.h"
 #include "response.h"
 #include <stdlib.h>
@@ -54,8 +54,19 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 			if (strlen(request->search) == 0) {
-				// TODO: remove
-				response->status = 420;
+				char username[17];
+				char password[65];
+				request->body[request->body_len] = '\0';
+				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
+					if (strlen(username) >= 4 && strlen(password) >= 8) {
+						response->status = 201;
+						user_signup(username, password, response);
+					} else {
+						response->status = 400;
+					}
+				} else {
+					response->status = 400;
+				}
 			} else {
 				response->status = 400;
 			}
@@ -67,8 +78,19 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 			if (strlen(request->search) == 0) {
-				// TODO: remove
-				response->status = 420;
+				char username[17];
+				char password[65];
+				request->body[request->body_len] = '\0';
+				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
+					if (strlen(username) >= 4 && strlen(password) >= 8) {
+						response->status = 201;
+						user_signin(username, password, response);
+					} else {
+						response->status = 400;
+					}
+				} else {
+					response->status = 400;
+				}
 			} else {
 				response->status = 400;
 			}
@@ -80,10 +102,9 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 			char year[5];
-			int result = sscanf(request->search, "year=%4s", year);
 			// TODO: do not hardcode user id
 			int user_id = 1;
-			if (result == 1) {
+			if (sscanf(request->search, "year=%4s", year) == 1) {
 				response->status = 200;
 				find_flights(year, user_id, response);
 			} else {
