@@ -4,7 +4,7 @@
 #include <sqlite3.h>
 #include <string.h>
 
-void find_flights(char *year, Response *response) {
+void find_flights(char *year, int user_id, Response *response) {
 	info("finding flights for %s\n", year);
 
 	sqlite3_stmt *stmt;
@@ -20,8 +20,7 @@ void find_flights(char *year, Response *response) {
 		goto cleanup;
 	}
 
-	// TODO: do not hardcode user id
-	sqlite3_bind_int(stmt, 1, 1);
+	sqlite3_bind_int(stmt, 1, user_id);
 	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
 
 	while (1) {
@@ -55,7 +54,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flight_years(Response *response) {
+void find_flight_years(int user_id, Response *response) {
 	info("finding flight years\n");
 
 	sqlite3_stmt *stmt;
@@ -71,8 +70,7 @@ void find_flight_years(Response *response) {
 		goto cleanup;
 	}
 
-	// TODO: do not hardcode user id
-	sqlite3_bind_int(stmt, 1, 1);
+	sqlite3_bind_int(stmt, 1, user_id);
 
 	while (1) {
 		int result = sqlite3_step(stmt);

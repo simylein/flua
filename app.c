@@ -29,12 +29,14 @@ void handle(Request *request, Response *response) {
 			method_found = 1;
 			char year[5];
 			int result = sscanf(request->search, "year=%4s", year);
+			// TODO: do not hardcode user id
+			int user_id = 1;
 			if (result == 1) {
 				response->status = 200;
-				find_flights(year, response);
+				find_flights(year, user_id, response);
 			} else {
 				response->status = 200;
-				find_flight_years(response);
+				find_flight_years(user_id, response);
 			}
 		}
 	}
