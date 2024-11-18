@@ -69,7 +69,6 @@ int main(int argc, char *argv[]) {
 
 		char request_buffer[8192] = {0};
 		ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
-		trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		if (bytes_received == -1) {
 			error("%s\n", errno_str());
@@ -90,12 +89,25 @@ int main(int argc, char *argv[]) {
 			size_t body_length = (size_t)bytes_received - (size_t)(body_index - request_buffer + 4);
 
 			while (body_length < content_length) {
-				bytes_received +=
+				ssize_t more_bytes =
 						recv(client_sock, &request_buffer[bytes_received], sizeof(request_buffer) - (size_t)bytes_received, 0);
-				trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-				body_length += (size_t)bytes_received;
+
+				if (more_bytes == -1) {
+					error("%s\n", errno_str());
+					error("failed to receive more data from client\n");
+					goto cleanup;
+				}
+				if (more_bytes == 0) {
+					warn("client did not send complete data\n");
+					goto cleanup;
+				}
+
+				body_length += (size_t)more_bytes;
+				bytes_received += more_bytes;
 			}
 		}
+
+		trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		struct timespec start;
 		clock_gettime(CLOCK_MONOTONIC, &start);
@@ -118,8 +130,8 @@ int main(int argc, char *argv[]) {
 		clock_gettime(CLOCK_MONOTONIC, &stop);
 
 		res("%d %s %s\n", resp.status, human_duration(&start, &stop), human_bytes(response_length));
-
 		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
+
 		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		if (bytes_sent == -1) {
