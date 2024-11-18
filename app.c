@@ -1,7 +1,9 @@
 #include "file.h"
+#include "flight.h"
 #include "logger.h"
 #include "request.h"
 #include "response.h"
+#include <stdlib.h>
 #include <string.h>
 
 void handle(Request *request, Response *response) {
@@ -12,11 +14,27 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
-			if (strlen(request->search) > 0) {
-				response->status = 400;
-			} else {
+			if (strlen(request->search) == 0) {
 				response->status = 200;
 				file("home.html", response);
+			} else {
+				response->status = 400;
+			}
+		}
+	}
+
+	if (strcmp(request->pathname, "/api/flight") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+			char year[5];
+			int result = sscanf(request->search, "year=%4s", year);
+			if (result == 1) {
+				response->status = 200;
+				find_flights(year, response);
+			} else {
+				response->status = 200;
+				find_flight_years(response);
 			}
 		}
 	}
