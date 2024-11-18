@@ -3,6 +3,8 @@
 #include "error.h"
 #include "format.h"
 #include "logger.h"
+#include "request.h"
+#include "response.h"
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -79,14 +81,14 @@ int main(int argc, char *argv[]) {
 		struct timespec start;
 		clock_gettime(CLOCK_MONOTONIC, &start);
 
-		struct Request reqs = request(&request_buffer, bytes_received);
+		struct Request reqs = {.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .body = {0}};
+		struct Response resp = {.status = 0, .header = {0}, .body = {0}};
+
+		request(&request_buffer, bytes_received, &reqs, &resp);
 		req("%s %s %s\n", reqs.method, reqs.pathname, human_bytes((size_t)bytes_received));
 
-		struct Response resp = {.status = 0, .header = {0}, .body = {0}};
-		if (reqs.status == 0) {
+		if (resp.status == 0) {
 			handle(&reqs, &resp);
-		} else {
-			resp.status = reqs.status;
 		}
 
 		char response_buffer[8192] = {0};

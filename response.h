@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#pragma once
 typedef struct Response {
 	int status;
 	char header[1024];

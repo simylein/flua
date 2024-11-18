@@ -1,5 +1,7 @@
+#include "response.h"
 #include <arpa/inet.h>
 
+#pragma once
 typedef struct Request {
 	char method[8];
 	char pathname[64];
@@ -7,7 +9,6 @@ typedef struct Request {
 	char protocol[16];
 	char header[1024];
 	char body[6144];
-	int status;
 } Request;
 
-Request request(char (*buffer)[8192], ssize_t length);
+void request(char (*buffer)[8192], ssize_t length, Request *req, Response *res);
