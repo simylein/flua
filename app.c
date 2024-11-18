@@ -23,6 +23,19 @@ void handle(Request *request, Response *response) {
 		}
 	}
 
+	if (strcmp(request->pathname, "/signin") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+			if (strlen(request->search) == 0) {
+				response->status = 200;
+				file("signin.html", response);
+			} else {
+				response->status = 400;
+			}
+		}
+	}
+
 	if (strcmp(request->pathname, "/api/flight") == 0) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
