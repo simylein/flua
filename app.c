@@ -73,8 +73,15 @@ void handle(Request *request, Response *response) {
 		response->status = 405;
 	}
 
+	const char *prefix = "/api/";
+	if (memcmp(request->pathname, prefix, strlen(prefix)) == 0) {
+		return;
+	}
 	if (response->status == 400) {
 		file("400.html", response);
+	}
+	if (response->status == 403) {
+		file("403.html", response);
 	}
 	if (response->status == 404) {
 		file("404.html", response);
