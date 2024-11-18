@@ -36,6 +36,45 @@ void handle(Request *request, Response *response) {
 		}
 	}
 
+	if (strcmp(request->pathname, "/signup") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+			if (strlen(request->search) == 0) {
+				response->status = 200;
+				file("signup.html", response);
+			} else {
+				response->status = 400;
+			}
+		}
+	}
+
+	if (strcmp(request->pathname, "/api/signin") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "post") == 0) {
+			method_found = 1;
+			if (strlen(request->search) == 0) {
+				// TODO: remove
+				response->status = 420;
+			} else {
+				response->status = 400;
+			}
+		}
+	}
+
+	if (strcmp(request->pathname, "/api/signup") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "post") == 0) {
+			method_found = 1;
+			if (strlen(request->search) == 0) {
+				// TODO: remove
+				response->status = 420;
+			} else {
+				response->status = 400;
+			}
+		}
+	}
+
 	if (strcmp(request->pathname, "/api/flight") == 0) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {

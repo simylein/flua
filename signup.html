@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Signup for an account" />
+		<title>Flua signup</title>
+		<!-- TODO: remove -->
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class="font-sans m-0 text-black dark:text-white bg-white dark:bg-black">
+		<main class="min-h-dvh flex items-center justify-center">
+			<div
+				class="w-full max-w-96 m-4 sm:m-8 lg:m-16 pt-8 px-8 pb-4 bg-neutral-100 dark:bg-neutral-900"
+			>
+				<form
+					class="flex flex-col items-center"
+					action="/api/signup"
+					method="post"
+				>
+					<h1 class="m-0 mb-2 text-3xl font-semibold">Signup</h1>
+					<div class="w-full flex flex-col items-start gap-2 pb-4">
+						<label for="username" class="text-base font-normal">Username</label>
+						<input
+							id="username"
+							type="text"
+							class="w-full p-2 text-sm text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"
+							placeholder="username"
+							autofocus
+						/>
+					</div>
+					<div class="w-full flex flex-col items-start gap-2 pb-4">
+						<label for="password" class="text-base font-normal">Password</label>
+						<input
+							id="password"
+							type="password"
+							class="w-full p-2 text-sm text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"
+							placeholder="password"
+						/>
+					</div>
+					<button
+						class="min-w-28 text-base font-normal py-1 px-4 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-800 active:scale-95"
+					>
+						Signup
+					</button>
+					<div class="flex items-center gap-2 mt-3">
+						<p class="m-0">Have an account?</p>
+						<a
+							href="/signin"
+							class="no-underline text-base font-normal text-blue-600 dark:text-blue-400"
+							>signin</a
+						>
+					</div>
+				</form>
+			</div>
+		</main>
+	</body>
+</html>
