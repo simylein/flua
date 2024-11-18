@@ -73,8 +73,11 @@ int main(int argc, char *argv[]) {
 		if (bytes_received == -1) {
 			error("%s\n", errno_str());
 			error("failed to receive data from client\n");
-			close(client_sock);
-			continue;
+			goto cleanup;
+		}
+		if (bytes_received == 0) {
+			warn("client did not send any data\n");
+			goto cleanup;
 		}
 
 		struct timespec start;
@@ -106,6 +109,7 @@ int main(int argc, char *argv[]) {
 			error("failed to send data to client\n");
 		}
 
+	cleanup:
 		if (close(client_sock) == -1) {
 			error("%s\n", errno_str());
 			error("failed to close client socket\n");
