@@ -21,14 +21,15 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 		goto cleanup;
 	}
 
-	const unsigned char *user_id = binary_uuid(user_uuid, strlen(user_uuid));
+	const size_t user_uuid_len = strlen(user_uuid);
+	const unsigned char *user_id = binary_uuid(user_uuid, user_uuid_len);
 	if (user_id == NULL) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
 	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
 
 	while (1) {
@@ -78,14 +79,15 @@ void find_flight_years(char *user_uuid, Response *response) {
 		goto cleanup;
 	}
 
-	const unsigned char *user_id = binary_uuid(user_uuid, strlen(user_uuid));
+	const size_t user_uuid_len = strlen(user_uuid);
+	const unsigned char *user_id = binary_uuid(user_uuid, user_uuid_len);
 	if (user_id == NULL) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
 
 	while (1) {
 		int result = sqlite3_step(stmt);
