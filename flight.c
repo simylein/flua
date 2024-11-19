@@ -14,7 +14,7 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
 
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, 0) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to prepare statement\n");
 		response->status = 500;
@@ -72,7 +72,7 @@ void find_flight_years(char *user_uuid, Response *response) {
 										"where user_id = ? "
 										"order by year desc";
 
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, 0) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to prepare statement\n");
 		response->status = 500;

@@ -12,7 +12,7 @@ void user_signin(char *username, char *password, Response *response) {
 
 	const char *sql = "select id from user where username = ? and password = ?";
 
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, 0) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to prepare statement\n");
 		response->status = 500;
@@ -56,7 +56,7 @@ void user_signup(char *username, char *password, Response *response) {
 
 	const char *sql = "insert into user (id, username, password) values (randomblob(16), ?, ?) returning id";
 
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, 0) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to prepare statement\n");
 		response->status = 500;
