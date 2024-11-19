@@ -5,13 +5,13 @@
 int port = 2254;
 int backlog = 16;
 
-char *database_file = "flua.sqlite";
+const char *database_file = "flua.sqlite";
 
 int log_level = 4;
 int log_requests = 1;
 int log_responses = 1;
 
-char *next_arg(int argc, char *argv[], int *ind) {
+const char *next_arg(const int argc, char *argv[], int *ind) {
 	(*ind)++;
 	if (*ind < argc) {
 		return argv[*ind];
@@ -19,13 +19,13 @@ char *next_arg(int argc, char *argv[], int *ind) {
 	return NULL;
 }
 
-int parse_int(char *arg, char *name, int min, int max, int *value) {
+int parse_int(const char *arg, const char *name, const int min, const int max, int *value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
 	}
 
-	int new_value = atoi(arg);
+	const int new_value = atoi(arg);
 	if (new_value < min || new_value > max) {
 		error("%s must be between %d and %d\n", name, min, max);
 		return 1;
@@ -35,7 +35,7 @@ int parse_int(char *arg, char *name, int min, int max, int *value) {
 	return 0;
 }
 
-int parse_bool(char *arg, char *name, int *value) {
+int parse_bool(const char *arg, const char *name, int *value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
@@ -53,7 +53,7 @@ int parse_bool(char *arg, char *name, int *value) {
 	return 0;
 }
 
-int parse_str(char *arg, char *name, size_t min, size_t max, char **value) {
+int parse_str(const char *arg, const char *name, size_t min, size_t max, const char **value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
@@ -69,7 +69,7 @@ int parse_str(char *arg, char *name, size_t min, size_t max, char **value) {
 	return 0;
 }
 
-int parse_log_level(char *arg, char *name, int *value) {
+int parse_log_level(const char *arg, const char *name, int *value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
@@ -95,7 +95,7 @@ int parse_log_level(char *arg, char *name, int *value) {
 	return 0;
 }
 
-char *human_bool(int val) {
+const char *human_bool(int val) {
 	switch (val) {
 	case 0:
 		return "false";
@@ -106,7 +106,7 @@ char *human_bool(int val) {
 	}
 }
 
-char *human_log_level(int level) {
+const char *human_log_level(int level) {
 	switch (level) {
 	case 1:
 		return "panic";
@@ -129,7 +129,7 @@ int configure(int argc, char *argv[]) {
 	int errors = 0;
 
 	for (int ind = 1; ind < argc; ind++) {
-		char *flag = argv[ind];
+		const char *flag = argv[ind];
 		if (strcmp(flag, "--help") == 0 || strcmp(flag, "-h") == 0) {
 			info("available command line flags\n");
 			info("--port           -p   int between 1 and 65535            (%d)\n", port);
@@ -140,26 +140,26 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			return -1;
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.3.2\n");
+			info("flua flights version 0.3.3\n");
 			info("written by simylein in c\n");
 			return -1;
 		} else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "port", 1, 65535, &port);
 		} else if (strcmp(flag, "--backlog") == 0 || strcmp(flag, "-b") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "backlog", 2, 256, &backlog);
 		} else if (strcmp(flag, "--database-file") == 0 || strcmp(flag, "-df") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_str(arg, "database file", 4, 64, &database_file);
 		} else if (strcmp(flag, "--log-level") == 0 || strcmp(flag, "-ll") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_log_level(arg, "log level", &log_level);
 		} else if (strcmp(flag, "--log-requests") == 0 || strcmp(flag, "-lq") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_bool(arg, "log requests", &log_requests);
 		} else if (strcmp(flag, "--log-responses") == 0 || strcmp(flag, "-ls") == 0) {
-			char *arg = next_arg(argc, argv, &ind);
+			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_bool(arg, "log responses", &log_responses);
 		} else {
 			errors++;
