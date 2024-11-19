@@ -7,8 +7,6 @@
 #include <unistd.h>
 
 void file(const char *file_path, Response *response) {
-	char buffer[sizeof(response->body)];
-
 	int file_fd = open(file_path, O_RDONLY);
 	if (file_fd == -1) {
 		error("%s\n", errno_str());
@@ -25,13 +23,13 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
-	if ((size_t)file_stat.st_size > sizeof(buffer)) {
+	if ((size_t)file_stat.st_size > sizeof(response->body)) {
 		error("file %s exceeds buffer\n", file_path);
 		response->status = 500;
 		goto cleanup;
 	}
 
-	ssize_t bytes_read = read(file_fd, buffer, (size_t)file_stat.st_size);
+	ssize_t bytes_read = read(file_fd, response->body, (size_t)file_stat.st_size);
 	if (bytes_read != file_stat.st_size) {
 		error("%s\n", errno_str());
 		error("failed to read %s\n", file_path);
@@ -41,7 +39,6 @@ void file(const char *file_path, Response *response) {
 
 	debug("sending file %s\n", file_path);
 	response->header_len = (size_t)sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
-	memcpy(response->body, buffer, bytes_read);
 	response->body_len += (size_t)bytes_read;
 
 cleanup:
