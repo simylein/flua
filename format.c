@@ -32,12 +32,32 @@ char *human_bytes(size_t bytes) {
 	return buffer;
 }
 
-char *human_uuid(const unsigned char *id, const int id_size) {
-	static char uuid[33] = {0};
-	int index = 0;
-	while (index < id_size && (unsigned long)index < (sizeof(uuid) - 1) / 2) {
-		sprintf(&uuid[index * 2], "%02x", id[index]);
+const char *human_uuid(const unsigned char *binary_uuid, const int binary_uuid_size) {
+	static char buffer[33] = {0};
+	if (binary_uuid_size != (sizeof(buffer) - 1) / 2) {
+		return NULL;
+	}
+	size_t index = 0;
+	while (index < (sizeof(buffer) - 1) / 2) {
+		sprintf(&buffer[index * 2], "%02x", binary_uuid[index]);
 		index++;
 	}
-	return uuid;
+	return buffer;
+}
+
+const unsigned char *binary_uuid(const char *uuid, const size_t uuid_size) {
+	static unsigned char buffer[16] = {0};
+	if (uuid_size != sizeof(buffer) * 2) {
+		return NULL;
+	}
+	size_t index = 0;
+	while (index < sizeof(buffer)) {
+		unsigned int byte;
+		if (sscanf(&uuid[index * 2], "%2x", &byte) != 1) {
+			return NULL;
+		}
+		buffer[index] = (unsigned char)byte;
+		index++;
+	}
+	return buffer;
 }

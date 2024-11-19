@@ -1,10 +1,11 @@
 #include "database.h"
+#include "format.h"
 #include "logger.h"
 #include "response.h"
 #include <sqlite3.h>
 #include <string.h>
 
-void find_flights(char *year, int user_id, Response *response) {
+void find_flights(char *user_uuid, char *year, Response *response) {
 	info("finding flights for %s\n", year);
 
 	sqlite3_stmt *stmt;
@@ -20,7 +21,14 @@ void find_flights(char *year, int user_id, Response *response) {
 		goto cleanup;
 	}
 
-	sqlite3_bind_int(stmt, 1, user_id);
+	const unsigned char *user_id = binary_uuid(user_uuid, strlen(user_uuid));
+	if (user_id == NULL) {
+		error("failed to convert uuid to binary\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
 	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
 
 	while (1) {
@@ -54,7 +62,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flight_years(int user_id, Response *response) {
+void find_flight_years(char *user_uuid, Response *response) {
 	info("finding flight years\n");
 
 	sqlite3_stmt *stmt;
@@ -70,7 +78,14 @@ void find_flight_years(int user_id, Response *response) {
 		goto cleanup;
 	}
 
-	sqlite3_bind_int(stmt, 1, user_id);
+	const unsigned char *user_id = binary_uuid(user_uuid, strlen(user_uuid));
+	if (user_id == NULL) {
+		error("failed to convert uuid to binary\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
 
 	while (1) {
 		int result = sqlite3_step(stmt);

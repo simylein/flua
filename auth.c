@@ -27,6 +27,11 @@ void user_signin(char *username, char *password, Response *response) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
 		const int id_size = sqlite3_column_bytes(stmt, 0);
 		const char *uuid = human_uuid(id, id_size);
+		if (uuid == NULL) {
+			error("failed to convert uuid to hex\n");
+			response->status = 500;
+			goto cleanup;
+		}
 		// TODO: sign a jwt with id in the payload bay
 		sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
 	} else if (result == SQLITE_DONE) {
@@ -66,6 +71,11 @@ void user_signup(char *username, char *password, Response *response) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
 		const int id_size = sqlite3_column_bytes(stmt, 0);
 		const char *uuid = human_uuid(id, id_size);
+		if (uuid == NULL) {
+			error("failed to convert uuid to hex\n");
+			response->status = 500;
+			goto cleanup;
+		}
 		// TODO: sign a jwt with id in the payload bay
 		sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
 	} else if (result == SQLITE_CONSTRAINT) {
