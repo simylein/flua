@@ -59,22 +59,27 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
-			if (strlen(request->search) == 0) {
-				char username[17];
-				char password[65];
-				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
-					if (strlen(username) >= 4 && strlen(password) >= 8) {
-						response->status = 201;
-						user_signin(username, password, response);
-					} else {
-						response->status = 400;
-					}
-				} else {
-					response->status = 400;
-				}
-			} else {
+
+			if (strlen(request->search) != 0) {
 				response->status = 400;
+				goto respond;
 			}
+
+			char username[17] = {0};
+			char password[65] = {0};
+
+			if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
+				response->status = 400;
+				goto respond;
+			}
+
+			if (strlen(username) < 4 && strlen(password) < 8) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 201;
+			user_signin(username, password, response);
 		}
 	}
 
@@ -82,22 +87,27 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
-			if (strlen(request->search) == 0) {
-				char username[17];
-				char password[65];
-				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
-					if (strlen(username) >= 4 && strlen(password) >= 8) {
-						response->status = 201;
-						user_signup(username, password, response);
-					} else {
-						response->status = 400;
-					}
-				} else {
-					response->status = 400;
-				}
-			} else {
+
+			if (strlen(request->search) != 0) {
 				response->status = 400;
+				goto respond;
 			}
+
+			char username[17] = {0};
+			char password[65] = {0};
+
+			if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
+				response->status = 400;
+				goto respond;
+			}
+
+			if (strlen(username) < 4 && strlen(password) < 8) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 201;
+			user_signup(username, password, response);
 		}
 	}
 
@@ -112,13 +122,13 @@ void handle(Request *request, Response *response) {
 				goto respond;
 			}
 
-			char user_id[33];
+			char user_id[33] = {0};
 			if (sscanf(bearer_start, "bearer=%32s\r\n", user_id) != 1) {
 				response->status = 401;
 				goto respond;
 			}
 
-			char year[5];
+			char year[5] = {0};
 			if (sscanf(request->search, "year=%4s", year) == 1) {
 				response->status = 200;
 				find_flights(user_id, year, response);
