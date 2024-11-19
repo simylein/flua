@@ -59,7 +59,7 @@ void handle(Request *request, Response *response) {
 				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
 					if (strlen(username) >= 4 && strlen(password) >= 8) {
 						response->status = 201;
-						user_signup(username, password, response);
+						user_signin(username, password, response);
 					} else {
 						response->status = 400;
 					}
@@ -82,7 +82,7 @@ void handle(Request *request, Response *response) {
 				if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) == 2) {
 					if (strlen(username) >= 4 && strlen(password) >= 8) {
 						response->status = 201;
-						user_signin(username, password, response);
+						user_signup(username, password, response);
 					} else {
 						response->status = 400;
 					}
