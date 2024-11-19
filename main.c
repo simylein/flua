@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
-		char request_buffer[12288] = {0};
+		char request_buffer[12288];
 		ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
 
 		if (bytes_received == -1) {
@@ -87,41 +87,13 @@ int main(int argc, char *argv[]) {
 			goto cleanup;
 		}
 
-		const char *length_name = "content-length:";
-		char *length_index = strcasestr(request_buffer, length_name);
-		char *body_index = strcasestr(request_buffer, "\r\n\r\n");
-		if (length_index && body_index) {
-			length_index += strlen(length_name);
-			size_t content_length = (size_t)atoi(length_index);
-			size_t body_length = (size_t)bytes_received - (size_t)(body_index - request_buffer + 4);
-
-			while (body_length < content_length) {
-				ssize_t more_bytes =
-						recv(client_sock, &request_buffer[bytes_received], sizeof(request_buffer) - (size_t)bytes_received, 0);
-
-				if (more_bytes == -1) {
-					error("%s\n", errno_str());
-					error("failed to receive more data from client\n");
-					goto cleanup;
-				}
-				if (more_bytes == 0) {
-					warn("client did not send complete data\n");
-					goto cleanup;
-				}
-
-				body_length += (size_t)more_bytes;
-				bytes_received += more_bytes;
-			}
-		}
-
 		trace("received %zd bytes from %s:%d\n", bytes_received, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 		struct timespec start;
 		clock_gettime(CLOCK_MONOTONIC, &start);
 
-		struct Request reqs = {
-				.method = {0}, .pathname = {0}, .search = {0}, .protocol = {0}, .header = {0}, .body = {0}, .body_len = 0};
-		struct Response resp = {.status = 0, .header = {0}, .body = {0}, .body_len = 0};
+		struct Request reqs;
+		struct Response resp;
 
 		request(&request_buffer, bytes_received, &reqs, &resp);
 		req("%s %s %s\n", reqs.method, reqs.pathname, human_bytes((size_t)bytes_received));
@@ -130,7 +102,7 @@ int main(int argc, char *argv[]) {
 			handle(&reqs, &resp);
 		}
 
-		char response_buffer[12288] = {0};
+		char response_buffer[12288];
 		size_t response_length = response(&response_buffer, &resp);
 
 		struct timespec stop;
@@ -139,12 +111,17 @@ int main(int argc, char *argv[]) {
 		res("%d %s %s\n", resp.status, human_duration(&start, &stop), human_bytes(response_length));
 		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
 
-		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
-
 		if (bytes_sent == -1) {
 			error("%s\n", errno_str());
 			error("failed to send data to client\n");
+			goto cleanup;
 		}
+		if (bytes_sent == 0) {
+			warn("server did not send any data\n");
+			goto cleanup;
+		}
+
+		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 	cleanup:
 		if (close(client_sock) == -1) {

@@ -5,7 +5,7 @@ char *human_duration(struct timespec *start, struct timespec *stop) {
 	time_t start_nanoseconds = start->tv_sec * 1000000000 + start->tv_nsec;
 	time_t stop_nanoseconds = stop->tv_sec * 1000000000 + stop->tv_nsec;
 	time_t nanoseconds = stop_nanoseconds - start_nanoseconds;
-	static char buffer[8] = {0};
+	static char buffer[8];
 	if (nanoseconds < 1000) {
 		sprintf(buffer, "%ldns", nanoseconds);
 	} else if (nanoseconds < 1000000) {
@@ -19,7 +19,7 @@ char *human_duration(struct timespec *start, struct timespec *stop) {
 }
 
 char *human_bytes(size_t bytes) {
-	static char buffer[8] = {0};
+	static char buffer[8];
 	if (bytes < 1000) {
 		sprintf(buffer, "%ldb", bytes);
 	} else if (bytes < 1000000) {
@@ -33,7 +33,7 @@ char *human_bytes(size_t bytes) {
 }
 
 const char *human_uuid(const unsigned char *binary_uuid, const int binary_uuid_size) {
-	static char buffer[33] = {0};
+	static char buffer[33];
 	if (binary_uuid_size != (sizeof(buffer) - 1) / 2) {
 		return NULL;
 	}
@@ -42,11 +42,12 @@ const char *human_uuid(const unsigned char *binary_uuid, const int binary_uuid_s
 		sprintf(&buffer[index * 2], "%02x", binary_uuid[index]);
 		index++;
 	}
+	buffer[index * 2] = '\0';
 	return buffer;
 }
 
 const unsigned char *binary_uuid(const char *uuid, const size_t uuid_size) {
-	static unsigned char buffer[16] = {0};
+	static unsigned char buffer[16];
 	if (uuid_size != sizeof(buffer) * 2) {
 		return NULL;
 	}

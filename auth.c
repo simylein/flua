@@ -33,7 +33,8 @@ void user_signin(char *username, char *password, Response *response) {
 			goto cleanup;
 		}
 		// TODO: sign a jwt with id in the payload bay
-		sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
+		response->header_len =
+				(size_t)sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
 	} else if (result == SQLITE_DONE) {
 		warn("invalid password for %s\n", username);
 		response->status = 401;
@@ -77,7 +78,8 @@ void user_signup(char *username, char *password, Response *response) {
 			goto cleanup;
 		}
 		// TODO: sign a jwt with id in the payload bay
-		sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
+		response->header_len =
+				(size_t)sprintf(response->header, "set-cookie:bearer=%s;Path=/;Max-Age=7200;HttpOnly;\r\n\r\n", uuid);
 	} else if (result == SQLITE_CONSTRAINT) {
 		warn("username %s already taken\n", username);
 		response->status = 409;

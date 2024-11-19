@@ -6,15 +6,12 @@
 size_t response(char (*buffer)[12288], Response *res) {
 	size_t bytes = 0;
 	bytes += (size_t)sprintf(*buffer + bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
-	size_t header_len = strlen(res->header);
-	if (header_len > 0) {
-		memcpy(*buffer + bytes, res->header, header_len);
-		bytes += header_len;
+	if (res->header_len > 0) {
+		memcpy(*buffer + bytes, res->header, res->header_len);
+		bytes += res->header_len;
 	} else {
-		char *end = "\r\n";
-		size_t end_len = strlen(end);
-		memcpy(*buffer + bytes, end, end_len);
-		bytes += end_len;
+		memcpy(*buffer + bytes, "\r\n", 2);
+		bytes += 2;
 	}
 	if (res->body_len > 0) {
 		memcpy(*buffer + bytes, res->body, res->body_len);

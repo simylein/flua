@@ -3,6 +3,23 @@
 #include <string.h>
 
 void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res) {
+	req->method[0] = '\0';
+	req->method_len = 0;
+	req->pathname[0] = '\0';
+	req->pathname_len = 0;
+	req->search[0] = '\0';
+	req->search_len = 0;
+	req->protocol[0] = '\0';
+	req->protocol_len = 0;
+	req->header[0] = '\0';
+	req->header_len = 0;
+	req->body_len = 0;
+
+	res->status = 0;
+	res->header[0] = '\0';
+	res->header_len = 0;
+	res->body_len = 0;
+
 	int stage = 0;
 	size_t index = 0;
 
@@ -25,7 +42,8 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	}
 	memcpy(req->method, &(*buffer)[method_index], method_length);
 	req->method[method_length] = '\0';
-	if (stage == 0) {
+	req->method_len = method_length;
+	if (stage == 0 || method_length == 0) {
 		res->status = 501;
 		return;
 	}
@@ -48,7 +66,8 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	}
 	memcpy(req->pathname, &(*buffer)[pathname_index], pathname_length);
 	req->pathname[pathname_length] = '\0';
-	if (stage == 1) {
+	req->pathname_len = pathname_length;
+	if (stage == 1 || pathname_length == 0) {
 		res->status = 414;
 		return;
 	}
@@ -69,6 +88,7 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	}
 	memcpy(req->search, &(*buffer)[search_index], search_length);
 	req->search[search_length] = '\0';
+	req->search_len = search_length;
 	if (stage == 2) {
 		res->status = 414;
 		return;
@@ -95,11 +115,12 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	}
 	memcpy(req->protocol, &(*buffer)[protocol_index], protocol_length);
 	req->protocol[protocol_length] = '\0';
-	if (stage == 3) {
+	req->protocol_len = protocol_length;
+	if (stage == 3 || protocol_length == 0) {
 		res->status = 505;
 		return;
 	}
-	if (stage == 4) {
+	if (stage == 4 || protocol_length == 0) {
 		res->status = 400;
 		return;
 	}
@@ -129,6 +150,7 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	}
 	memcpy(req->header, &(*buffer)[header_index], header_length);
 	req->header[header_length] = '\0';
+	req->header_len = header_length;
 	if (stage >= 5 && stage <= 7) {
 		res->status = 431;
 		return;

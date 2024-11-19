@@ -15,7 +15,7 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			if (strlen(request->search) != 0) {
+			if (request->search_len != 0) {
 				response->status = 400;
 				goto respond;
 			}
@@ -30,7 +30,7 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			if (strlen(request->search) != 0) {
+			if (request->search_len != 0) {
 				response->status = 400;
 				goto respond;
 			}
@@ -45,7 +45,7 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			if (strlen(request->search) != 0) {
+			if (request->search_len != 0) {
 				response->status = 400;
 				goto respond;
 			}
@@ -60,13 +60,13 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 
-			if (strlen(request->search) != 0) {
+			if (request->search_len != 0) {
 				response->status = 400;
 				goto respond;
 			}
 
-			char username[17] = {0};
-			char password[65] = {0};
+			char username[17];
+			char password[65];
 
 			if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
 				response->status = 400;
@@ -88,13 +88,13 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 
-			if (strlen(request->search) != 0) {
+			if (request->search_len != 0) {
 				response->status = 400;
 				goto respond;
 			}
 
-			char username[17] = {0};
-			char password[65] = {0};
+			char username[17];
+			char password[65];
 
 			if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
 				response->status = 400;
@@ -122,13 +122,13 @@ void handle(Request *request, Response *response) {
 				goto respond;
 			}
 
-			char user_id[33] = {0};
+			char user_id[33];
 			if (sscanf(bearer_start, "bearer=%32s\r\n", user_id) != 1) {
 				response->status = 401;
 				goto respond;
 			}
 
-			char year[5] = {0};
+			char year[5];
 			if (sscanf(request->search, "year=%4s", year) == 1) {
 				response->status = 200;
 				find_flights(user_id, year, response);
@@ -149,8 +149,7 @@ respond:
 		response->status = 405;
 	}
 
-	const char *prefix = "/api/";
-	if (memcmp(request->pathname, prefix, strlen(prefix)) == 0) {
+	if (memcmp(request->pathname, "/api/", 5) == 0) {
 		return;
 	}
 

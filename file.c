@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 void file(const char *file_path, Response *response) {
-	char buffer[sizeof(response->body)] = {0};
+	char buffer[sizeof(response->body)];
 
 	int file_fd = open(file_path, O_RDONLY);
 	if (file_fd == -1) {
@@ -40,7 +40,7 @@ void file(const char *file_path, Response *response) {
 	}
 
 	debug("sending file %s\n", file_path);
-	sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
+	response->header_len = (size_t)sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
 	memcpy(response->body, buffer, bytes_read);
 	response->body_len += (size_t)bytes_read;
 
