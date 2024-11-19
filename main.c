@@ -22,9 +22,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
-	if (db_error != 0) {
+	if (db_error != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		fatal("failed to open %s\n", database_file);
+		return EXIT_FAILURE;
+	}
+
+	int exec_error = sqlite3_exec(database, "pragma foreign_keys = on;", NULL, NULL, NULL);
+	if (exec_error != SQLITE_OK) {
+		error("%s\n", sqlite3_errmsg(database));
+		fatal("failed to enforce foreign key constraints\n");
 		return EXIT_FAILURE;
 	}
 
