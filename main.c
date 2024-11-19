@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
-		char request_buffer[8192] = {0};
+		char request_buffer[12288] = {0};
 		ssize_t bytes_received = recv(client_sock, request_buffer, sizeof(request_buffer), 0);
 
 		if (bytes_received == -1) {
@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
 			handle(&reqs, &resp);
 		}
 
-		char response_buffer[8192] = {0};
+		char response_buffer[12288] = {0};
 		size_t response_length = response(&response_buffer, &resp);
 
 		struct timespec stop;

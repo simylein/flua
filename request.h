@@ -3,13 +3,13 @@
 
 #pragma once
 typedef struct Request {
-	char method[8];
-	char pathname[64];
-	char search[128];
+	char method[16];
+	char pathname[128];
+	char search[256];
 	char protocol[16];
-	char header[1024];
-	char body[6144];
+	char header[2048];
+	char body[8192];
 	size_t body_len;
 } Request;
 
-void request(char (*buffer)[8192], ssize_t length, Request *req, Response *res);
+void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res);
