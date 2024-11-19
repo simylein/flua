@@ -14,12 +14,14 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
-			if (strlen(request->search) == 0) {
-				response->status = 200;
-				file("home.html", response);
-			} else {
+
+			if (strlen(request->search) != 0) {
 				response->status = 400;
+				goto respond;
 			}
+
+			response->status = 200;
+			file("home.html", response);
 		}
 	}
 
@@ -27,12 +29,14 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
-			if (strlen(request->search) == 0) {
-				response->status = 200;
-				file("signin.html", response);
-			} else {
+
+			if (strlen(request->search) != 0) {
 				response->status = 400;
+				goto respond;
 			}
+
+			response->status = 200;
+			file("signin.html", response);
 		}
 	}
 
@@ -40,12 +44,14 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
-			if (strlen(request->search) == 0) {
-				response->status = 200;
-				file("signup.html", response);
-			} else {
+
+			if (strlen(request->search) != 0) {
 				response->status = 400;
+				goto respond;
 			}
+
+			response->status = 200;
+			file("signup.html", response);
 		}
 	}
 
