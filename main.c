@@ -96,6 +96,8 @@ int main(int argc, char *argv[]) {
 		struct Response resp;
 
 		request(&request_buffer, bytes_received, &reqs, &resp);
+		trace("method %zub pathname %zub search %zub header %zub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
+					reqs.header_len, reqs.body_len);
 		req("%s %s %s\n", reqs.method, reqs.pathname, human_bytes((size_t)bytes_received));
 
 		if (resp.status == 0) {
@@ -121,6 +123,7 @@ int main(int argc, char *argv[]) {
 			goto cleanup;
 		}
 
+		trace("head %zub header %zub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 	cleanup:

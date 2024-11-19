@@ -16,6 +16,7 @@ void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res)
 	req->body_len = 0;
 
 	res->status = 0;
+	res->head_len = 0;
 	res->header[0] = '\0';
 	res->header_len = 0;
 	res->body_len = 0;
