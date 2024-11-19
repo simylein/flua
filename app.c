@@ -99,18 +99,32 @@ void handle(Request *request, Response *response) {
 		pathname_found = 1;
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
+
+			char *bearer_start = strstr(request->header, "bearer=");
+			if (bearer_start == NULL) {
+				response->status = 401;
+				goto respond;
+			}
+
+			char user_id[33];
+			if (sscanf(bearer_start, "bearer=%32s\r\n", user_id) != 1) {
+				response->status = 401;
+				goto respond;
+			}
+
 			char year[5];
-			// TODO: do not hardcode user id
-			int user_id = 1;
 			if (sscanf(request->search, "year=%4s", year) == 1) {
 				response->status = 200;
-				find_flights(year, user_id, response);
-			} else {
-				response->status = 200;
-				find_flight_years(user_id, response);
+				find_flights(user_id, year, response);
+				goto respond;
 			}
+
+			response->status = 200;
+			find_flight_years(user_id, response);
 		}
 	}
+
+respond:
 
 	if (pathname_found == 0 && method_found == 0) {
 		response->status = 404;
@@ -123,6 +137,7 @@ void handle(Request *request, Response *response) {
 	if (memcmp(request->pathname, prefix, strlen(prefix)) == 0) {
 		return;
 	}
+
 	if (response->status == 400) {
 		file("400.html", response);
 	}
