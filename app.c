@@ -157,6 +157,9 @@ respond:
 	if (response->status == 400) {
 		file("400.html", response);
 	}
+	if (response->status == 401) {
+		file("401.html", response);
+	}
 	if (response->status == 403) {
 		file("403.html", response);
 	}
