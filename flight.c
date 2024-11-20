@@ -22,8 +22,8 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 	}
 
 	const size_t user_uuid_len = strlen(user_uuid);
-	const unsigned char *user_id = binary_uuid(user_uuid, user_uuid_len);
-	if (user_id == NULL) {
+	unsigned char user_id[16];
+	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
@@ -81,8 +81,8 @@ void find_flight_years(char *user_uuid, Response *response) {
 	}
 
 	const size_t user_uuid_len = strlen(user_uuid);
-	const unsigned char *user_id = binary_uuid(user_uuid, user_uuid_len);
-	if (user_id == NULL) {
+	unsigned char user_id[16];
+	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;

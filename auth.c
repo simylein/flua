@@ -26,8 +26,8 @@ void user_signin(char *username, char *password, Response *response) {
 	if (result == SQLITE_ROW) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
 		const int id_size = sqlite3_column_bytes(stmt, 0);
-		const char *uuid = human_uuid(id, id_size);
-		if (uuid == NULL) {
+		char uuid[33];
+		if (human_uuid(&uuid, id, id_size) == -1) {
 			error("failed to convert uuid to hex\n");
 			response->status = 500;
 			goto cleanup;
@@ -71,8 +71,8 @@ void user_signup(char *username, char *password, Response *response) {
 	if (result == SQLITE_ROW) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
 		const int id_size = sqlite3_column_bytes(stmt, 0);
-		const char *uuid = human_uuid(id, id_size);
-		if (uuid == NULL) {
+		char uuid[33];
+		if (human_uuid(&uuid, id, id_size) == -1) {
 			error("failed to convert uuid to hex\n");
 			response->status = 500;
 			goto cleanup;
