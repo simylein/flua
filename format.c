@@ -1,35 +1,31 @@
 #include <stdio.h>
 #include <time.h>
 
-char *human_duration(struct timespec *start, struct timespec *stop) {
+void human_duration(char (*buffer)[8], struct timespec *start, struct timespec *stop) {
 	time_t start_nanoseconds = start->tv_sec * 1000000000 + start->tv_nsec;
 	time_t stop_nanoseconds = stop->tv_sec * 1000000000 + stop->tv_nsec;
 	time_t nanoseconds = stop_nanoseconds - start_nanoseconds;
-	static char buffer[8];
 	if (nanoseconds < 1000) {
-		sprintf(buffer, "%ldns", nanoseconds);
+		sprintf(*buffer, "%ldns", nanoseconds);
 	} else if (nanoseconds < 1000000) {
-		sprintf(buffer, "%ldus", nanoseconds / 1000);
+		sprintf(*buffer, "%ldus", nanoseconds / 1000);
 	} else if (nanoseconds < 1000000000) {
-		sprintf(buffer, "%ldms", nanoseconds / 1000000);
+		sprintf(*buffer, "%ldms", nanoseconds / 1000000);
 	} else {
-		sprintf(buffer, "%lds", nanoseconds / 1000000000);
+		sprintf(*buffer, "%lds", nanoseconds / 1000000000);
 	}
-	return buffer;
 }
 
-char *human_bytes(size_t bytes) {
-	static char buffer[8];
+void human_bytes(char (*buffer)[8], size_t bytes) {
 	if (bytes < 1000) {
-		sprintf(buffer, "%ldb", bytes);
+		sprintf(*buffer, "%ldb", bytes);
 	} else if (bytes < 1000000) {
-		sprintf(buffer, "%ldkb", bytes / 1000);
+		sprintf(*buffer, "%ldkb", bytes / 1000);
 	} else if (bytes < 1000000000) {
-		sprintf(buffer, "%ldmb", bytes / 1000000);
+		sprintf(*buffer, "%ldmb", bytes / 1000000);
 	} else {
-		sprintf(buffer, "%ldgb", bytes / 1000000000);
+		sprintf(*buffer, "%ldgb", bytes / 1000000000);
 	}
-	return buffer;
 }
 
 int human_uuid(char (*buffer)[33], const unsigned char *binary_uuid, const int binary_uuid_size) {

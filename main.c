@@ -95,10 +95,13 @@ int main(int argc, char *argv[]) {
 		struct Request reqs;
 		struct Response resp;
 
+		char bytes_buffer[8];
+		human_bytes(&bytes_buffer, (size_t)bytes_received);
+
 		request(&request_buffer, bytes_received, &reqs, &resp);
 		trace("method %zub pathname %zub search %zub header %zub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
 					reqs.header_len, reqs.body_len);
-		req("%s %s %s\n", reqs.method, reqs.pathname, human_bytes((size_t)bytes_received));
+		req("%s %s %s\n", reqs.method, reqs.pathname, bytes_buffer);
 
 		if (resp.status == 0) {
 			handle(&reqs, &resp);
@@ -110,7 +113,11 @@ int main(int argc, char *argv[]) {
 		struct timespec stop;
 		clock_gettime(CLOCK_MONOTONIC, &stop);
 
-		res("%d %s %s\n", resp.status, human_duration(&start, &stop), human_bytes(response_length));
+		char duration_buffer[8];
+		human_duration(&duration_buffer, &start, &stop);
+		human_bytes(&bytes_buffer, response_length);
+
+		res("%d %s %s\n", resp.status, duration_buffer, bytes_buffer);
 		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
 
 		if (bytes_sent == -1) {
