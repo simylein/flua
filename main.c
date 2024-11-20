@@ -118,6 +118,7 @@ int main(int argc, char *argv[]) {
 		human_bytes(&bytes_buffer, response_length);
 
 		res("%d %s %s\n", resp.status, duration_buffer, bytes_buffer);
+		trace("head %zub header %zub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 		ssize_t bytes_sent = send(client_sock, response_buffer, response_length, 0);
 
 		if (bytes_sent == -1) {
@@ -130,7 +131,6 @@ int main(int argc, char *argv[]) {
 			goto cleanup;
 		}
 
-		trace("head %zub header %zub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 		trace("sent %zd bytes to %s:%d\n", bytes_sent, inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
 
 	cleanup:
