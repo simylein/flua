@@ -21,15 +21,14 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 		goto cleanup;
 	}
 
-	const size_t user_uuid_len = strlen(user_uuid);
 	unsigned char user_id[16];
-	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
+	if (hex_to_bin(user_id, sizeof(user_id), user_uuid, strlen(user_uuid)) == -1) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
 	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
 
 	while (1) {
@@ -80,15 +79,14 @@ void find_flight_years(char *user_uuid, Response *response) {
 		goto cleanup;
 	}
 
-	const size_t user_uuid_len = strlen(user_uuid);
 	unsigned char user_id[16];
-	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
+	if (hex_to_bin(user_id, sizeof(user_id), user_uuid, strlen(user_uuid)) == -1) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
 
 	while (1) {
 		int result = sqlite3_step(stmt);
@@ -133,26 +131,24 @@ void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64
 		goto cleanup;
 	}
 
-	const size_t hex_hash_len = strlen(hex_hash);
 	unsigned char hash[8];
-	if (binary_hash(&hash, hex_hash, hex_hash_len) == -1) {
+	if (hex_to_bin(hash, sizeof(hash), hex_hash, strlen(hex_hash)) == -1) {
 		error("failed to convert hash to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	const size_t user_uuid_len = strlen(user_uuid);
 	unsigned char user_id[16];
-	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
+	if (hex_to_bin(user_id, sizeof(user_id), user_uuid, strlen(user_uuid)) == -1) {
 		error("failed to convert uuid to binary\n");
 		response->status = 500;
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, hash, (int)hex_hash_len / 2, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, hash, sizeof(hash), SQLITE_STATIC);
 	sqlite3_bind_int64(stmt, 2, (int64_t)starts_at);
 	sqlite3_bind_int64(stmt, 3, (int64_t)ends_at);
-	sqlite3_bind_blob(stmt, 4, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 4, user_id, sizeof(user_id), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_DONE) {

@@ -28,46 +28,30 @@ void human_bytes(char (*buffer)[8], size_t bytes) {
 	}
 }
 
-int human_uuid(char (*buffer)[33], const unsigned char *binary_uuid, const int binary_uuid_size) {
-	if (binary_uuid_size != (sizeof(*buffer) - 1) / 2) {
+int bin_to_hex(char *buffer, const size_t buffer_size, const unsigned char *bin, const int bin_size) {
+	if (bin_size != (buffer_size - 1) / 2) {
 		return -1;
 	}
 	size_t index = 0;
-	while (index < (sizeof(*buffer) - 1) / 2) {
-		sprintf(*buffer + index * 2, "%02x", binary_uuid[index]);
+	while (index < (buffer_size - 1) / 2) {
+		sprintf(buffer + index * 2, "%02x", bin[index]);
 		index++;
 	}
-	(*buffer)[index * 2] = '\0';
+	buffer[index * 2] = '\0';
 	return 0;
 }
 
-int binary_uuid(unsigned char (*buffer)[16], const char *hex_uuid, const size_t hex_uuid_size) {
-	if (hex_uuid_size != sizeof(*buffer) * 2) {
+int hex_to_bin(unsigned char *buffer, const size_t buffer_size, const char *hex, const size_t hex_size) {
+	if (hex_size != buffer_size * 2) {
 		return -1;
 	}
 	size_t index = 0;
-	while (index < sizeof(*buffer)) {
+	while (index < buffer_size) {
 		unsigned int byte;
-		if (sscanf(hex_uuid + index * 2, "%2x", &byte) != 1) {
+		if (sscanf(hex + index * 2, "%2x", &byte) != 1) {
 			return -1;
 		}
-		(*buffer)[index] = (unsigned char)byte;
-		index++;
-	}
-	return 0;
-}
-
-int binary_hash(unsigned char (*buffer)[8], const char *hex_hash, const size_t hex_hash_size) {
-	if (hex_hash_size != sizeof(*buffer) * 2) {
-		return -1;
-	}
-	size_t index = 0;
-	while (index < sizeof(*buffer)) {
-		unsigned int byte;
-		if (sscanf(hex_hash + index * 2, "%2x", &byte) != 1) {
-			return -1;
-		}
-		(*buffer)[index] = (unsigned char)byte;
+		buffer[index] = (unsigned char)byte;
 		index++;
 	}
 	return 0;
