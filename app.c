@@ -116,14 +116,8 @@ void handle(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			char *bearer_start = strstr(request->header, "bearer=");
-			if (bearer_start == NULL) {
-				response->status = 401;
-				goto respond;
-			}
-
 			char user_id[33];
-			if (sscanf(bearer_start, "bearer=%32s\r\n", user_id) != 1) {
+			if (authenticate(request, &user_id) == -1) {
 				response->status = 401;
 				goto respond;
 			}

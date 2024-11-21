@@ -1,9 +1,23 @@
 #include "database.h"
 #include "format.h"
 #include "logger.h"
+#include "request.h"
 #include "response.h"
 #include <sqlite3.h>
 #include <string.h>
+
+int authenticate(Request *request, char (*buffer)[33]) {
+	char *bearer_start = strstr(request->header, "bearer=");
+	if (bearer_start == NULL) {
+		return -1;
+	}
+
+	if (sscanf(bearer_start, "bearer=%32s\r\n", *buffer) != 1) {
+		return -1;
+	}
+
+	return 0;
+}
 
 void user_signin(char *username, char *password, Response *response) {
 	info("user %s signing in\n", username);
