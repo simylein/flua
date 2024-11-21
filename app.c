@@ -132,6 +132,33 @@ void handle(Request *request, Response *response) {
 			response->status = 200;
 			find_flight_years(user_id, response);
 		}
+
+		if (strcmp(request->method, "post") == 0) {
+			method_found = 1;
+
+			if (request->search_len != 0) {
+				response->status = 400;
+				goto respond;
+			}
+
+			char user_id[33];
+			if (authenticate(request, &user_id) == -1) {
+				response->status = 401;
+				goto respond;
+			}
+
+			char hash[17];
+			uint64_t starts_at;
+			uint64_t ends_at;
+
+			if (sscanf(request->body, "hash=%16[^&]&starts_at=%lld&ends_at=%lld", hash, &starts_at, &ends_at) != 3) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 201;
+			create_flight(user_id, hash, starts_at, ends_at, response);
+		}
 	}
 
 respond:

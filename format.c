@@ -56,3 +56,19 @@ int binary_uuid(unsigned char (*buffer)[16], const char *hex_uuid, const size_t 
 	}
 	return 0;
 }
+
+int binary_hash(unsigned char (*buffer)[8], const char *hex_hash, const size_t hex_hash_size) {
+	if (hex_hash_size != sizeof(*buffer) * 2) {
+		return -1;
+	}
+	size_t index = 0;
+	while (index < sizeof(*buffer)) {
+		unsigned int byte;
+		if (sscanf(hex_hash + index * 2, "%2x", &byte) != 1) {
+			return -1;
+		}
+		(*buffer)[index] = (unsigned char)byte;
+		index++;
+	}
+	return 0;
+}

@@ -25,6 +25,7 @@ create table user (
 );
 create table flight (
   id BLOB NOT NULL PRIMARY KEY,
+  hash BLOB NOT NULL UNIQUE,
   starts_at DATETIME NOT NULL,
   ends_at DATETIME NOT NULL,
   user_id BLOB NOT NULL,

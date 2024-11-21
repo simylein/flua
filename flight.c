@@ -118,3 +118,56 @@ partial:
 cleanup:
 	sqlite3_finalize(stmt);
 }
+
+void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64_t ends_at, Response *response) {
+	info("creating new flight\n");
+
+	sqlite3_stmt *stmt;
+
+	const char *sql = "insert into flight (id, hash, starts_at, ends_at, user_id) values (randomblob(16), ?, ?, ?, ?)";
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("%s\n", sqlite3_errmsg(database));
+		error("failed to prepare statement\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	const size_t hex_hash_len = strlen(hex_hash);
+	unsigned char hash[8];
+	if (binary_hash(&hash, hex_hash, hex_hash_len) == -1) {
+		error("failed to convert hash to binary\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	const size_t user_uuid_len = strlen(user_uuid);
+	unsigned char user_id[16];
+	if (binary_uuid(&user_id, user_uuid, user_uuid_len) == -1) {
+		error("failed to convert uuid to binary\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, hash, (int)hex_hash_len / 2, SQLITE_STATIC);
+	sqlite3_bind_int64(stmt, 2, (int64_t)starts_at);
+	sqlite3_bind_int64(stmt, 3, (int64_t)ends_at);
+	sqlite3_bind_blob(stmt, 4, user_id, (int)user_uuid_len / 2, SQLITE_STATIC);
+
+	int result = sqlite3_step(stmt);
+	if (result == SQLITE_DONE) {
+		goto cleanup;
+	} else if (result == SQLITE_CONSTRAINT) {
+		warn("flight %s already exists\n", hex_hash);
+		response->status = 409;
+		goto cleanup;
+	} else {
+		error("%s\n", sqlite3_errmsg(database));
+		error("failed to execute statement\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+cleanup:
+	sqlite3_finalize(stmt);
+}
