@@ -35,8 +35,8 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const int64_t starts_at = sqlite3_column_int64(stmt, 0);
-			const int64_t ends_at = sqlite3_column_int64(stmt, 1);
+			const u_int64_t starts_at = (u_int64_t)sqlite3_column_int64(stmt, 0);
+			const u_int64_t ends_at = (u_int64_t)sqlite3_column_int64(stmt, 1);
 			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
@@ -93,7 +93,7 @@ void find_flight_years(char *user_uuid, Response *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const int year = sqlite3_column_int(stmt, 0);
+			const u_int16_t year = (u_int16_t)sqlite3_column_int(stmt, 0);
 			if (response->body_len + sizeof(year) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
