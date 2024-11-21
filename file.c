@@ -7,6 +7,8 @@
 #include <unistd.h>
 
 void file(const char *file_path, Response *response) {
+	info("sending file %s\n", file_path);
+
 	int file_fd = open(file_path, O_RDONLY);
 	if (file_fd == -1) {
 		error("%s\n", errno_str());
@@ -37,7 +39,6 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
-	debug("sending file %s\n", file_path);
 	response->header_len = (size_t)sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
 	response->body_len += (size_t)bytes_read;
 
