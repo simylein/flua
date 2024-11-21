@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void handle(Request *request, Response *response) {
+void route(Request *request, Response *response) {
 	int method_found = 0;
 	int pathname_found = 0;
 

@@ -1,4 +1,3 @@
-#include "app.h"
 #include "config.h"
 #include "database.h"
 #include "error.h"
@@ -6,6 +5,7 @@
 #include "logger.h"
 #include "request.h"
 #include "response.h"
+#include "router.h"
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 		req("%s %s %s\n", reqs.method, reqs.pathname, bytes_buffer);
 
 		if (resp.status == 0) {
-			handle(&reqs, &resp);
+			route(&reqs, &resp);
 		}
 
 		char response_buffer[12288];
