@@ -24,7 +24,7 @@ void user_signin(char *username, char *password, Response *response) {
 
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select id from user where username = ? and password = ? returning id";
+	const char *sql = "select id from user where username = ? and password = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
