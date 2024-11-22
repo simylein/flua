@@ -19,7 +19,7 @@ int authenticate(Request *request, char (*buffer)[33]) {
 	return 0;
 }
 
-void user_signin(char *username, char *password, Response *response) {
+void create_signin(char *username, char *password, Response *response) {
 	info("user %s signing in\n", username);
 
 	sqlite3_stmt *stmt;
@@ -64,7 +64,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void user_signup(char *username, char *password, Response *response) {
+void create_signup(char *username, char *password, Response *response) {
 	info("user %s signing up\n", username);
 
 	sqlite3_stmt *stmt;

@@ -79,7 +79,7 @@ void route(Request *request, Response *response) {
 			}
 
 			response->status = 201;
-			user_signin(username, password, response);
+			create_signin(username, password, response);
 		}
 	}
 
@@ -107,7 +107,7 @@ void route(Request *request, Response *response) {
 			}
 
 			response->status = 201;
-			user_signup(username, password, response);
+			create_signup(username, password, response);
 		}
 	}
 
