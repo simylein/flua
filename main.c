@@ -1,10 +1,10 @@
-#include "app.h"
 #include "config.h"
 #include "database.h"
 #include "error.h"
 #include "logger.h"
-#include <sqlite3.h>
+#include "thread.h"
 #include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
 	int cf_errors = configure(argc, argv);
@@ -65,7 +65,35 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
+	pthread_t *threads = malloc((size_t)workers * sizeof(pthread_t));
+	if (threads == NULL) {
+		error("%s\n", errno_str());
+		fatal("failed to allocate for threads\n");
+		return EXIT_FAILURE;
+	}
+
+	queue.tasks = malloc((size_t)workers * 2 * sizeof(Task));
+	if (threads == NULL) {
+		error("%s\n", errno_str());
+		fatal("failed to allocate for tasks\n");
+		return EXIT_FAILURE;
+	}
+
+	for (int index = 0; index < workers; index++) {
+		trace("spawning worker thread %d\n", index);
+		pthread_create(&threads[index], NULL, thread, (void *)(intptr_t)index);
+	}
+
 	while (1) {
+		pthread_mutex_lock(&queue.lock);
+
+		while (queue.size >= (size_t)workers * 2) {
+			warn("waiting for queue size to decrease\n");
+			pthread_cond_wait(&queue.available, &queue.lock);
+		}
+
+		pthread_mutex_unlock(&queue.lock);
+
 		struct sockaddr_in client_addr;
 		int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
@@ -75,6 +103,15 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 
-		handle(&client_sock, &client_addr);
+		pthread_mutex_lock(&queue.lock);
+
+		queue.tasks[queue.back].client_sock = client_sock;
+		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
+		queue.back = (queue.back + 1) % ((size_t)workers * 2);
+		queue.size++;
+		trace("main thread increased queue size to %zu\n", queue.size);
+
+		pthread_cond_signal(&queue.filled);
+		pthread_mutex_unlock(&queue.lock);
 	}
 }
