@@ -23,6 +23,7 @@ create table user (
   username TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL
 );
+create index index_username on user(username);
 create table flight (
   id BLOB NOT NULL PRIMARY KEY,
   hash BLOB NOT NULL UNIQUE,
@@ -31,7 +32,6 @@ create table flight (
   user_id BLOB NOT NULL,
   foreign key (user_id) references user(id) on delete cascade
 );
-create index index_username on user(username);
 create index index_user_id on flight(user_id);
 create index index_starts_at on flight(starts_at);
 ```
