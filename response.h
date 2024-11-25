@@ -6,8 +6,8 @@ typedef struct Response {
 	size_t head_len;
 	char header[2048];
 	size_t header_len;
-	char body[8192];
+	char body[16384];
 	size_t body_len;
 } Response;
 
-size_t response(char (*buffer)[12288], Response *res);
+size_t response(char (*buffer)[20480], Response *res);

@@ -27,7 +27,7 @@ void null_init(Request *req, Response *res) {
 }
 
 void handle(int *client_sock, struct sockaddr_in *client_addr) {
-	char request_buffer[12288];
+	char request_buffer[20480];
 	ssize_t bytes_received = recv(*client_sock, request_buffer, sizeof(request_buffer), 0);
 
 	if (bytes_received == -1) {
@@ -61,7 +61,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 		route(&reqs, &resp);
 	}
 
-	char response_buffer[12288];
+	char response_buffer[20480];
 	size_t response_length = response(&response_buffer, &resp);
 
 	struct timespec stop;

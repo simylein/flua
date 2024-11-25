@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res) {
+void request(char (*buffer)[20480], ssize_t length, Request *req, Response *res) {
 	int stage = 0;
 	size_t index = 0;
 

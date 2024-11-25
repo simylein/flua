@@ -13,8 +13,8 @@ typedef struct Request {
 	size_t protocol_len;
 	char header[2048];
 	size_t header_len;
-	char body[8192];
+	char body[16384];
 	size_t body_len;
 } Request;
 
-void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res);
+void request(char (*buffer)[20480], ssize_t length, Request *req, Response *res);
