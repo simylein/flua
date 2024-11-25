@@ -90,6 +90,22 @@ void route(Request *request, Response *response) {
 		}
 	}
 
+	if (strcmp(request->pathname, "/auth.css") == 0) {
+		pathname_found = 1;
+
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+
+			if (request->search_len != 0) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 200;
+			file("auth.css", response);
+		}
+	}
+
 	if (strcmp(request->pathname, "/flight.css") == 0) {
 		pathname_found = 1;
 
