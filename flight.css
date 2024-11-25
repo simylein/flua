@@ -213,6 +213,11 @@
 		padding: 16px;
 	}
 }
+@media (min-width: 1280px) {
+	.xl\:gap-3 {
+		gap: 12px;
+	}
+}
 @media (prefers-color-scheme: dark) {
 	.dark\:text-white {
 		color: #ffffff;
