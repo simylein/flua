@@ -124,7 +124,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 201;
 		create_signin(username, password, response);
 	}
 
@@ -147,7 +146,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 201;
 		create_signup(username, password, response);
 	}
 
@@ -160,12 +158,10 @@ void route(Request *request, Response *response) {
 
 		char year[5];
 		if (sscanf(request->search, "year=%4s", year) == 1) {
-			response->status = 200;
 			find_flights(user_id, year, response);
 			goto respond;
 		}
 
-		response->status = 200;
 		find_flight_years(user_id, response);
 	}
 
@@ -190,7 +186,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 201;
 		create_flight(user_id, hash, starts_at, ends_at, response);
 	}
 

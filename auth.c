@@ -61,6 +61,8 @@ void create_signin(char *username, char *password, Response *response) {
 		goto cleanup;
 	}
 
+	response->status = 201;
+
 cleanup:
 	sqlite3_finalize(stmt);
 }
@@ -105,6 +107,8 @@ void create_signup(char *username, char *password, Response *response) {
 		response->status = 500;
 		goto cleanup;
 	}
+
+	response->status = 201;
 
 cleanup:
 	sqlite3_finalize(stmt);

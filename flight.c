@@ -47,6 +47,7 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 			memcpy(response->body + response->body_len, &ends_at, sizeof(ends_at));
 			response->body_len += sizeof(ends_at);
 		} else if (result == SQLITE_DONE) {
+			response->status = 200;
 			break;
 		} else {
 			error("%s\n", sqlite3_errmsg(database));
@@ -101,6 +102,7 @@ void find_flight_years(char *user_uuid, Response *response) {
 			memcpy(response->body + response->body_len, &year, sizeof(year));
 			response->body_len += sizeof(year);
 		} else if (result == SQLITE_DONE) {
+			response->status = 200;
 			break;
 		} else {
 			error("%s\n", sqlite3_errmsg(database));
@@ -153,6 +155,7 @@ void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_DONE) {
+		response->status = 201;
 		goto cleanup;
 	} else if (result == SQLITE_CONSTRAINT) {
 		warn("flight %.8s already exists\n", hex_hash);
