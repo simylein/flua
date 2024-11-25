@@ -30,7 +30,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("home.html", response);
 	}
 
@@ -40,7 +39,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("home.css", response);
 	}
 
@@ -50,7 +48,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("error.css", response);
 	}
 
@@ -60,7 +57,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("signin.html", response);
 	}
 
@@ -70,7 +66,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("signup.html", response);
 	}
 
@@ -80,7 +75,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("auth.css", response);
 	}
 
@@ -90,7 +84,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("flight.css", response);
 	}
 
@@ -100,7 +93,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("flight.js", response);
 	}
 
@@ -110,7 +102,6 @@ void route(Request *request, Response *response) {
 			goto respond;
 		}
 
-		response->status = 200;
 		file("upload.js", response);
 	}
 
@@ -214,7 +205,6 @@ void route(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			response->status = 200;
 			file("flight.html", response);
 		}
 	}

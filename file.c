@@ -59,6 +59,7 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
+	response->status = 200;
 	response->header_len = (size_t)sprintf(response->header, "content-type:%s\r\n", type(file_path));
 	response->header_len = (size_t)sprintf(response->header, "content-length:%zu\r\n", bytes_read);
 	response->header_len = (size_t)sprintf(response->header, "cache-control:max-age=%d\r\n\r\n", cache_ttl);
