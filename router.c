@@ -114,12 +114,14 @@ void route(Request *request, Response *response) {
 		char username[17];
 		char password[65];
 
+		request->body[request->body_len] = '\0';
+
 		if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
 			response->status = 400;
 			goto respond;
 		}
 
-		if (strlen(username) < 4 && strlen(password) < 8) {
+		if (strlen(username) < 4 || strlen(password) < 8) {
 			response->status = 400;
 			goto respond;
 		}
@@ -136,12 +138,14 @@ void route(Request *request, Response *response) {
 		char username[17];
 		char password[65];
 
+		request->body[request->body_len] = '\0';
+
 		if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
 			response->status = 400;
 			goto respond;
 		}
 
-		if (strlen(username) < 4 && strlen(password) < 8) {
+		if (strlen(username) < 4 || strlen(password) < 8) {
 			response->status = 400;
 			goto respond;
 		}
@@ -180,6 +184,8 @@ void route(Request *request, Response *response) {
 		char hash[33];
 		uint64_t starts_at;
 		uint64_t ends_at;
+
+		request->body[request->body_len] = '\0';
 
 		if (sscanf(request->body, "hash=%32s&starts_at=%lld&ends_at=%lld", hash, &starts_at, &ends_at) != 3) {
 			response->status = 400;
