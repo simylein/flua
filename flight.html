@@ -7,6 +7,7 @@
 		<title>Flight statistics</title>
 		<link rel="stylesheet" href="/flight.css" />
 		<script src="/flight.js" async></script>
+		<script src="/upload.js" async></script>
 	</head>
 	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="loadYears(); loadFlights();">
 		<main class="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 m-4 md:m-6 lg:m-8">
@@ -26,10 +27,7 @@
 					</button>
 				</div>
 				<button id="upload" class="flex items-center justify-center p-1 md:p-1.5 lg:p-2 border-none bg-blue-200 dark:bg-blue-800 cursor-pointer">
-					<label for="file-upload" class="cursor-pointer">
-						<p class="m-0 text-base font-normal text-black dark:text-white">Upload</p>
-						<progress class="hidden"></progress>
-					</label>
+					<label for="file-upload" class="text-base font-normal text-black dark:text-white cursor-pointer">Upload</label>
 					<input id="file-upload" type="file" class="hidden" accept=".igc" multiple onchange="uploadFlights(event)" />
 				</button>
 			</div>
