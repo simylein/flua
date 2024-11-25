@@ -3,6 +3,7 @@ int port;
 int backlog;
 int workers;
 
+int jwt_ttl;
 int cache_ttl;
 
 char *database_file;

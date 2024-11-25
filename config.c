@@ -7,6 +7,7 @@ int port = 2254;
 int backlog = 16;
 int workers = 4;
 
+int jwt_ttl = 2764800;
 int cache_ttl = 1382400;
 
 const char *database_file = "flua.sqlite";
@@ -139,6 +140,7 @@ int configure(int argc, char *argv[]) {
 			info("--port           -p   int between 1 and 65535            (%d)\n", port);
 			info("--backlog        -b   int between 1 and 256              (%d)\n", backlog);
 			info("--workers        -w   int between 1 and 64               (%d)\n", workers);
+			info("--jwt-ttl        -jt  int between 3600 and 15768000      (%d)\n", jwt_ttl);
 			info("--cache-ttl      -ct  int between 0 and 31536000         (%d)\n", cache_ttl);
 			info("--database-file  -df  path to sqlite database file       (%s)\n", database_file);
 			info("--log-level      -ll  trace debug info warn error panic  (%s)\n", human_log_level(log_level));
@@ -146,7 +148,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			return -1;
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.5.8\n");
+			info("flua flights version 0.5.9\n");
 			info("written by simylein in c\n");
 			return -1;
 		} else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
@@ -158,6 +160,9 @@ int configure(int argc, char *argv[]) {
 		} else if (strcmp(flag, "--workers") == 0 || strcmp(flag, "-w") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "workers", 1, 64, &workers);
+		} else if (strcmp(flag, "--jwt-ttl") == 0 || strcmp(flag, "-jt") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_int(arg, "jwt ttl", 3600, 15768000, &jwt_ttl);
 		} else if (strcmp(flag, "--cache-ttl") == 0 || strcmp(flag, "-ct") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "cache ttl", 0, 31536000, &cache_ttl);
