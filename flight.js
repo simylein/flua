@@ -275,7 +275,6 @@ const loadYears = async () => {
 			throw Error(response);
 		}
 		const data = await parseYears(response);
-		console.debug(data);
 		window.requestAnimationFrame(() => paintYears(data));
 	} catch {
 		window.requestAnimationFrame(() => erroredYears());
@@ -297,7 +296,6 @@ const loadFlights = async () => {
 			throw Error(response);
 		}
 		const data = await parseFlights(response);
-		console.debug(data);
 		window.requestAnimationFrame(() => paintFlights(data));
 		window.requestAnimationFrame(() => paintAirtime(data));
 	} catch {
