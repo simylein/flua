@@ -6,6 +6,25 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+char *type(const char *file_path) {
+	const char *extension = strstr(file_path, ".");
+	if (extension == NULL) {
+		error("file path %s has no extension\n", file_path);
+		return "text/unknown";
+	}
+	if (strcmp(extension, ".html") == 0) {
+		return "text/html";
+	}
+	if (strcmp(extension, ".css") == 0) {
+		return "text/css";
+	}
+	if (strcmp(extension, ".js") == 0) {
+		return "text/javascript";
+	}
+	error("unknown content type %s\n", extension);
+	return "text/unknown";
+}
+
 void file(const char *file_path, Response *response) {
 	info("sending file %s\n", file_path);
 
@@ -39,7 +58,8 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
-	response->header_len = (size_t)sprintf(response->header, "content-type:text/html\r\ncontent-length:%zu\r\n\r\n", bytes_read);
+	response->header_len =
+			(size_t)sprintf(response->header, "content-type:%s\r\ncontent-length:%zu\r\n\r\n", type(file_path), bytes_read);
 	response->body_len += (size_t)bytes_read;
 
 cleanup:
