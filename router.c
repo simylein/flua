@@ -26,6 +26,22 @@ void route(Request *request, Response *response) {
 		}
 	}
 
+	if (strcmp(request->pathname, "/error.css") == 0) {
+		pathname_found = 1;
+
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+
+			if (request->search_len != 0) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 200;
+			file("error.css", response);
+		}
+	}
+
 	if (strcmp(request->pathname, "/signin") == 0) {
 		pathname_found = 1;
 
