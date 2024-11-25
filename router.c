@@ -12,6 +12,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -27,6 +28,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/signin") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -42,6 +44,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/signup") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -57,6 +60,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/flight.css") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -72,6 +76,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/flight.js") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -87,6 +92,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/api/signin") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 
@@ -115,6 +121,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/api/signup") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "post") == 0) {
 			method_found = 1;
 
@@ -143,6 +150,7 @@ void route(Request *request, Response *response) {
 
 	if (strcmp(request->pathname, "/api/flight") == 0) {
 		pathname_found = 1;
+
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
@@ -188,6 +196,22 @@ void route(Request *request, Response *response) {
 
 			response->status = 201;
 			create_flight(user_id, hash, starts_at, ends_at, response);
+		}
+	}
+
+	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
+		for (size_t index = 0; index < request->pathname_len; index++) {
+			if (index != 0 && request->pathname[index] == '/') {
+				goto respond;
+			}
+		}
+
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+
+			response->status = 200;
+			file("flight.html", response);
 		}
 	}
 
