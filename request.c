@@ -3,24 +3,6 @@
 #include <string.h>
 
 void request(char (*buffer)[12288], ssize_t length, Request *req, Response *res) {
-	req->method[0] = '\0';
-	req->method_len = 0;
-	req->pathname[0] = '\0';
-	req->pathname_len = 0;
-	req->search[0] = '\0';
-	req->search_len = 0;
-	req->protocol[0] = '\0';
-	req->protocol_len = 0;
-	req->header[0] = '\0';
-	req->header_len = 0;
-	req->body_len = 0;
-
-	res->status = 0;
-	res->head_len = 0;
-	res->header[0] = '\0';
-	res->header_len = 0;
-	res->body_len = 0;
-
 	int stage = 0;
 	size_t index = 0;
 
