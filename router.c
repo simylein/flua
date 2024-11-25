@@ -237,7 +237,7 @@ void route(Request *request, Response *response) {
 			uint64_t starts_at;
 			uint64_t ends_at;
 
-			if (sscanf(request->body, "hash=%32[^&]&starts_at=%lld&ends_at=%lld", hash, &starts_at, &ends_at) != 3) {
+			if (sscanf(request->body, "hash=%32s&starts_at=%lld&ends_at=%lld", hash, &starts_at, &ends_at) != 3) {
 				response->status = 400;
 				goto respond;
 			}
