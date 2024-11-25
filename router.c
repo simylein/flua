@@ -55,6 +55,36 @@ void route(Request *request, Response *response) {
 		}
 	}
 
+	if (strcmp(request->pathname, "/flight.css") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+
+			if (request->search_len != 0) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 200;
+			file("flight.css", response);
+		}
+	}
+
+	if (strcmp(request->pathname, "/flight.js") == 0) {
+		pathname_found = 1;
+		if (strcmp(request->method, "get") == 0) {
+			method_found = 1;
+
+			if (request->search_len != 0) {
+				response->status = 400;
+				goto respond;
+			}
+
+			response->status = 200;
+			file("flight.js", response);
+		}
+	}
+
 	if (strcmp(request->pathname, "/api/signin") == 0) {
 		pathname_found = 1;
 		if (strcmp(request->method, "post") == 0) {
