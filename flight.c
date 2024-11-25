@@ -132,7 +132,7 @@ void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64
 		goto cleanup;
 	}
 
-	unsigned char hash[8];
+	unsigned char hash[16];
 	if (hex_to_bin(hash, sizeof(hash), hex_hash, strlen(hex_hash)) == -1) {
 		error("failed to convert hash to binary\n");
 		response->status = 500;
@@ -155,7 +155,7 @@ void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64
 	if (result == SQLITE_DONE) {
 		goto cleanup;
 	} else if (result == SQLITE_CONSTRAINT) {
-		warn("flight %s already exists\n", hex_hash);
+		warn("flight %.8s already exists\n", hex_hash);
 		response->status = 409;
 		goto cleanup;
 	} else {
