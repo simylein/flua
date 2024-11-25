@@ -16,7 +16,7 @@ const hashFile = async (content) => {
 	return hex.join('');
 };
 
-const uploadFlight = async (hash, startsAt, endsAt) => {
+const postFlight = async (hash, startsAt, endsAt) => {
 	const data = new FormData();
 	data.append('hash', hash.substring(0, 32));
 	data.append('starts_at', startsAt);
@@ -29,8 +29,8 @@ const uploadFlight = async (hash, startsAt, endsAt) => {
 			}
 		}
 		const response = await fetch('/api/flight', { method: 'post', body: data });
-		if (response.status >= 200 && response.status < 300) {
-			notification('success', 'Successfully uploaded flight');
+		if (response.status >= 200 && response.status <= 299) {
+			notification('success', `Successfully uploaded flight ${hash.substring(0, 8)}`);
 			return loadFlights();
 		}
 		throw response;
@@ -49,7 +49,6 @@ const uploadFlight = async (hash, startsAt, endsAt) => {
 const uploadFlights = async (event) => {
 	const store = upload.children[0].innerText;
 	upload.children[0].innerText = 'uploading...';
-	upload.classList.add('cursor-not-allowed');
 	upload.children[0].classList.add('cursor-not-allowed');
 	upload.children[1].disabled = true;
 	const files = Array.from(event.target.files);
@@ -57,10 +56,9 @@ const uploadFlights = async (event) => {
 		const content = await readFile(file);
 		const hash = await hashFile(content);
 		const data = parseIgcFile(content);
-		await uploadFlight(hash, data[0].time, data[data.length - 1].time);
+		await postFlight(hash, data[0].time, data[data.length - 1].time);
 	}
 	upload.children[0].innerText = store;
-	upload.classList.remove('cursor-not-allowed');
 	upload.children[0].classList.remove('cursor-not-allowed');
 	upload.children[1].disabled = false;
 };

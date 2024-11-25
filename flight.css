@@ -85,6 +85,9 @@
 .mb-1 {
 	margin-bottom: 4px;
 }
+.p-0 {
+	padding: 0px;
+}
 .p-1 {
 	padding: 4px;
 }

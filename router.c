@@ -105,6 +105,24 @@ void route(Request *request, Response *response) {
 		file("upload.js", response);
 	}
 
+	if (match(request, "get", "/notifications.css", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		file("notifications.css", response);
+	}
+
+	if (match(request, "get", "/notifications.js", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		file("notifications.js", response);
+	}
+
 	if (match(request, "post", "/api/signin", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
