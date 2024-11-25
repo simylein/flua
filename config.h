@@ -1,6 +1,9 @@
 int port;
+
 int backlog;
 int workers;
+
+int cache_ttl;
 
 char *database_file;
 

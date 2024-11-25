@@ -1,3 +1,4 @@
+#include "config.h"
 #include "error.h"
 #include "logger.h"
 #include "response.h"
@@ -58,8 +59,9 @@ void file(const char *file_path, Response *response) {
 		goto cleanup;
 	}
 
-	response->header_len =
-			(size_t)sprintf(response->header, "content-type:%s\r\ncontent-length:%zu\r\n\r\n", type(file_path), bytes_read);
+	response->header_len = (size_t)sprintf(response->header, "content-type:%s\r\n", type(file_path));
+	response->header_len = (size_t)sprintf(response->header, "content-length:%zu\r\n", bytes_read);
+	response->header_len = (size_t)sprintf(response->header, "cache-control:max-age=%d\r\n\r\n", cache_ttl);
 	response->body_len += (size_t)bytes_read;
 
 cleanup:
