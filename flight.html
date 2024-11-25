@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Flight statistics for paragliders including igc file upload" />
+		<title>Flight statistics</title>
+		<link rel="stylesheet" href="/flight.css" />
+		<script src="/flight.js" async></script>
+	</head>
+	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="loadYears(); loadFlights();">
+		<main class="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 m-4 md:m-6 lg:m-8">
+			<div class="w-full max-w-screen-2xl flex gap-4 md:gap-6 lg:gap-8 justify-between">
+				<div id="years" class="flex gap-2 md:gap-3 lg:gap-4 overflow-x-scroll">
+					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
+						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					</button>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
+						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					</button>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
+						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					</button>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
+						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					</button>
+				</div>
+				<button id="upload" class="flex items-center justify-center p-1 md:p-1.5 lg:p-2 border-none bg-blue-200 dark:bg-blue-800 cursor-pointer">
+					<label for="file-upload" class="cursor-pointer">
+						<p class="m-0 text-base font-normal text-black dark:text-white">Upload</p>
+						<progress class="hidden"></progress>
+					</label>
+					<input id="file-upload" type="file" class="hidden" accept=".igc" multiple onchange="uploadFlights(event)" />
+				</button>
+			</div>
+			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Flights</h2>
+						<p id="flight-count" class="w-10 h-6 m-0 text-base font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+					</div>
+					<div style="grid-template-columns: auto 1fr; grid-template-rows: auto auto" class="grid gap-1">
+						<div id="flight-scale" class="flex flex-col items-end justify-end text-xs">
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+						</div>
+						<div class="relative flex flex-col">
+							<div class="absolute w-full h-full">
+								<div id="flight-graph" class="flex justify-between w-full h-full gap-1 sm:gap-2 md:gap-1 lg:gap-2 xl:gap-3">
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 17%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 42%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 69%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 82%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 73%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 56%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 37%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 16%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+								</div>
+							</div>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+						</div>
+						<div></div>
+						<div class="w-full flex text-xs">
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jan</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Feb</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">F</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Mar</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">M</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Apr</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">A</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">May</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">M</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jun</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jul</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Aug</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">A</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Sep</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">S</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Oct</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">O</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Nov</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">N</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Dec</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">D</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Airtime</h2>
+						<p id="airtime-count" class="w-10 h-6 m-0 text-base font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+					</div>
+					<div style="grid-template-columns: auto 1fr; grid-template-rows: auto auto" class="grid gap-1">
+						<div id="airtime-scale" class="flex flex-col items-end justify-end text-xs">
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-4 mt-4 text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+						</div>
+						<div class="relative flex flex-col">
+							<div class="absolute w-full h-full">
+								<div id="airtime-graph" class="flex justify-between w-full h-full gap-1 sm:gap-2 md:gap-1 lg:gap-2 xl:gap-3">
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 17%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 42%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 69%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 82%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 73%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 56%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 37%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 16%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+									<div class="flex flex-col-reverse w-full h-full">
+										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+									</div>
+								</div>
+							</div>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+						</div>
+						<div></div>
+						<div class="w-full flex text-xs">
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jan</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Feb</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">F</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Mar</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">M</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Apr</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">A</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">May</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">M</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jun</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Jul</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">J</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Aug</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">A</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Sep</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">S</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Oct</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">O</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Nov</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">N</label>
+							</div>
+							<div class="m-auto">
+								<label class="hidden sm:block text-neutral-500 dark:text-neutral-400">Dec</label>
+								<label class="sm:hidden text-neutral-500 dark:text-neutral-400">D</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>
