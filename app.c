@@ -6,6 +6,26 @@
 #include "router.h"
 #include <unistd.h>
 
+void null_init(Request *req, Response *res) {
+	req->method[0] = '\0';
+	req->method_len = 0;
+	req->pathname[0] = '\0';
+	req->pathname_len = 0;
+	req->search[0] = '\0';
+	req->search_len = 0;
+	req->protocol[0] = '\0';
+	req->protocol_len = 0;
+	req->header[0] = '\0';
+	req->header_len = 0;
+	req->body_len = 0;
+
+	res->status = 0;
+	res->head_len = 0;
+	res->header[0] = '\0';
+	res->header_len = 0;
+	res->body_len = 0;
+}
+
 void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[12288];
 	ssize_t bytes_received = recv(*client_sock, request_buffer, sizeof(request_buffer), 0);
@@ -27,6 +47,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 
 	struct Request reqs;
 	struct Response resp;
+	null_init(&reqs, &resp);
 
 	char bytes_buffer[8];
 	human_bytes(&bytes_buffer, (size_t)bytes_received);
