@@ -1,0 +1,23 @@
+.font-sans {
+	font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+.min-h-dvh {
+	min-height: 100dvh;
+}
+.m-0 {
+	margin: 0px;
+}
+.text-black {
+	color: #000000;
+}
+.bg-white {
+	background-color: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+	.dark\:text-white {
+		color: #ffffff;
+	}
+	.dark\:bg-black {
+		background-color: #000000;
+	}
+}
