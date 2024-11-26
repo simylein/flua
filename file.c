@@ -46,7 +46,7 @@ void file(const char *file_path, Response *response) {
 	}
 
 	if ((size_t)file_stat.st_size > sizeof(response->body)) {
-		error("file %s exceeds buffer\n", file_path);
+		error("file %s size %lld exceeds buffer\n", file_path, file_stat.st_size);
 		response->status = 500;
 		goto cleanup;
 	}
