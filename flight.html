@@ -6,10 +6,10 @@
 		<meta name="description" content="Flight statistics for paragliders including igc file upload" />
 		<title>Flight statistics</title>
 		<link rel="stylesheet" href="/flight.css" />
-		<link rel="stylesheet" href="/notifications.css" />
-		<script src="/flight.js" async></script>
-		<script src="/upload.js" async></script>
-		<script src="/notifications.js" async></script>
+		<link rel="stylesheet" href="/notifications.css" media="print" onload="this.media='all'" />
+		<script src="/flight.js" defer></script>
+		<script src="/upload.js" defer></script>
+		<script src="/notifications.js" defer></script>
 	</head>
 	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="loadYears(); loadFlights();">
 		<main class="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 m-4 md:m-6 lg:m-8">
