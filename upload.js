@@ -17,10 +17,7 @@ const hashFile = async (content) => {
 };
 
 const postFlight = async (hash, startsAt, endsAt) => {
-	const data = new FormData();
-	data.append('hash', hash.substring(0, 32));
-	data.append('starts_at', startsAt);
-	data.append('ends_at', endsAt);
+	const data = new Blob([`hash=${hash.substring(0, 32)}&starts_at=${startsAt}&ends_at=${endsAt}`]);
 	try {
 		if (window.location.origin.startsWith('http://localhost')) {
 			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -28,7 +25,7 @@ const postFlight = async (hash, startsAt, endsAt) => {
 				throw Error('explicit develop failure');
 			}
 		}
-		const response = await fetch('/api/flight', { method: 'post', body: data });
+		const response = await fetch('/api/flight', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
 		if (response.status >= 200 && response.status <= 299) {
 			notification('success', `Successfully uploaded flight ${hash.substring(0, 8)}`);
 			return loadFlights();

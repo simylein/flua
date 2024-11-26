@@ -17,9 +17,7 @@ const { setValue, setTouched, handleSubmit } = formik(
 		},
 	},
 	async (values) => {
-		const data = new FormData();
-		data.append('username', values.username);
-		data.append('password', values.password);
+		const data = new Blob([`username=${values.username}&password=${values.password}`]);
 		try {
 			if (window.location.origin.startsWith('http://localhost')) {
 				await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -27,7 +25,7 @@ const { setValue, setTouched, handleSubmit } = formik(
 					throw Error('explicit develop failure');
 				}
 			}
-			const response = await fetch('/api/signup', { method: 'post', body: data });
+			const response = await fetch('/api/signup', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
 			if (response.status >= 200 && response.status <= 299) {
 				notification('success', `Successfully signed up as ${values.username}`);
 				window.location.href = `/${values.username}`;
