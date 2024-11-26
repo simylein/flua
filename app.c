@@ -4,29 +4,9 @@
 #include "request.h"
 #include "response.h"
 #include "router.h"
+#include "utils.h"
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-
-void null_init(Request *req, Response *res) {
-	req->method[0] = '\0';
-	req->method_len = 0;
-	req->pathname[0] = '\0';
-	req->pathname_len = 0;
-	req->search[0] = '\0';
-	req->search_len = 0;
-	req->protocol[0] = '\0';
-	req->protocol_len = 0;
-	req->header[0] = '\0';
-	req->header_len = 0;
-	req->body_len = 0;
-
-	res->status = 0;
-	res->head_len = 0;
-	res->header[0] = '\0';
-	res->header_len = 0;
-	res->body_len = 0;
-}
 
 void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[20480];
@@ -47,15 +27,14 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 
 	packets_received++;
 
-	char *length_index = strcasestr(request_buffer, "content-length:");
-	char *body_index = strcasestr(request_buffer, "\r\n\r\n");
+	const char *length_index = strncasestr(request_buffer, (size_t)bytes_received, "content-length:", 15);
+	const char *body_index = strncasestr(request_buffer, (size_t)bytes_received, "\r\n\r\n", 4);
 
-	if (length_index != NULL && body_index != NULL) {
+	if (length_index && body_index) {
 		length_index += 15;
 		body_index += 4;
 
-		size_t content_length = (size_t)atoi(length_index);
-
+		const size_t content_length = (size_t)atoi(length_index);
 		if (content_length > 0) {
 			request_length = (size_t)(body_index - request_buffer) + content_length;
 		}
