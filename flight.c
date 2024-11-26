@@ -58,8 +58,8 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 	}
 
 partial:
-	response->header_len = (size_t)sprintf(
-			response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n\r\n", response->body_len);
+	response->header_len =
+			(size_t)sprintf(response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n", response->body_len);
 
 cleanup:
 	sqlite3_finalize(stmt);
@@ -113,8 +113,8 @@ void find_flight_years(char *user_uuid, Response *response) {
 	}
 
 partial:
-	response->header_len = (size_t)sprintf(
-			response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n\r\n", response->body_len);
+	response->header_len =
+			(size_t)sprintf(response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n", response->body_len);
 
 cleanup:
 	sqlite3_finalize(stmt);
