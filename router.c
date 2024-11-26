@@ -215,7 +215,7 @@ void route(Request *request, Response *response) {
 
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
 		for (size_t index = 0; index < request->pathname_len; index++) {
-			if (index != 0 && request->pathname[index] == '/') {
+			if (index != 0 && request->pathname[index] != '-' && (request->pathname[index] < 'a' || request->pathname[index] > 'z')) {
 				goto respond;
 			}
 		}
