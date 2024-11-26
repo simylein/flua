@@ -1,3 +1,3 @@
 #include <sqlite3.h>
 
-sqlite3 *database;
+extern struct sqlite3 *database;

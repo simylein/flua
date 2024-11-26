@@ -16,6 +16,6 @@ typedef struct Queue {
 	pthread_cond_t available;
 } Queue;
 
-Queue queue;
+extern struct Queue queue;
 
 void *thread(void *arg);

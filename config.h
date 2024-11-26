@@ -1,15 +1,15 @@
-int port;
+extern int port;
 
-int backlog;
-int workers;
+extern int backlog;
+extern int workers;
 
-int jwt_ttl;
-int cache_ttl;
+extern int jwt_ttl;
+extern int cache_ttl;
 
-char *database_file;
+extern char *database_file;
 
-int log_level;
-int log_requests;
-int log_responses;
+extern int log_level;
+extern int log_requests;
+extern int log_responses;
 
 int configure(int argc, char *argv[]);
