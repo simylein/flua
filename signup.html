@@ -6,34 +6,44 @@
 		<meta name="description" content="Signup for an account" />
 		<title>Flua signup</title>
 		<link rel="stylesheet" href="/auth.css" />
+		<link rel="stylesheet" href="/notifications.css" />
+		<script src="/formik.js" async></script>
+		<script src="/signup.js" async></script>
+		<script src="/notifications.js" async></script>
 	</head>
 	<body class="font-sans m-0 text-black dark:text-white bg-white dark:bg-black">
 		<main class="min-h-dvh flex items-center justify-center">
+			<div id="notifications" class="top-0 right-0 absolute flex gap-2 sm:gap-4 m-2 md:m-4"></div>
 			<div class="box-border w-full max-w-96 m-4 sm:m-8 lg:m-16 pt-8 px-8 pb-4 bg-neutral-100 dark:bg-neutral-900">
-				<form class="flex flex-col items-center" action="/api/signup" method="post">
+				<form class="flex flex-col items-center" onsubmit="handleSubmit(event)">
 					<h1 class="m-0 mb-2 text-3xl font-semibold">Signup</h1>
-					<div class="w-full flex flex-col items-start gap-2 pb-4">
-						<label for="username" class="text-base font-normal">Username</label>
+					<div class="w-full flex flex-col items-start pb-4">
+						<label for="username" class="mb-1 text-base font-normal">Username</label>
 						<input
 							id="username"
-							name="username"
 							type="text"
 							class="box-border w-full p-2 text-sm border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"
 							placeholder="username"
 							autofocus
+							onchange="setValue('username', event.target.value)"
+							onblur="setTouched('username', true)"
 						/>
+						<p id="username-validation" class="m-0 mt-1 hidden text-red-600 dark:text-red-400"></p>
 					</div>
-					<div class="w-full flex flex-col items-start gap-2 pb-4">
-						<label for="password" class="text-base font-normal">Password</label>
+					<div class="w-full flex flex-col items-start pb-4">
+						<label for="password" class="mb-1 text-base font-normal">Password</label>
 						<input
 							id="password"
-							name="password"
 							type="password"
 							class="box-border w-full p-2 text-sm border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"
 							placeholder="password"
+							onchange="setValue('password', event.target.value)"
+							onblur="setTouched('password', true)"
 						/>
+						<p id="password-validation" class="m-0 mt-1 hidden text-red-600 dark:text-red-400"></p>
 					</div>
 					<button
+						id="signup-button"
 						type="submit"
 						class="min-w-28 text-base font-normal py-1 px-4 border-0 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-800 active:scale-95 cursor-pointer"
 					>
