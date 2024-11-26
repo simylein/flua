@@ -23,7 +23,7 @@ const postFlight = async (hash, startsAt, endsAt) => {
 	data.append('ends_at', endsAt);
 	try {
 		if (window.location.origin.startsWith('http://localhost')) {
-			await sleep(400 + Math.random() * 800);
+			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 			if (Math.random() < 0.1) {
 				throw Error('explicit develop failure');
 			}
@@ -38,7 +38,7 @@ const postFlight = async (hash, startsAt, endsAt) => {
 		if (err instanceof TypeError) {
 			return notification('info', 'Seems like you might be offline');
 		}
-		const message = `Request failed with ${err.status} ${err.statusText}`;
+		const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
 		if (err.status < 500) {
 			return notification('warning', message);
 		}

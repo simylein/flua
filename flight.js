@@ -10,10 +10,6 @@ const airtimeCount = document.getElementById('airtime-count');
 const airtimeScale = document.getElementById('airtime-scale');
 const airtimeGraph = document.getElementById('airtime-graph');
 
-const sleep = async (milliseconds) => {
-	return new Promise((resolve) => setTimeout(resolve, milliseconds));
-};
-
 const array = (length) => {
 	return Array(length)
 		.fill(null)
@@ -265,7 +261,7 @@ const loadYears = async () => {
 	window.requestAnimationFrame(() => loadingYears());
 	try {
 		if (window.location.origin.startsWith('http://localhost')) {
-			await sleep(400 + Math.random() * 800);
+			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 			if (Math.random() < 0.1) {
 				throw Error('explicit develop failure');
 			}
@@ -286,7 +282,7 @@ const loadFlights = async () => {
 	window.requestAnimationFrame(() => loadingAirtime());
 	try {
 		if (window.location.origin.startsWith('http://localhost')) {
-			await sleep(400 + Math.random() * 800);
+			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 			if (Math.random() < 0.1) {
 				throw Error('explicit develop failure');
 			}
