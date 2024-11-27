@@ -1,3 +1,4 @@
+extern char *address;
 extern int port;
 
 extern int backlog;

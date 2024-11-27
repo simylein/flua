@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+const char *address = "0.0.0.0";
 int port = 2254;
 
 int backlog = 16;
@@ -137,6 +138,7 @@ int configure(int argc, char *argv[]) {
 		const char *flag = argv[ind];
 		if (strcmp(flag, "--help") == 0 || strcmp(flag, "-h") == 0) {
 			info("available command line flags\n");
+			info("--address        -a   ip address to bind                 (%s)\n", address);
 			info("--port           -p   int between 1 and 65535            (%d)\n", port);
 			info("--backlog        -b   int between 1 and 256              (%d)\n", backlog);
 			info("--workers        -w   int between 1 and 64               (%d)\n", workers);
@@ -148,9 +150,12 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			return -1;
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.6.9\n");
+			info("flua flights version 0.6.10\n");
 			info("written by simylein in c\n");
 			return -1;
+		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_str(arg, "address", 4, 16, &address);
 		} else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "port", 1, 65535, &port);

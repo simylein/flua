@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = INADDR_ANY;
+	server_addr.sin_addr.s_addr = inet_addr(address);
 	server_addr.sin_port = htons(port);
 
 	if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
