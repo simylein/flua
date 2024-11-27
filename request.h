@@ -17,4 +17,4 @@ typedef struct Request {
 	size_t body_len;
 } Request;
 
-void request(char (*buffer)[20480], ssize_t length, Request *req, Response *res);
+void request(char *buffer, ssize_t length, Request *req, Response *res);

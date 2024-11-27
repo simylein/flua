@@ -10,4 +10,4 @@ typedef struct Response {
 	size_t body_len;
 } Response;
 
-size_t response(char (*buffer)[20480], Response *res);
+size_t response(char *buffer, Response *res);

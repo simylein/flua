@@ -76,7 +76,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	char bytes_buffer[8];
 	human_bytes(&bytes_buffer, (size_t)bytes_received);
 
-	request(&request_buffer, bytes_received, &reqs, &resp);
+	request(request_buffer, bytes_received, &reqs, &resp);
 	trace("method %zub pathname %zub search %zub header %zub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
 				reqs.header_len, reqs.body_len);
 	req("%s %s %s\n", reqs.method, reqs.pathname, bytes_buffer);
@@ -86,7 +86,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	}
 
 	char response_buffer[20480];
-	size_t response_length = response(&response_buffer, &resp);
+	size_t response_length = response(response_buffer, &resp);
 
 	struct timespec stop;
 	clock_gettime(CLOCK_MONOTONIC, &stop);
