@@ -10,6 +10,12 @@
 .absolute {
 	position: absolute;
 }
+.top-0 {
+	top: 0px;
+}
+.right-0 {
+	right: 0px;
+}
 .w-9 {
 	width: 36px;
 }
@@ -73,6 +79,9 @@
 .m-0 {
 	margin: 0px;
 }
+.m-2 {
+	margin: 8px;
+}
 .m-4 {
 	margin: 16px;
 }
@@ -93,6 +102,9 @@
 }
 .p-2 {
 	padding: 8px;
+}
+.p-4 {
+	padding: 16px;
 }
 .border-0 {
 	border-width: 0px;
@@ -138,6 +150,12 @@
 .bg-red-200 {
 	background-color: #fecaca;
 }
+.bg-amber-200 {
+	background-color: #fde68a;
+}
+.bg-green-200 {
+	background-color: #bbf7d0;
+}
 .bg-green-400\/80 {
 	background-color: #4ade80cc;
 }
@@ -162,6 +180,9 @@
 .cursor-not-allowed {
 	cursor: not-allowed;
 }
+.z-10 {
+	z-index: 10;
+}
 @media (min-width: 640px) {
 	.sm\:block {
 		display: block;
@@ -171,6 +192,9 @@
 	}
 	.sm\:gap-2 {
 		gap: 8px;
+	}
+	.sm\:gap-4 {
+		gap: 16px;
 	}
 }
 @media (min-width: 768px) {
@@ -185,6 +209,9 @@
 	}
 	.md\:gap-6 {
 		gap: 24px;
+	}
+	.md\:m-4 {
+		margin: 16px;
 	}
 	.md\:m-6 {
 		margin: 24px;
@@ -240,8 +267,14 @@
 	.dark\:bg-red-800 {
 		background-color: #991b1b;
 	}
+	.dark\:bg-amber-800 {
+		background-color: #92400e;
+	}
 	.dark\:bg-green-600\/80 {
 		background-color: #16a34acc;
+	}
+	.dark\:bg-green-800 {
+		background-color: #166534;
 	}
 	.dark\:text-blue-400 {
 		color: #60a5fa;
