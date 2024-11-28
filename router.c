@@ -168,15 +168,6 @@ void route(Request *request, Response *response) {
 		file("flight.css", response);
 	}
 
-	if (match(request, "get", "/notifications.css", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("notifications.css", response);
-	}
-
 	if (match(request, "get", "/error.css", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
