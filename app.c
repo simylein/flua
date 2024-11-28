@@ -69,8 +69,8 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	struct timespec start;
 	clock_gettime(CLOCK_MONOTONIC, &start);
 
-	struct Request reqs;
-	struct Response resp;
+	struct request_t reqs;
+	struct response_t resp;
 	null_init(&reqs, &resp);
 
 	char bytes_buffer[8];

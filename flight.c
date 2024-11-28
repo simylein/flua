@@ -6,7 +6,7 @@
 #include <sqlite3.h>
 #include <string.h>
 
-void find_flights(char *user_uuid, char *year, Response *response) {
+void find_flights(char *user_uuid, char *year, response_t *response) {
 	info("finding flights for %s\n", year);
 
 	sqlite3_stmt *stmt;
@@ -35,8 +35,8 @@ void find_flights(char *user_uuid, char *year, Response *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const u_int64_t starts_at = ntohll(sqlite3_column_int64(stmt, 0));
-			const u_int64_t ends_at = ntohll(sqlite3_column_int64(stmt, 1));
+			const uint64_t starts_at = ntohll(sqlite3_column_int64(stmt, 0));
+			const uint64_t ends_at = ntohll(sqlite3_column_int64(stmt, 1));
 			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
@@ -65,7 +65,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flight_years(char *user_uuid, Response *response) {
+void find_flight_years(char *user_uuid, response_t *response) {
 	info("finding flight years\n");
 
 	sqlite3_stmt *stmt;
@@ -93,7 +93,7 @@ void find_flight_years(char *user_uuid, Response *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const u_int16_t year = ntohs(sqlite3_column_int(stmt, 0));
+			const uint16_t year = ntohs(sqlite3_column_int(stmt, 0));
 			if (response->body_len + sizeof(year) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
@@ -120,7 +120,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void create_flight(char *user_uuid, char *hex_hash, u_int64_t starts_at, u_int64_t ends_at, Response *response) {
+void create_flight(char *user_uuid, char *hex_hash, uint64_t starts_at, uint64_t ends_at, response_t *response) {
 	info("creating new flight\n");
 
 	sqlite3_stmt *stmt;

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-size_t response(char *buffer, Response *res) {
+size_t response(char *buffer, response_t *res) {
 	size_t bytes = 0;
 	bytes += (size_t)sprintf(buffer + bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
 	res->head_len += bytes;

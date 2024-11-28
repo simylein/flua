@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 
 #pragma once
-typedef struct Request {
+typedef struct request_t {
 	char method[16];
 	size_t method_len;
 	char pathname[128];
@@ -15,6 +15,6 @@ typedef struct Request {
 	size_t header_len;
 	char body[61440];
 	size_t body_len;
-} Request;
+} request_t;
 
-void request(char *buffer, ssize_t length, Request *req, Response *res);
+void request(char *buffer, ssize_t length, request_t *req, response_t *res);

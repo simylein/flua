@@ -20,7 +20,7 @@ char *type(const char *file_path) {
 	return "text/unknown";
 }
 
-void file(const char *file_path, Response *response) {
+void file(const char *file_path, response_t *response) {
 	info("sending file %s\n", file_path);
 
 	int file_fd = open(file_path, O_RDONLY);

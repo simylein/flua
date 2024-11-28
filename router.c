@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int match(Request *request, const char *method, const char *pathname, int *method_found, int *pathname_found) {
+int match(request_t *request, const char *method, const char *pathname, int *method_found, int *pathname_found) {
 	if (strcmp(request->pathname, pathname) == 0) {
 		*pathname_found = 1;
 
@@ -20,7 +20,7 @@ int match(Request *request, const char *method, const char *pathname, int *metho
 	return -1;
 }
 
-void route(Request *request, Response *response) {
+void route(request_t *request, response_t *response) {
 	int method_found = 0;
 	int pathname_found = 0;
 

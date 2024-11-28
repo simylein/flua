@@ -1,7 +1,7 @@
 #include "request.h"
 #include "response.h"
 
-void null_init(struct Request *req, struct Response *res) {
+void null_init(request_t *req, response_t *res) {
 	req->method[0] = '\0';
 	req->method_len = 0;
 	req->pathname[0] = '\0';

@@ -7,7 +7,7 @@
 #include <sqlite3.h>
 #include <string.h>
 
-int authenticate(Request *request, char (*buffer)[33]) {
+int authenticate(request_t *request, char (*buffer)[33]) {
 	char *bearer_start = strstr(request->header, "bearer=");
 	if (bearer_start == NULL) {
 		return -1;
@@ -20,7 +20,7 @@ int authenticate(Request *request, char (*buffer)[33]) {
 	return 0;
 }
 
-void create_signin(char *username, char *password, Response *response) {
+void create_signin(char *username, char *password, response_t *response) {
 	info("user %s signing in\n", username);
 
 	sqlite3_stmt *stmt;
@@ -67,7 +67,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void create_signup(char *username, char *password, Response *response) {
+void create_signup(char *username, char *password, response_t *response) {
 	info("user %s signing up\n", username);
 
 	sqlite3_stmt *stmt;
