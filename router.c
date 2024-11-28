@@ -141,15 +141,6 @@ void route(Request *request, Response *response) {
 		create_flight(user_id, hash, starts_at, ends_at, response);
 	}
 
-	if (match(request, "get", "/home.css", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("home.css", response);
-	}
-
 	if (match(request, "get", "/auth.css", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
@@ -166,15 +157,6 @@ void route(Request *request, Response *response) {
 		}
 
 		file("flight.css", response);
-	}
-
-	if (match(request, "get", "/error.css", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("error.css", response);
 	}
 
 	if (match(request, "get", "/formik.js", &method_found, &pathname_found) == 0) {
