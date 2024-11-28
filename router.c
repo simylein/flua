@@ -152,6 +152,12 @@ void route(Request *request, Response *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
+			char user_id[33];
+			if (authenticate(request, &user_id) == -1) {
+				response->status = 401;
+				goto respond;
+			}
+
 			file("flight.html", response);
 		}
 	}
