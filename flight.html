@@ -5,7 +5,296 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Flight statistics for paragliders including igc file upload" />
 		<title>Flight statistics</title>
-		<link rel="stylesheet" href="/flight.css" />
+		<style>
+			.font-sans {
+				font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+			}
+			.box-border {
+				box-sizing: border-box;
+			}
+			.relative {
+				position: relative;
+			}
+			.absolute {
+				position: absolute;
+			}
+			.top-0 {
+				top: 0px;
+			}
+			.right-0 {
+				right: 0px;
+			}
+			.w-9 {
+				width: 36px;
+			}
+			.w-10 {
+				width: 40px;
+			}
+			.w-full {
+				width: 100%;
+			}
+			.min-w-7 {
+				min-width: 28px;
+			}
+			.max-w-screen-2xl {
+				max-width: 1536px;
+			}
+			.h-4 {
+				height: 16px;
+			}
+			.h-6 {
+				height: 24px;
+			}
+			.h-8 {
+				height: 32px;
+			}
+			.h-full {
+				height: 100%;
+			}
+			.flex {
+				display: flex;
+			}
+			.grid {
+				display: grid;
+			}
+			.hidden {
+				display: none;
+			}
+			.flex-1 {
+				flex: 1 1 0%;
+			}
+			.flex-col {
+				flex-direction: column;
+			}
+			.flex-col-reverse {
+				flex-direction: column-reverse;
+			}
+			.items-center {
+				align-items: center;
+			}
+			.justify-between {
+				justify-content: space-between;
+			}
+			.gap-1 {
+				gap: 4px;
+			}
+			.gap-2 {
+				gap: 8px;
+			}
+			.gap-4 {
+				gap: 16px;
+			}
+			.m-0 {
+				margin: 0px;
+			}
+			.m-2 {
+				margin: 8px;
+			}
+			.m-4 {
+				margin: 16px;
+			}
+			.m-auto {
+				margin: auto;
+			}
+			.mt-4 {
+				margin-top: 16px;
+			}
+			.mb-1 {
+				margin-bottom: 4px;
+			}
+			.p-0 {
+				padding: 0px;
+			}
+			.p-1 {
+				padding: 4px;
+			}
+			.p-2 {
+				padding: 8px;
+			}
+			.p-4 {
+				padding: 16px;
+			}
+			.border-0 {
+				border-width: 0px;
+			}
+			.border-b {
+				border-bottom-width: 1px;
+			}
+			.border-solid {
+				border-style: solid;
+			}
+			.border-none {
+				border-style: none;
+			}
+			.overflow-x-scroll {
+				overflow-x: scroll;
+			}
+			.text-xs {
+				font-size: 12px;
+				line-height: 16px;
+			}
+			.text-base {
+				font-size: 16px;
+				line-height: 24px;
+			}
+			.font-normal {
+				font-weight: 400;
+			}
+			.text-black {
+				color: #000000;
+			}
+			.text-neutral-600 {
+				color: #525252;
+			}
+			.bg-white {
+				background-color: #ffffff;
+			}
+			.bg-neutral-100 {
+				background-color: #f5f5f5;
+			}
+			.bg-neutral-200 {
+				background-color: #e5e5e5;
+			}
+			.bg-red-200 {
+				background-color: #fecaca;
+			}
+			.bg-amber-200 {
+				background-color: #fde68a;
+			}
+			.bg-green-200 {
+				background-color: #bbf7d0;
+			}
+			.bg-green-400\/80 {
+				background-color: #4ade80cc;
+			}
+			.bg-blue-200 {
+				background-color: #bfdbfe;
+			}
+			.bg-blue-400\/80 {
+				background-color: #60a5facc;
+			}
+			.text-blue-600 {
+				color: #2563eb;
+			}
+			.border-neutral-300 {
+				border-color: #d4d4d4;
+			}
+			.cursor-default {
+				cursor: default;
+			}
+			.cursor-pointer {
+				cursor: pointer;
+			}
+			.cursor-not-allowed {
+				cursor: not-allowed;
+			}
+			.z-10 {
+				z-index: 10;
+			}
+			@media (min-width: 640px) {
+				.sm\:block {
+					display: block;
+				}
+				.sm\:hidden {
+					display: none;
+				}
+				.sm\:gap-2 {
+					gap: 8px;
+				}
+			}
+			@media (min-width: 768px) {
+				.md\:flex-row {
+					flex-direction: row;
+				}
+				.md\:gap-1 {
+					gap: 4px;
+				}
+				.md\:gap-3 {
+					gap: 12px;
+				}
+				.md\:gap-6 {
+					gap: 24px;
+				}
+				.md\:m-4 {
+					margin: 16px;
+				}
+				.md\:m-6 {
+					margin: 24px;
+				}
+				.md\:p-1\.5 {
+					padding: 6px;
+				}
+				.md\:p-3 {
+					padding: 12px;
+				}
+			}
+			@media (min-width: 1024px) {
+				.lg\:gap-2 {
+					gap: 8px;
+				}
+				.lg\:gap-4 {
+					gap: 16px;
+				}
+				.lg\:gap-8 {
+					gap: 32px;
+				}
+				.lg\:m-8 {
+					margin: 32px;
+				}
+				.lg\:p-2 {
+					padding: 8px;
+				}
+				.lg\:p-4 {
+					padding: 16px;
+				}
+			}
+			@media (min-width: 1280px) {
+				.xl\:gap-3 {
+					gap: 12px;
+				}
+			}
+			@media (prefers-color-scheme: dark) {
+				.dark\:text-white {
+					color: #ffffff;
+				}
+				.dark\:text-neutral-400 {
+					color: #a3a3a3;
+				}
+				.dark\:bg-black {
+					background-color: #000000;
+				}
+				.dark\:bg-neutral-800 {
+					background-color: #262626;
+				}
+				.dark\:bg-neutral-900 {
+					background-color: #171717;
+				}
+				.dark\:bg-red-800 {
+					background-color: #991b1b;
+				}
+				.dark\:bg-amber-800 {
+					background-color: #92400e;
+				}
+				.dark\:bg-green-600\/80 {
+					background-color: #16a34acc;
+				}
+				.dark\:bg-green-800 {
+					background-color: #166534;
+				}
+				.dark\:text-blue-400 {
+					color: #60a5fa;
+				}
+				.dark\:bg-blue-600\/80 {
+					background-color: #2563ebcc;
+				}
+				.dark\:bg-blue-800 {
+					background-color: #1e40af;
+				}
+				.dark\:border-neutral-600 {
+					border-color: #525252;
+				}
+			}
+		</style>
 		<script src="/flight.js" defer></script>
 		<script src="/upload.js" defer></script>
 		<script src="/notifications.js" defer></script>

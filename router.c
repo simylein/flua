@@ -141,15 +141,6 @@ void route(Request *request, Response *response) {
 		create_flight(user_id, hash, starts_at, ends_at, response);
 	}
 
-	if (match(request, "get", "/flight.css", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("flight.css", response);
-	}
-
 	if (match(request, "get", "/formik.js", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
