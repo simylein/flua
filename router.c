@@ -141,60 +141,6 @@ void route(Request *request, Response *response) {
 		create_flight(user_id, hash, starts_at, ends_at, response);
 	}
 
-	if (match(request, "get", "/formik.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("formik.js", response);
-	}
-
-	if (match(request, "get", "/signin.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("signin.js", response);
-	}
-
-	if (match(request, "get", "/signup.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("signup.js", response);
-	}
-
-	if (match(request, "get", "/flight.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("flight.js", response);
-	}
-
-	if (match(request, "get", "/upload.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("upload.js", response);
-	}
-
-	if (match(request, "get", "/notifications.js", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
-		file("notifications.js", response);
-	}
-
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
 		for (size_t index = 0; index < request->pathname_len; index++) {
 			if (index != 0 && request->pathname[index] != '-' && (request->pathname[index] < 'a' || request->pathname[index] > 'z')) {

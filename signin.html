@@ -231,9 +231,6 @@
 				}
 			}
 		</style>
-		<script src="/formik.js" defer></script>
-		<script src="/signin.js" defer></script>
-		<script src="/notifications.js" defer></script>
 	</head>
 	<body class="font-sans m-0 text-black dark:text-white bg-white dark:bg-black">
 		<main class="min-h-dvh flex items-center justify-center">
@@ -281,4 +278,163 @@
 			</div>
 		</main>
 	</body>
+	<script>
+		const formik = (elements, schema, submit) => {
+			const [values, errors, touched] = [{}, {}, {}];
+			const validate = (all) => {
+				if (all) Object.keys(schema).forEach((key) => (touched[key] = true));
+				Object.keys(touched).forEach((key) => {
+					if (touched[key]) errors[key] = schema[key](values[key]);
+				});
+				Object.keys(errors).forEach((key) => {
+					Object.keys(elements)
+						.filter((element) => element === key)
+						.forEach((element) => {
+							if (errors[key]) {
+								elements[element].innerText = errors[key];
+								elements[element].classList.remove('hidden');
+							} else {
+								elements[element].innerText = '';
+								elements[element].classList.add('hidden');
+							}
+						});
+				});
+				const valid = Object.keys(errors).every((key) => !errors[key]);
+				if (valid) {
+					elements.button.disabled = false;
+					elements.button.classList.add('bg-blue-500', 'dark:bg-blue-700', 'hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+					elements.button.classList.remove('bg-neutral-400', 'dark:bg-neutral-600', 'cursor-not-allowed');
+				} else if (all) {
+					elements.button.disabled = true;
+					elements.button.classList.add('bg-neutral-400', 'dark:bg-neutral-600', 'cursor-not-allowed');
+					elements.button.classList.remove('bg-blue-500', 'dark:bg-blue-700', 'hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+				}
+				return valid;
+			};
+			const setValue = (key, value) => {
+				values[key] = value;
+				validate();
+			};
+			const setTouched = (key, value) => {
+				touched[key] = value;
+				validate();
+			};
+			const handleSubmit = async (event) => {
+				event.preventDefault();
+				if (!validate(true)) return;
+				const store = elements.button.innerText;
+				elements.button.innerText = 'loading...';
+				elements.button.disabled = true;
+				elements.button.classList.add('cursor-progress');
+				elements.button.classList.remove('hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+
+				await submit(values);
+				elements.button.innerText = store;
+				elements.button.disabled = false;
+				elements.button.classList.add('hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+				elements.button.classList.remove('cursor-progress');
+			};
+			return { values, errors, touched, validate, setValue, setTouched, handleSubmit };
+		};
+		const notifications = document.getElementById('notifications');
+		const kind = (type) => {
+			switch (type) {
+				case 'info':
+					return 'Info';
+				case 'success':
+					return 'Success';
+				case 'warning':
+					return 'Warning';
+				case 'error':
+					return 'Error';
+			}
+		};
+		const color = (type) => {
+			switch (type) {
+				case 'info':
+					return ['bg-blue-200', 'dark:bg-blue-800'];
+				case 'success':
+					return ['bg-green-200', 'dark:bg-green-800'];
+				case 'warning':
+					return ['bg-amber-200', 'dark:bg-amber-800'];
+				case 'error':
+					return ['bg-red-200', 'dark:bg-red-800'];
+			}
+		};
+		const duration = (type) => {
+			switch (type) {
+				case 'info':
+					return 4000;
+				case 'success':
+					return 3000;
+				case 'warning':
+					return 6000;
+				case 'error':
+					return 8000;
+			}
+		};
+		const notification = (type, message) => {
+			const element = document.createElement('div');
+			element.classList.add('p-4', ...color(type), 'z-10');
+			const head = document.createElement('h2');
+			head.classList.add('m-0');
+			const text = document.createElement('p');
+			text.classList.add('m-0');
+			element.appendChild(head);
+			element.appendChild(text);
+			element.children[0].innerText = kind(type);
+			element.children[1].innerText = message;
+			if (notifications.children.length > 0) {
+				notifications.children[0].remove();
+			}
+			notifications.appendChild(element);
+			setTimeout(() => element.remove(), duration(type));
+		};
+		const { setValue, setTouched, handleSubmit } = formik(
+			{
+				button: document.getElementById('signin-button'),
+				username: document.getElementById('username-validation'),
+				password: document.getElementById('password-validation'),
+			},
+			{
+				username: (value) => {
+					if (!value) return 'username is required';
+					if (value.length < 4) return 'username is too short';
+					if (value.length > 16) return 'username is too long';
+				},
+				password: (value) => {
+					if (!value) return 'password is required';
+					if (value.length < 8) return 'password is too short';
+					if (value.length > 64) return 'password is too long';
+				},
+			},
+			async (values) => {
+				const data = new Blob([`username=${values.username}&password=${values.password}`]);
+				try {
+					if (window.location.origin.startsWith('http://localhost')) {
+						await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
+						if (Math.random() < 0.1) {
+							throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'explicit develop failure' };
+						}
+					}
+					const response = await fetch('/api/signin', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
+					if (response.status >= 200 && response.status <= 299) {
+						notification('success', `Successfully signed in as ${values.username}`);
+						window.location.href = `/${values.username}`;
+						return;
+					}
+					throw response;
+				} catch (err) {
+					if (err instanceof TypeError) {
+						return notification('info', 'Seems like you might be offline');
+					}
+					const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
+					if (err.status < 500) {
+						return notification('warning', message);
+					}
+					return notification('error', message);
+				}
+			}
+		);
+	</script>
 </html>
