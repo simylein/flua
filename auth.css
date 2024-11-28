@@ -167,9 +167,6 @@
 	z-index: 10;
 }
 @media (min-width: 640px) {
-	.sm\:gap-4 {
-		gap: 16px;
-	}
 	.sm\:m-8 {
 		margin: 32px;
 	}

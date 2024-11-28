@@ -193,9 +193,6 @@
 	.sm\:gap-2 {
 		gap: 8px;
 	}
-	.sm\:gap-4 {
-		gap: 16px;
-	}
 }
 @media (min-width: 768px) {
 	.md\:flex-row {
