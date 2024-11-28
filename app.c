@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 void handle(int *client_sock, struct sockaddr_in *client_addr) {
-	char request_buffer[20480];
+	char request_buffer[24576];
 	size_t request_length = 0;
 
 	size_t packets_received = 0;
@@ -85,7 +85,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 		route(&reqs, &resp);
 	}
 
-	char response_buffer[20480];
+	char response_buffer[24576];
 	size_t response_length = response(response_buffer, &resp);
 
 	struct timespec stop;

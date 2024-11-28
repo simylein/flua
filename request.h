@@ -11,9 +11,9 @@ typedef struct Request {
 	size_t search_len;
 	char protocol[16];
 	size_t protocol_len;
-	char header[2048];
+	char header[1536];
 	size_t header_len;
-	char body[16384];
+	char body[22528];
 	size_t body_len;
 } Request;
 
