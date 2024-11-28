@@ -1,21 +1,21 @@
 #include <arpa/inet.h>
 #include <pthread/pthread.h>
 
-typedef struct Task {
+typedef struct task_t {
 	int client_sock;
 	struct sockaddr_in client_addr;
-} Task;
+} task_t;
 
-typedef struct Queue {
-	Task *tasks;
+typedef struct queue_t {
+	task_t *tasks;
 	size_t front;
 	size_t back;
 	size_t size;
 	pthread_mutex_t lock;
 	pthread_cond_t filled;
 	pthread_cond_t available;
-} Queue;
+} queue_t;
 
-extern struct Queue queue;
+extern struct queue_t queue;
 
-void *thread(void *arg);
+void *thread(void *args);

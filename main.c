@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	queue.tasks = malloc((size_t)workers * 2 * sizeof(Task));
+	queue.tasks = malloc((size_t)workers * 2 * sizeof(task_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for tasks\n");

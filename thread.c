@@ -4,7 +4,7 @@
 #include "error.h"
 #include "logger.h"
 
-Queue queue = {
+queue_t queue = {
 		.front = 0,
 		.back = 0,
 		.size = 0,
@@ -13,8 +13,8 @@ Queue queue = {
 		.available = PTHREAD_COND_INITIALIZER,
 };
 
-void *thread(void *arg) {
-	int id = (int)(intptr_t)arg;
+void *thread(void *args) {
+	int id = (int)(intptr_t)args;
 
 	while (1) {
 		pthread_mutex_lock(&queue.lock);
@@ -23,7 +23,7 @@ void *thread(void *arg) {
 			pthread_cond_wait(&queue.filled, &queue.lock);
 		}
 
-		Task task = queue.tasks[queue.front];
+		task_t task = queue.tasks[queue.front];
 		queue.front = (queue.front + 1) % ((size_t)workers * 2);
 		queue.size--;
 		trace("worker thread %d decreased queue size to %zu\n", id, queue.size);
