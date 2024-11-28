@@ -150,7 +150,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			return -1;
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.6.14\n");
+			info("flua flights version 0.6.15\n");
 			info("written by simylein in c\n");
 			return -1;
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {

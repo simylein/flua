@@ -16,9 +16,6 @@ char *type(const char *file_path) {
 	if (strcmp(extension, ".html") == 0) {
 		return "text/html";
 	}
-	if (strcmp(extension, ".css") == 0) {
-		return "text/css";
-	}
 	if (strcmp(extension, ".js") == 0) {
 		return "text/javascript";
 	}
