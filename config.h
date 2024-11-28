@@ -5,7 +5,6 @@ extern int backlog;
 extern int workers;
 
 extern int jwt_ttl;
-extern int cache_ttl;
 
 extern char *database_file;
 
