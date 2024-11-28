@@ -56,8 +56,8 @@ void file(const char *file_path, response_t *response) {
 	if (response->status == 0) {
 		response->status = 200;
 	}
-	response->header_len += (size_t)sprintf(&response->header[response->header_len], "content-type:%s\r\n", type(file_path));
-	response->header_len += (size_t)sprintf(&response->header[response->header_len], "content-length:%zu\r\n", bytes_read);
+	append_header(response, "content-type:%s\r\n", type(file_path));
+	append_header(response, "content-length:%zu\r\n", bytes_read);
 	response->body_len += (size_t)bytes_read;
 
 cleanup:

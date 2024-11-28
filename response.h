@@ -11,3 +11,6 @@ typedef struct response_t {
 } response_t;
 
 size_t response(char *buffer, response_t *res);
+
+void append_header(response_t *response, const char *format, ...) __attribute__((format(printf, 2, 3)));
+void append_body(response_t *response, const void *buffer, size_t buffer_len);

@@ -42,10 +42,8 @@ void find_flights(char *user_uuid, char *year, response_t *response) {
 				response->status = 206;
 				goto partial;
 			}
-			memcpy(response->body + response->body_len, &starts_at, sizeof(starts_at));
-			response->body_len += sizeof(starts_at);
-			memcpy(response->body + response->body_len, &ends_at, sizeof(ends_at));
-			response->body_len += sizeof(ends_at);
+			append_body(response, &starts_at, sizeof(starts_at));
+			append_body(response, &ends_at, sizeof(ends_at));
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
 			break;
@@ -58,8 +56,8 @@ void find_flights(char *user_uuid, char *year, response_t *response) {
 	}
 
 partial:
-	response->header_len =
-			(size_t)sprintf(response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n", response->body_len);
+	append_header(response, "content-type:application/octet-stream\r\n");
+	append_header(response, "content-length:%zu\r\n", response->body_len);
 
 cleanup:
 	sqlite3_finalize(stmt);
@@ -99,8 +97,7 @@ void find_flight_years(char *user_uuid, response_t *response) {
 				response->status = 206;
 				goto partial;
 			}
-			memcpy(response->body + response->body_len, &year, sizeof(year));
-			response->body_len += sizeof(year);
+			append_body(response, &year, sizeof(year));
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
 			break;
@@ -113,8 +110,8 @@ void find_flight_years(char *user_uuid, response_t *response) {
 	}
 
 partial:
-	response->header_len =
-			(size_t)sprintf(response->header, "content-type:application/octet-stream\r\ncontent-length:%zu\r\n", response->body_len);
+	append_header(response, "content-type:application/octet-stream\r\n");
+	append_header(response, "content-length:%zu\r\n", response->body_len);
 
 cleanup:
 	sqlite3_finalize(stmt);
