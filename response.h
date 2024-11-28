@@ -4,9 +4,9 @@
 typedef struct Response {
 	int status;
 	size_t head_len;
-	char header[1536];
+	char header[3584];
 	size_t header_len;
-	char body[22528];
+	char body[61440];
 	size_t body_len;
 } Response;
 

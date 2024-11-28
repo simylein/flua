@@ -16,9 +16,6 @@ char *type(const char *file_path) {
 	if (strcmp(extension, ".html") == 0) {
 		return "text/html";
 	}
-	if (strcmp(extension, ".js") == 0) {
-		return "text/javascript";
-	}
 	error("unknown content type %s\n", extension);
 	return "text/unknown";
 }
