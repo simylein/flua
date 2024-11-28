@@ -263,7 +263,7 @@ const loadYears = async () => {
 		if (window.location.origin.startsWith('http://localhost')) {
 			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 			if (Math.random() < 0.1) {
-				throw Error('explicit develop failure');
+				throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'explicit develop failure' };
 			}
 		}
 		const response = await fetch('/api/flight');
@@ -284,7 +284,7 @@ const loadFlights = async () => {
 		if (window.location.origin.startsWith('http://localhost')) {
 			await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 			if (Math.random() < 0.1) {
-				throw Error('explicit develop failure');
+				throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'explicit develop failure' };
 			}
 		}
 		const response = await fetch(`/api/flight?year=${getYear()}`);
