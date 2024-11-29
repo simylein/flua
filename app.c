@@ -5,10 +5,11 @@
 #include "response.h"
 #include "router.h"
 #include "utils.h"
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-void handle(int *client_sock, struct sockaddr_in *client_addr) {
+void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[65536];
 	size_t request_length = 0;
 
@@ -82,7 +83,7 @@ void handle(int *client_sock, struct sockaddr_in *client_addr) {
 	req("%s %s %s\n", reqs.method, reqs.pathname, bytes_buffer);
 
 	if (resp.status == 0) {
-		route(&reqs, &resp);
+		route(database, &reqs, &resp);
 	}
 
 	char response_buffer[65536];

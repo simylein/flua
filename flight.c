@@ -1,4 +1,3 @@
-#include "database.h"
 #include "format.h"
 #include "logger.h"
 #include "response.h"
@@ -6,7 +5,7 @@
 #include <sqlite3.h>
 #include <string.h>
 
-void find_flights(char *user_uuid, char *year, response_t *response) {
+void find_flights(sqlite3 *database, char *user_uuid, char *year, response_t *response) {
 	info("finding flights for %s\n", year);
 
 	sqlite3_stmt *stmt;
@@ -63,7 +62,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flight_years(char *user_uuid, response_t *response) {
+void find_flight_years(sqlite3 *database, char *user_uuid, response_t *response) {
 	info("finding flight years\n");
 
 	sqlite3_stmt *stmt;
@@ -117,7 +116,8 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void create_flight(char *user_uuid, char *hex_hash, uint64_t starts_at, uint64_t ends_at, response_t *response) {
+void create_flight(sqlite3 *database, char *user_uuid, char *hex_hash, uint64_t starts_at, uint64_t ends_at,
+									 response_t *response) {
 	info("creating new flight\n");
 
 	sqlite3_stmt *stmt;

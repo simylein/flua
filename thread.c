@@ -32,6 +32,6 @@ void *thread(void *args) {
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
 
-		handle(&task.client_sock, &task.client_addr);
+		handle(arg->database, &task.client_sock, &task.client_addr);
 	}
 }

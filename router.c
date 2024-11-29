@@ -3,6 +3,7 @@
 #include "flight.h"
 #include "request.h"
 #include "response.h"
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -20,7 +21,7 @@ int match(request_t *request, const char *method, const char *pathname, int *met
 	return -1;
 }
 
-void route(request_t *request, response_t *response) {
+void route(sqlite3 *database, request_t *request, response_t *response) {
 	int method_found = 0;
 	int pathname_found = 0;
 
@@ -72,7 +73,7 @@ void route(request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		create_signin(username, password, response);
+		create_signin(database, username, password, response);
 	}
 
 	if (match(request, "post", "/api/signup", &method_found, &pathname_found) == 0) {
@@ -96,7 +97,7 @@ void route(request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		create_signup(username, password, response);
+		create_signup(database, username, password, response);
 	}
 
 	if (match(request, "get", "/api/flight", &method_found, &pathname_found) == 0) {
@@ -108,11 +109,11 @@ void route(request_t *request, response_t *response) {
 
 		char year[5];
 		if (sscanf(request->search, "year=%4s", year) == 1) {
-			find_flights(user_id, year, response);
+			find_flights(database, user_id, year, response);
 			goto respond;
 		}
 
-		find_flight_years(user_id, response);
+		find_flight_years(database, user_id, response);
 	}
 
 	if (match(request, "post", "/api/flight", &method_found, &pathname_found) == 0) {
@@ -138,7 +139,7 @@ void route(request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		create_flight(user_id, hash, starts_at, ends_at, response);
+		create_flight(database, user_id, hash, starts_at, ends_at, response);
 	}
 
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
