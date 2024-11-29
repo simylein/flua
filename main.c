@@ -8,26 +8,23 @@
 
 int main(int argc, char *argv[]) {
 	int cf_errors = configure(argc, argv);
-	if (cf_errors > 0) {
+	if (cf_errors != 0) {
 		fatal("config contains %d errors\n", cf_errors);
-		return EXIT_FAILURE;
-	}
-	if (cf_errors == -1) {
-		return EXIT_SUCCESS;
+		exit(1);
 	}
 
 	int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
 	if (db_error != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		fatal("failed to open %s\n", database_file);
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	int exec_error = sqlite3_exec(database, "pragma foreign_keys = on;", NULL, NULL, NULL);
 	if (exec_error != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		fatal("failed to enforce foreign key constraints\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	info("using database %s\n", database_file);
@@ -38,13 +35,13 @@ int main(int argc, char *argv[]) {
 	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		error("%s\n", errno_str());
 		fatal("failed to create socket\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (int[]){1}, sizeof(int)) == -1) {
 		error("%s\n", errno_str());
 		fatal("failed to set socket options\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	server_addr.sin_family = AF_INET;
@@ -54,13 +51,13 @@ int main(int argc, char *argv[]) {
 	if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
 		error("%s\n", errno_str());
 		fatal("failed to bind to socket\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	if (listen(server_sock, backlog) == -1) {
 		error("%s\n", errno_str());
 		fatal("failed to listen on socket\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
@@ -69,14 +66,14 @@ int main(int argc, char *argv[]) {
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for threads\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	queue.tasks = malloc((size_t)workers * 2 * sizeof(task_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for tasks\n");
-		return EXIT_FAILURE;
+		exit(1);
 	}
 
 	for (int index = 0; index < workers; index++) {
