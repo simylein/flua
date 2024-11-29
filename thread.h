@@ -1,5 +1,5 @@
 #include <arpa/inet.h>
-#include <pthread/pthread.h>
+#include <pthread.h>
 #include <sqlite3.h>
 
 typedef struct arg_t {
