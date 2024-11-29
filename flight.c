@@ -5,6 +5,60 @@
 #include <sqlite3.h>
 #include <string.h>
 
+void find_years(sqlite3 *database, char *user_uuid, response_t *response) {
+	info("finding flight years\n");
+
+	sqlite3_stmt *stmt;
+
+	const char *sql = "select distinct strftime('%Y', datetime(starts_at, 'unixepoch')) as year from flight "
+										"where user_id = ? "
+										"order by year desc";
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("%s\n", sqlite3_errmsg(database));
+		error("failed to prepare statement\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	unsigned char user_id[16];
+	if (hex_to_bin(user_id, sizeof(user_id), user_uuid, strlen(user_uuid)) == -1) {
+		error("failed to convert uuid to binary\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
+
+	while (1) {
+		int result = sqlite3_step(stmt);
+		if (result == SQLITE_ROW) {
+			const uint16_t year = ntohs(sqlite3_column_int(stmt, 0));
+			if (response->body_len + sizeof(year) > sizeof(response->body)) {
+				error("body length exceeds buffer\n");
+				response->status = 206;
+				goto partial;
+			}
+			append_body(response, &year, sizeof(year));
+		} else if (result == SQLITE_DONE) {
+			response->status = 200;
+			break;
+		} else {
+			error("%s\n", sqlite3_errmsg(database));
+			error("failed to execute statement\n");
+			response->status = 500;
+			goto cleanup;
+		}
+	}
+
+partial:
+	append_header(response, "content-type:application/octet-stream\r\n");
+	append_header(response, "content-length:%zu\r\n", response->body_len);
+
+cleanup:
+	sqlite3_finalize(stmt);
+}
+
 void find_flights(sqlite3 *database, char *user_uuid, char *year, response_t *response) {
 	info("finding flights for %s\n", year);
 
@@ -43,60 +97,6 @@ void find_flights(sqlite3 *database, char *user_uuid, char *year, response_t *re
 			}
 			append_body(response, &starts_at, sizeof(starts_at));
 			append_body(response, &ends_at, sizeof(ends_at));
-		} else if (result == SQLITE_DONE) {
-			response->status = 200;
-			break;
-		} else {
-			error("%s\n", sqlite3_errmsg(database));
-			error("failed to execute statement\n");
-			response->status = 500;
-			goto cleanup;
-		}
-	}
-
-partial:
-	append_header(response, "content-type:application/octet-stream\r\n");
-	append_header(response, "content-length:%zu\r\n", response->body_len);
-
-cleanup:
-	sqlite3_finalize(stmt);
-}
-
-void find_flight_years(sqlite3 *database, char *user_uuid, response_t *response) {
-	info("finding flight years\n");
-
-	sqlite3_stmt *stmt;
-
-	const char *sql = "select distinct strftime('%Y', datetime(starts_at, 'unixepoch')) as year from flight "
-										"where user_id = ? "
-										"order by year desc";
-
-	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
-		response->status = 500;
-		goto cleanup;
-	}
-
-	unsigned char user_id[16];
-	if (hex_to_bin(user_id, sizeof(user_id), user_uuid, strlen(user_uuid)) == -1) {
-		error("failed to convert uuid to binary\n");
-		response->status = 500;
-		goto cleanup;
-	}
-
-	sqlite3_bind_blob(stmt, 1, user_id, sizeof(user_id), SQLITE_STATIC);
-
-	while (1) {
-		int result = sqlite3_step(stmt);
-		if (result == SQLITE_ROW) {
-			const uint16_t year = ntohs(sqlite3_column_int(stmt, 0));
-			if (response->body_len + sizeof(year) > sizeof(response->body)) {
-				error("body length exceeds buffer\n");
-				response->status = 206;
-				goto partial;
-			}
-			append_body(response, &year, sizeof(year));
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
 			break;

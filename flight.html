@@ -794,7 +794,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'explicit develop failure' };
 					}
 				}
-				const response = await fetch('/api/flight');
+				const response = await fetch('/api/year');
 				if (response.status < 200 || response.status > 299) {
 					throw Error(response);
 				}

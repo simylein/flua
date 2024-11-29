@@ -100,6 +100,21 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		create_signup(database, username, password, response);
 	}
 
+	if (match(request, "get", "/api/year", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		char user_id[33];
+		if (authenticate(request, &user_id) == -1) {
+			response->status = 401;
+			goto respond;
+		}
+
+		find_years(database, user_id, response);
+	}
+
 	if (match(request, "get", "/api/flight", &method_found, &pathname_found) == 0) {
 		char user_id[33];
 		if (authenticate(request, &user_id) == -1) {
@@ -108,12 +123,12 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		char year[5];
-		if (sscanf(request->search, "year=%4s", year) == 1) {
-			find_flights(database, user_id, year, response);
+		if (sscanf(request->search, "year=%4s", year) != 1) {
+			response->status = 400;
 			goto respond;
 		}
 
-		find_flight_years(database, user_id, response);
+		find_flights(database, user_id, year, response);
 	}
 
 	if (match(request, "post", "/api/flight", &method_found, &pathname_found) == 0) {
