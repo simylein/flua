@@ -152,3 +152,15 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 	memcpy(req->body, &buffer[index], body_length);
 	req->body_len = body_length;
 }
+
+const char *find_header(request_t *request, const char *key) {
+	const char *header = strcasestr(request->header, key);
+	if (request) {
+		header += strlen(key);
+		if (header[0] == ' ') {
+			header += 1;
+		}
+		return header;
+	}
+	return NULL;
+}

@@ -18,3 +18,5 @@ typedef struct request_t {
 } request_t;
 
 void request(char *buffer, ssize_t length, request_t *req, response_t *res);
+
+const char *find_header(request_t *request, const char *key);
