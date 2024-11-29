@@ -1,5 +1,11 @@
 #include <arpa/inet.h>
 #include <pthread/pthread.h>
+#include <sqlite3.h>
+
+typedef struct arg_t {
+	int id;
+	sqlite3 *database;
+} arg_t;
 
 typedef struct task_t {
 	int client_sock;

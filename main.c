@@ -1,8 +1,9 @@
 #include "config.h"
-#include "database.h"
 #include "error.h"
 #include "logger.h"
 #include "thread.h"
+#include <errno.h>
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -10,20 +11,6 @@ int main(int argc, char *argv[]) {
 	int cf_errors = configure(argc, argv);
 	if (cf_errors != 0) {
 		fatal("config contains %d errors\n", cf_errors);
-		exit(1);
-	}
-
-	int db_error = sqlite3_open_v2(database_file, &database, SQLITE_OPEN_READWRITE, NULL);
-	if (db_error != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		fatal("failed to open %s\n", database_file);
-		exit(1);
-	}
-
-	int exec_error = sqlite3_exec(database, "pragma foreign_keys = on;", NULL, NULL, NULL);
-	if (exec_error != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		fatal("failed to enforce foreign key constraints\n");
 		exit(1);
 	}
 
@@ -62,6 +49,13 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
+	arg_t *args = malloc((size_t)workers * sizeof(arg_t));
+	if (args == NULL) {
+		error("%s\n", errno_str());
+		fatal("failed to allocate for args\n");
+		exit(1);
+	}
+
 	pthread_t *threads = malloc((size_t)workers * sizeof(pthread_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
@@ -77,8 +71,30 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (int index = 0; index < workers; index++) {
+		args[index].id = index;
 		trace("spawning worker thread %d\n", index);
-		pthread_create(&threads[index], NULL, thread, (void *)(intptr_t)index);
+
+		int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
+		if (db_error != SQLITE_OK) {
+			error("%s\n", sqlite3_errmsg(args[index].database));
+			fatal("failed to open %s\n", database_file);
+			exit(1);
+		}
+
+		int exec_error = sqlite3_exec(args[index].database, "pragma foreign_keys = on;", NULL, NULL, NULL);
+		if (exec_error != SQLITE_OK) {
+			error("%s\n", sqlite3_errmsg(args[index].database));
+			fatal("failed to enforce foreign key constraints\n");
+			exit(1);
+		}
+
+		int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
+		if (spawn_error != 0) {
+			errno = spawn_error;
+			error("%s\n", errno_str());
+			fatal("failed to spawn worker thread %d\n", args[index].id);
+			exit(1);
+		}
 	}
 
 	while (1) {

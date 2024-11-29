@@ -3,6 +3,7 @@
 #include "config.h"
 #include "error.h"
 #include "logger.h"
+#include <sqlite3.h>
 
 queue_t queue = {
 		.front = 0,
@@ -14,7 +15,7 @@ queue_t queue = {
 };
 
 void *thread(void *args) {
-	int id = (int)(intptr_t)args;
+	struct arg_t *arg = (struct arg_t *)args;
 
 	while (1) {
 		pthread_mutex_lock(&queue.lock);
@@ -26,7 +27,7 @@ void *thread(void *args) {
 		task_t task = queue.tasks[queue.front];
 		queue.front = (queue.front + 1) % ((size_t)workers * 2);
 		queue.size--;
-		trace("worker thread %d decreased queue size to %zu\n", id, queue.size);
+		trace("worker thread %d decreased queue size to %zu\n", arg->id, queue.size);
 
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
