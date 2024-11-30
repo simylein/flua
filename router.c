@@ -1,4 +1,5 @@
 #include "auth.h"
+#include "bwt.h"
 #include "file.h"
 #include "flight.h"
 #include "request.h"
@@ -106,18 +107,30 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char user_id[33];
-		if (authenticate(request, &user_id) == -1) {
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
 			response->status = 401;
 			goto respond;
 		}
 
-		find_years(database, user_id, response);
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, &bwt) == -1) {
+			response->status = 401;
+			goto respond;
+		}
+
+		find_years(database, &bwt, response);
 	}
 
 	if (match(request, "get", "/api/flight", &method_found, &pathname_found) == 0) {
-		char user_id[33];
-		if (authenticate(request, &user_id) == -1) {
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
+			response->status = 401;
+			goto respond;
+		}
+
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, &bwt) == -1) {
 			response->status = 401;
 			goto respond;
 		}
@@ -128,7 +141,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		find_flights(database, user_id, year, response);
+		find_flights(database, &bwt, year, response);
 	}
 
 	if (match(request, "post", "/api/flight", &method_found, &pathname_found) == 0) {
@@ -137,8 +150,14 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char user_id[33];
-		if (authenticate(request, &user_id) == -1) {
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
+			response->status = 401;
+			goto respond;
+		}
+
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, &bwt) == -1) {
 			response->status = 401;
 			goto respond;
 		}
@@ -154,7 +173,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		create_flight(database, user_id, hash, starts_at, ends_at, response);
+		create_flight(database, &bwt, hash, starts_at, ends_at, response);
 	}
 
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
@@ -168,8 +187,14 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		if (strcmp(request->method, "get") == 0) {
 			method_found = 1;
 
-			char user_id[33];
-			if (authenticate(request, &user_id) == -1) {
+			const char *cookie = find_header(request, "cookie:");
+			if (cookie == NULL) {
+				response->status = 401;
+				goto respond;
+			}
+
+			struct bwt_t bwt;
+			if (verify_bwt(cookie, &bwt) == -1) {
 				response->status = 401;
 				goto respond;
 			}
