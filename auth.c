@@ -1,3 +1,4 @@
+#include "bwt.h"
 #include "config.h"
 #include "format.h"
 #include "logger.h"
@@ -6,22 +7,7 @@
 #include <sqlite3.h>
 #include <string.h>
 
-int authenticate(request_t *request, char (*buffer)[33]) {
-	char *bearer_start = strstr(request->header, "bearer=");
-	if (bearer_start == NULL) {
-		return -1;
-	}
-
-	if (sscanf(bearer_start, "bearer=%32s\r\n", *buffer) != 1) {
-		return -1;
-	}
-
-	return 0;
-}
-
 void create_signin(sqlite3 *database, char *username, char *password, response_t *response) {
-	info("user %s signing in\n", username);
-
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select id from user where username = ? and password = ?";
@@ -39,15 +25,13 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
-		const int id_size = sqlite3_column_bytes(stmt, 0);
-		char uuid[33];
-		if (bin_to_hex(uuid, sizeof(uuid), id, id_size) == -1) {
-			error("failed to convert uuid to hex\n");
+		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
+		char bwt[65];
+		if (sign_bwt(&bwt, id, id_len) == -1) {
 			response->status = 500;
 			goto cleanup;
 		}
-		// TODO: sign a jwt with id in the payload bay
-		append_header(response, "set-cookie:bearer=%s;Path=/;Max-Age=%d;HttpOnly;\r\n", uuid, jwt_ttl);
+		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%d;HttpOnly;\r\n", bwt, bwt_ttl);
 	} else if (result == SQLITE_DONE) {
 		warn("invalid password for %s\n", username);
 		response->status = 401;
@@ -59,6 +43,7 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 		goto cleanup;
 	}
 
+	info("user %s signed in\n", username);
 	response->status = 201;
 
 cleanup:
@@ -66,8 +51,6 @@ cleanup:
 }
 
 void create_signup(sqlite3 *database, char *username, char *password, response_t *response) {
-	info("user %s signing up\n", username);
-
 	sqlite3_stmt *stmt;
 
 	const char *sql = "insert into user (id, username, password) values (randomblob(16), ?, ?) returning id";
@@ -85,15 +68,13 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
 		const unsigned char *id = sqlite3_column_blob(stmt, 0);
-		const int id_size = sqlite3_column_bytes(stmt, 0);
-		char uuid[33];
-		if (bin_to_hex(uuid, sizeof(uuid), id, id_size) == -1) {
-			error("failed to convert uuid to hex\n");
+		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
+		char bwt[65];
+		if (sign_bwt(&bwt, id, id_len) == -1) {
 			response->status = 500;
 			goto cleanup;
 		}
-		// TODO: sign a jwt with id in the payload bay
-		append_header(response, "set-cookie:bearer=%s;Path=/;Max-Age=%d;HttpOnly;\r\n", uuid, jwt_ttl);
+		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%d;HttpOnly;\r\n", bwt, bwt_ttl);
 	} else if (result == SQLITE_CONSTRAINT) {
 		warn("username %s already taken\n", username);
 		response->status = 409;
@@ -105,6 +86,7 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 		goto cleanup;
 	}
 
+	info("user %s signed up\n", username);
 	response->status = 201;
 
 cleanup:
