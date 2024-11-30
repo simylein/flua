@@ -1,4 +1,5 @@
 #include "config.h"
+#include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
@@ -12,6 +13,8 @@ const char *red = "\x1b[31m";
 const char *bold = "\x1b[1m";
 const char *normal = "\x1b[22m";
 const char *reset = "\x1b[39m";
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void timestamp(char (*buffer)[9]) {
 	time_t now = time(NULL);
@@ -30,98 +33,83 @@ void timestamp(char (*buffer)[9]) {
 	(*buffer)[8] = '\0';
 }
 
+void print(const char *level, const char *color, const char *message, va_list args) {
+	char buffer[9];
+	timestamp(&buffer);
+	pthread_mutex_lock(&mutex);
+	fprintf(stdout, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, buffer, bold, color, level, reset, normal);
+	vfprintf(stdout, message, args);
+	pthread_mutex_unlock(&mutex);
+}
+
 void req(const char *message, ...) {
 	if (log_requests >= 1) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stdout, "%s%sflua%s%s %s %sreq%s ", bold, blue, reset, normal, buffer, bold, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stdout, message, args);
+		print("req", reset, message, args);
 		va_end(args);
 	}
 }
 
 void res(const char *message, ...) {
 	if (log_responses >= 1) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stdout, "%s%sflua%s%s %s %sres%s ", bold, blue, reset, normal, buffer, bold, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stdout, message, args);
+		print("res", reset, message, args);
 		va_end(args);
 	}
 }
 
 void trace(const char *message, ...) {
 	if (log_level >= 6) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stdout, "%s%sflua%s%s %s %s%strace%s%s ", bold, blue, reset, normal, buffer, bold, blue, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stdout, message, args);
+		print("trace", blue, message, args);
 		va_end(args);
 	}
 }
 
 void debug(const char *message, ...) {
 	if (log_level >= 5) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stdout, "%s%sflua%s%s %s %s%sdebug%s%s ", bold, blue, reset, normal, buffer, bold, cyan, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stdout, message, args);
+		print("debug", cyan, message, args);
 		va_end(args);
 	}
 }
 
 void info(const char *message, ...) {
 	if (log_level >= 4) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stdout, "%s%sflua%s%s %s %s%sinfo%s%s ", bold, blue, reset, normal, buffer, bold, green, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stdout, message, args);
+		print("info", green, message, args);
 		va_end(args);
 	}
 }
 
 void warn(const char *message, ...) {
 	if (log_level >= 3) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stderr, "%s%sflua%s%s %s %s%swarn%s%s ", bold, blue, reset, normal, buffer, bold, yellow, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stderr, message, args);
+		print("warn", yellow, message, args);
 		va_end(args);
 	}
 }
 
 void error(const char *message, ...) {
 	if (log_level >= 2) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stderr, "%s%sflua%s%s %s %s%serror%s%s ", bold, blue, reset, normal, buffer, bold, red, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stderr, message, args);
+		print("error", red, message, args);
 		va_end(args);
 	}
 }
 
 void fatal(const char *message, ...) {
 	if (log_level >= 1) {
-		char buffer[9];
-		timestamp(&buffer);
-		fprintf(stderr, "%s%sflua%s%s %s %s%sfatal%s%s ", bold, blue, reset, normal, buffer, bold, purple, reset, normal);
 		va_list args;
 		va_start(args, message);
-		vfprintf(stderr, message, args);
+		print("fatal", purple, message, args);
 		va_end(args);
 	}
 }
