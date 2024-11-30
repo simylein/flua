@@ -6,9 +6,15 @@ target = flua
 sources = $(wildcard *.c)
 objects = $(sources:.c=.o)
 
-all: $(target)
+develop: $(objects)
+	@echo "linking $(target)..."
+	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -fsanitize=address
 
-$(target): $(objects)
+%.o: %.c
+	@echo "compiling $<..."
+	@$(cc) $(flags) -c $< -o $@
+
+release: $(objects)
 	@echo "linking $(target)..."
 	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3
 
