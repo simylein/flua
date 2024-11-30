@@ -4,6 +4,7 @@
 #include "response.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
+#include <stdlib.h>
 #include <string.h>
 
 void find_years(sqlite3 *database, bwt_t *bwt, response_t *response) {
@@ -119,7 +120,7 @@ void create_flight(sqlite3 *database, bwt_t *bwt, char *hex_hash, uint64_t start
 		goto cleanup;
 	}
 
-	unsigned char hash[16];
+	uint8_t hash[16];
 	if (hex_to_bin(hash, sizeof(hash), hex_hash, strlen(hex_hash)) == -1) {
 		error("failed to convert hash to binary\n");
 		response->status = 500;

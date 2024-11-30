@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 void human_duration(char (*buffer)[8], struct timespec *start, struct timespec *stop) {
@@ -34,7 +35,7 @@ int bin_to_hex(char *buffer, const size_t buffer_len, const void *bin, const siz
 	}
 	size_t index = 0;
 	while (index < (buffer_len - 1) / 2) {
-		sprintf(buffer + index * 2, "%02x", ((const unsigned char *)bin)[index]);
+		sprintf(buffer + index * 2, "%02x", ((const uint8_t *)bin)[index]);
 		index++;
 	}
 	buffer[index * 2] = '\0';
@@ -51,7 +52,7 @@ int hex_to_bin(void *buffer, const size_t buffer_len, const char *hex, const siz
 		if (sscanf(hex + index * 2, "%2x", &byte) != 1) {
 			return -1;
 		}
-		((unsigned char *)buffer)[index] = (unsigned char)byte;
+		((uint8_t *)buffer)[index] = (uint8_t)byte;
 		index++;
 	}
 	return 0;

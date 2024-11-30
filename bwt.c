@@ -5,9 +5,10 @@
 #include "request.h"
 #include "string.h"
 #include "time.h"
+#include <stdlib.h>
 
 // TODO: implement actual signing
-int sign_bwt(char (*buffer)[65], const unsigned char *id, const size_t id_len) {
+int sign_bwt(char (*buffer)[65], const uint8_t *id, const size_t id_len) {
 	if (bin_to_hex(*buffer, id_len * 2 + 1, id, id_len) == -1) {
 		error("failed to convert id to hex\n");
 		return -1;

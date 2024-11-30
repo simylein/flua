@@ -5,6 +5,7 @@
 #include "request.h"
 #include "response.h"
 #include <sqlite3.h>
+#include <stdlib.h>
 #include <string.h>
 
 void create_signin(sqlite3 *database, char *username, char *password, response_t *response) {
@@ -24,7 +25,7 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
-		const unsigned char *id = sqlite3_column_blob(stmt, 0);
+		const uint8_t *id = sqlite3_column_blob(stmt, 0);
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		char bwt[65];
 		if (sign_bwt(&bwt, id, id_len) == -1) {
@@ -67,7 +68,7 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
-		const unsigned char *id = sqlite3_column_blob(stmt, 0);
+		const uint8_t *id = sqlite3_column_blob(stmt, 0);
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		char bwt[65];
 		if (sign_bwt(&bwt, id, id_len) == -1) {
