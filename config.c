@@ -8,7 +8,7 @@ int port = 2254;
 int backlog = 16;
 int workers = 4;
 
-int jwt_ttl = 2764800;
+int bwt_ttl = 2764800;
 
 const char *database_file = "flua.sqlite";
 
@@ -141,14 +141,14 @@ int configure(int argc, char *argv[]) {
 			info("--port           -p   int between 1 and 65535            (%d)\n", port);
 			info("--backlog        -b   int between 1 and 256              (%d)\n", backlog);
 			info("--workers        -w   int between 1 and 64               (%d)\n", workers);
-			info("--jwt-ttl        -jt  int between 3600 and 15768000      (%d)\n", jwt_ttl);
+			info("--bwt-ttl        -bt  int between 3600 and 15768000      (%d)\n", bwt_ttl);
 			info("--database-file  -df  path to sqlite database file       (%s)\n", database_file);
 			info("--log-level      -ll  trace debug info warn error panic  (%s)\n", human_log_level(log_level));
 			info("--log-requests   -lq  bool true or false                 (%s)\n", human_bool(log_requests));
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.7.7\n");
+			info("flua flights version 0.7.8\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -163,9 +163,9 @@ int configure(int argc, char *argv[]) {
 		} else if (strcmp(flag, "--workers") == 0 || strcmp(flag, "-w") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "workers", 1, 64, &workers);
-		} else if (strcmp(flag, "--jwt-ttl") == 0 || strcmp(flag, "-jt") == 0) {
+		} else if (strcmp(flag, "--bwt-ttl") == 0 || strcmp(flag, "-bt") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
-			errors += parse_int(arg, "jwt ttl", 3600, 15768000, &jwt_ttl);
+			errors += parse_int(arg, "bwt ttl", 3600, 15768000, &bwt_ttl);
 		} else if (strcmp(flag, "--database-file") == 0 || strcmp(flag, "-df") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_str(arg, "database file", 4, 64, &database_file);

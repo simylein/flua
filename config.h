@@ -4,7 +4,7 @@ extern int port;
 extern int backlog;
 extern int workers;
 
-extern int jwt_ttl;
+extern int bwt_ttl;
 
 extern char *database_file;
 
