@@ -148,7 +148,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.7.13\n");
+			info("flua flights version 0.7.14\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
