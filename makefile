@@ -8,7 +8,7 @@ objects = $(sources:.c=.o)
 
 develop: $(objects)
 	@echo "linking $(target)..."
-	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -fsanitize=address
+	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -O0 -fsanitize=address
 
 %.o: %.c
 	@echo "compiling $<..."
@@ -16,7 +16,7 @@ develop: $(objects)
 
 release: $(objects)
 	@echo "linking $(target)..."
-	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3
+	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -O3
 
 %.o: %.c
 	@echo "compiling $<..."
