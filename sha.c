@@ -141,7 +141,7 @@ void sha256_final(sha256_ctx *ctx, uint8_t (*hash)[32]) {
 	}
 }
 
-void sha256(const uint8_t *data, const size_t data_len, uint8_t (*hash)[32]) {
+void sha256(const void *data, const size_t data_len, uint8_t (*hash)[32]) {
 	struct sha256_ctx ctx;
 
 	sha256_init(&ctx);
