@@ -29,7 +29,7 @@ sqlite3 flua.sqlite
 create table user (
   id blob not null primary key,
   username text not null unique,
-  password text not null
+  password blob not null
 );
 create index index_username on user(username);
 create table flight (

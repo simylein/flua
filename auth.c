@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "request.h"
 #include "response.h"
+#include "sha256.h"
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,8 +21,11 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 		goto cleanup;
 	}
 
+	uint8_t hash[32];
+	sha256(password, strlen(password), &hash);
+
 	sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 2, hash, sizeof(hash), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
@@ -63,8 +67,11 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 		goto cleanup;
 	}
 
+	uint8_t hash[32];
+	sha256(password, strlen(password), &hash);
+
 	sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, password, -1, SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 2, hash, sizeof(hash), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
