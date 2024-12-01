@@ -135,12 +135,6 @@ char *errno_str(void) {
 		return "no route to host";
 	case ENOTEMPTY:
 		return "directory not empty";
-	case EPROCLIM:
-		return "too many processes";
-	case EUSERS:
-		return "too many users";
-	case EDQUOT:
-		return "disc quota exceeded";
 	default:
 		return "???";
 	}
