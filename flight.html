@@ -896,6 +896,10 @@
 				const content = await readFile(file);
 				const hash = await hashFile(content);
 				const data = parseIgcFile(content);
+				if (data.length < 64) {
+					notification('info', `Flight ${hash.substring(0, 8)} is too short`);
+					continue;
+				}
 				await postFlight(hash, data[0].time, data[data.length - 1].time);
 			}
 			upload.children[0].innerText = store;
