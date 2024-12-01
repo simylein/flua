@@ -27,7 +27,7 @@ void find_years(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const uint16_t year = ntohs(sqlite3_column_int(stmt, 0));
+			const uint16_t year = htons(sqlite3_column_int(stmt, 0));
 			if (response->body_len + sizeof(year) > sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
