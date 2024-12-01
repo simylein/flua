@@ -1,5 +1,6 @@
 #include "bwt.h"
 #include "config.h"
+#include "endian.h"
 #include "format.h"
 #include "logger.h"
 #include "request.h"

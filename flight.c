@@ -1,8 +1,8 @@
 #include "bwt.h"
+#include "endian.h"
 #include "format.h"
 #include "logger.h"
 #include "response.h"
-#include <arpa/inet.h>
 #include <sqlite3.h>
 #include <stdint.h>
 #include <string.h>
