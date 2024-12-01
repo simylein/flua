@@ -28,8 +28,8 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	packets_received++;
 
-	const char *length_index = strncasestr(request_buffer, (size_t)bytes_received, "content-length:", 15);
-	const char *body_index = strncasestr(request_buffer, (size_t)bytes_received, "\r\n\r\n", 4);
+	const char *length_index = strncasestrn(request_buffer, (size_t)bytes_received, "content-length:", 15);
+	const char *body_index = strncasestrn(request_buffer, (size_t)bytes_received, "\r\n\r\n", 4);
 
 	if (length_index && body_index) {
 		length_index += 15;

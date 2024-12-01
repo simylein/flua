@@ -1,5 +1,6 @@
 #include "request.h"
 #include "response.h"
+#include <string.h>
 
 void null_init(request_t *request, response_t *response) {
 	request->method[0] = '\0';
@@ -21,15 +22,37 @@ void null_init(request_t *request, response_t *response) {
 	response->body_len = 0;
 }
 
-const char *strncasestr(const char *buffer, size_t buffer_len, const char *buf, size_t buf_len) {
-	size_t ind = 0;
+char *strcasestr(const char *buffer, const char *buf) {
+	size_t buffer_len = strlen(buffer);
+	size_t buf_len = strlen(buf);
+
 	size_t index = 0;
+	size_t ind = 0;
 
 	while (index < buffer_len) {
 		if (buffer[index] == buf[ind] || (buffer[index] >= 'A' && buffer[index] <= 'Z' && buffer[index] + 32 == buf[ind])) {
 			ind++;
 			if (ind == buf_len) {
-				return &buffer[index + 1 - buf_len];
+				return (char *)&buffer[index + 1 - buf_len];
+			}
+		} else {
+			ind = 0;
+		}
+		index++;
+	}
+
+	return NULL;
+}
+
+char *strncasestrn(const char *buffer, size_t buffer_len, const char *buf, size_t buf_len) {
+	size_t index = 0;
+	size_t ind = 0;
+
+	while (index < buffer_len) {
+		if (buffer[index] == buf[ind] || (buffer[index] >= 'A' && buffer[index] <= 'Z' && buffer[index] + 32 == buf[ind])) {
+			ind++;
+			if (ind == buf_len) {
+				return (char *)&buffer[index + 1 - buf_len];
 			}
 		} else {
 			ind = 0;
