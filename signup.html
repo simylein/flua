@@ -120,9 +120,6 @@
 			.text-black {
 				color: #000000;
 			}
-			.text-white {
-				color: #ffffff;
-			}
 			.text-red-600 {
 				color: #dc2626;
 			}
@@ -137,6 +134,9 @@
 			}
 			.bg-neutral-200 {
 				background-color: #e5e5e5;
+			}
+			.bg-neutral-300 {
+				background-color: #d4d4d4;
 			}
 			.bg-neutral-400 {
 				background-color: #a3a3a3;
@@ -153,11 +153,8 @@
 			.bg-blue-200 {
 				background-color: #bfdbfe;
 			}
-			.bg-blue-500 {
-				background-color: #3b82f6;
-			}
-			.hover\:bg-blue-600:hover {
-				background-color: #2563eb;
+			.bg-blue-300 {
+				background-color: #93c5fd;
 			}
 			.active\:scale-95:active {
 				transform: scale(0.95);
@@ -199,9 +196,6 @@
 				.dark\:text-blue-400 {
 					color: #60a5fa;
 				}
-				.dark\:hover\:bg-blue-800:hover {
-					background-color: #1e40af;
-				}
 				.dark\:bg-black {
 					background-color: #000000;
 				}
@@ -210,6 +204,9 @@
 				}
 				.dark\:bg-neutral-800 {
 					background-color: #262626;
+				}
+				.dark\:bg-neutral-700 {
+					background-color: #404040;
 				}
 				.dark\:bg-neutral-600 {
 					background-color: #525252;
@@ -234,7 +231,7 @@
 	</head>
 	<body class="font-sans m-0 text-black dark:text-white bg-white dark:bg-black">
 		<main class="min-h-dvh flex items-center justify-center">
-			<div id="notifications" class="top-0 right-0 absolute flex gap-2 sm:gap-4 m-2 md:m-4"></div>
+			<div id="notifications" class="top-0 right-0 absolute m-2 md:m-4"></div>
 			<div class="box-border w-full max-w-96 m-4 sm:m-8 lg:m-16 pt-8 px-8 pb-4 bg-neutral-100 dark:bg-neutral-900">
 				<form class="flex flex-col items-center" onsubmit="handleSubmit(event)">
 					<h1 class="m-0 mb-2 text-3xl font-semibold">Signup</h1>
@@ -266,7 +263,7 @@
 					<button
 						id="signup-button"
 						type="submit"
-						class="min-w-28 text-base font-normal py-1 px-4 border-0 text-white bg-blue-500 dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-800 active:scale-95 cursor-pointer"
+						class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-blue-300 dark:bg-blue-700 active:scale-95 cursor-pointer"
 					>
 						Signup
 					</button>
@@ -302,12 +299,12 @@
 				const valid = Object.keys(errors).every((key) => !errors[key]);
 				if (valid) {
 					elements.button.disabled = false;
-					elements.button.classList.add('bg-blue-500', 'dark:bg-blue-700', 'hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
-					elements.button.classList.remove('bg-neutral-400', 'dark:bg-neutral-600', 'cursor-not-allowed');
+					elements.button.classList.add('bg-blue-300', 'dark:bg-blue-700', 'active:scale-95', 'cursor-pointer');
+					elements.button.classList.remove('bg-neutral-300', 'dark:bg-neutral-700', 'cursor-not-allowed');
 				} else if (all) {
 					elements.button.disabled = true;
-					elements.button.classList.add('bg-neutral-400', 'dark:bg-neutral-600', 'cursor-not-allowed');
-					elements.button.classList.remove('bg-blue-500', 'dark:bg-blue-700', 'hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+					elements.button.classList.add('bg-neutral-300', 'dark:bg-neutral-700', 'cursor-not-allowed');
+					elements.button.classList.remove('bg-blue-300', 'dark:bg-blue-700', 'active:scale-95', 'cursor-pointer');
 				}
 				return valid;
 			};
@@ -326,12 +323,12 @@
 				elements.button.innerText = 'loading...';
 				elements.button.disabled = true;
 				elements.button.classList.add('cursor-progress');
-				elements.button.classList.remove('hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+				elements.button.classList.remove('active:scale-95', 'cursor-pointer');
 
 				await submit(values);
 				elements.button.innerText = store;
 				elements.button.disabled = false;
-				elements.button.classList.add('hover:bg-blue-600', 'dark:hover:bg-blue-800', 'active:scale-95', 'cursor-pointer');
+				elements.button.classList.add('active:scale-95', 'cursor-pointer');
 				elements.button.classList.remove('cursor-progress');
 			};
 			return { values, errors, touched, validate, setValue, setTouched, handleSubmit };
@@ -377,9 +374,9 @@
 			const element = document.createElement('div');
 			element.classList.add('p-4', ...color(type), 'z-10');
 			const head = document.createElement('h2');
-			head.classList.add('m-0');
+			head.classList.add('m-0', 'mb-1', 'font-semibold');
 			const text = document.createElement('p');
-			text.classList.add('m-0');
+			text.classList.add('m-0', 'font-normal');
 			element.appendChild(head);
 			element.appendChild(text);
 			element.children[0].innerText = kind(type);
