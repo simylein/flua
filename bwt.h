@@ -1,5 +1,5 @@
 #include "request.h"
-#include <stdlib.h>
+#include <stdint.h>
 #include <time.h>
 
 #pragma once

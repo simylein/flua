@@ -1,5 +1,5 @@
+#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 void human_duration(char (*buffer)[8], struct timespec *start, struct timespec *stop) {

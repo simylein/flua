@@ -5,7 +5,7 @@
 #include "request.h"
 #include "response.h"
 #include <sqlite3.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 int match(request_t *request, const char *method, const char *pathname, int *method_found, int *pathname_found) {

@@ -1,6 +1,7 @@
 #include "bwt.h"
 #include "response.h"
 #include <sqlite3.h>
+#include <stdint.h>
 
 void find_years(sqlite3 *database, bwt_t *bwt, response_t *response);
 void find_flights(sqlite3 *database, bwt_t *bwt, char *year, response_t *response);

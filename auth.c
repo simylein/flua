@@ -6,7 +6,7 @@
 #include "response.h"
 #include "sha256.h"
 #include <sqlite3.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 void create_signin(sqlite3 *database, char *username, char *password, response_t *response) {

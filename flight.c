@@ -4,7 +4,7 @@
 #include "response.h"
 #include <arpa/inet.h>
 #include <sqlite3.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 void find_years(sqlite3 *database, bwt_t *bwt, response_t *response) {

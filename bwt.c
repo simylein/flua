@@ -5,7 +5,7 @@
 #include "request.h"
 #include "string.h"
 #include "time.h"
-#include <stdlib.h>
+#include <stdint.h>
 
 // TODO: implement actual signing
 int sign_bwt(char (*buffer)[65], const uint8_t *id, const size_t id_len) {
