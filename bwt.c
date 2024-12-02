@@ -74,7 +74,7 @@ int verify_bwt(const char *cookie, bwt_t *bwt) {
 	sha256_hmac((uint8_t *)bwt_key, 6, buffer, sizeof(bwt->id) * 2 + sizeof(n_iat) * 2 + sizeof(n_exp) * 2, &expected_hmac);
 
 	if (memcmp(actual_hmac, expected_hmac, sizeof(expected_hmac)) != 0) {
-		warn("bwt for %.8s has invalid signature\n", buffer);
+		warn("bwt %.8s has invalid signature\n", buffer);
 		return -1;
 	}
 
@@ -83,7 +83,9 @@ int verify_bwt(const char *cookie, bwt_t *bwt) {
 
 	time_t now = time(NULL);
 	if (bwt->exp < now) {
-		warn("bwt for %.8s has expired %zus ago\n", buffer, now - bwt->exp);
+		char time_buffer[8];
+		human_time(&time_buffer, now - bwt->exp);
+		warn("bwt %.8s has expired %s ago\n", buffer, time_buffer);
 		return -1;
 	}
 

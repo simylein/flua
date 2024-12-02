@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include <time.h>
 
+void human_time(char (*buffer)[8], time_t seconds) {
+	if (seconds < 60) {
+		sprintf(*buffer, "%zus", seconds);
+	} else if (seconds < 3600) {
+		sprintf(*buffer, "%zum", seconds / 60);
+	} else if (seconds < 86400) {
+		sprintf(*buffer, "%zuh", seconds / 3600);
+	} else {
+		sprintf(*buffer, "%zud", seconds / 86400);
+	}
+}
+
 void human_duration(char (*buffer)[8], struct timespec *start, struct timespec *stop) {
 	time_t start_nanoseconds = start->tv_sec * 1000000000 + start->tv_nsec;
 	time_t stop_nanoseconds = stop->tv_sec * 1000000000 + stop->tv_nsec;
