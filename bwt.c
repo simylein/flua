@@ -4,11 +4,11 @@
 #include "format.h"
 #include "logger.h"
 #include "request.h"
+#include "sha256.h"
 #include "string.h"
 #include "time.h"
 #include <stdint.h>
 
-// TODO: implement actual signing
 int sign_bwt(char (*buffer)[129], const uint8_t *id, const size_t id_len) {
 	if (bin_to_hex(*buffer, id_len * 2 + 1, id, id_len) == -1) {
 		error("failed to convert id to hex\n");
@@ -29,10 +29,17 @@ int sign_bwt(char (*buffer)[129], const uint8_t *id, const size_t id_len) {
 		return -1;
 	}
 
+	uint8_t hmac[32];
+	sha256_hmac((uint8_t *)bwt_key, 6, buffer, id_len * 2 + sizeof(n_iat) * 2 + sizeof(n_exp) * 2, &hmac);
+	if (bin_to_hex(*buffer + id_len * 2 + sizeof(n_iat) * 2 + sizeof(n_exp) * 2, sizeof(hmac) * 2 + 1, hmac, sizeof(hmac)) ==
+			-1) {
+		error("failed to convert hmac to hex\n");
+		return -1;
+	}
+
 	return 0;
 }
 
-// TODO: implement actual verification
 int verify_bwt(const char *cookie, bwt_t *bwt) {
 	char buffer[129];
 	if (sscanf(cookie, "auth=%128s\r\n", buffer) != 1) {
@@ -57,8 +64,28 @@ int verify_bwt(const char *cookie, bwt_t *bwt) {
 		return -1;
 	}
 
+	uint8_t actual_hmac[32];
+	if (hex_to_bin(actual_hmac, sizeof(actual_hmac), &buffer[sizeof(bwt->id) * 2 + sizeof(n_iat) * 2 + sizeof(n_exp) * 2],
+								 sizeof(actual_hmac) * 2) == -1) {
+		error("failed to convert hmac to binary\n");
+	}
+
+	uint8_t expected_hmac[32];
+	sha256_hmac((uint8_t *)bwt_key, 6, buffer, sizeof(bwt->id) * 2 + sizeof(n_iat) * 2 + sizeof(n_exp) * 2, &expected_hmac);
+
+	if (memcmp(actual_hmac, expected_hmac, sizeof(expected_hmac)) != 0) {
+		warn("bwt for %.8s has invalid signature\n", buffer);
+		return -1;
+	}
+
 	bwt->iat = (time_t)ntohll(n_iat);
 	bwt->exp = (time_t)ntohll(n_exp);
+
+	time_t now = time(NULL);
+	if (bwt->exp < now) {
+		warn("bwt for %.8s has expired %zus ago\n", buffer, now - bwt->exp);
+		return -1;
+	}
 
 	return 0;
 }
