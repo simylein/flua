@@ -31,7 +31,7 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 	if (result == SQLITE_ROW) {
 		const uint8_t *id = sqlite3_column_blob(stmt, 0);
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
-		char bwt[65];
+		char bwt[129];
 		if (sign_bwt(&bwt, id, id_len) == -1) {
 			response->status = 500;
 			goto cleanup;
@@ -77,7 +77,7 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 	if (result == SQLITE_ROW) {
 		const uint8_t *id = sqlite3_column_blob(stmt, 0);
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
-		char bwt[65];
+		char bwt[129];
 		if (sign_bwt(&bwt, id, id_len) == -1) {
 			response->status = 500;
 			goto cleanup;

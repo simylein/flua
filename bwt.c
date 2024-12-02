@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 // TODO: implement actual signing
-int sign_bwt(char (*buffer)[65], const uint8_t *id, const size_t id_len) {
+int sign_bwt(char (*buffer)[129], const uint8_t *id, const size_t id_len) {
 	if (bin_to_hex(*buffer, id_len * 2 + 1, id, id_len) == -1) {
 		error("failed to convert id to hex\n");
 		return -1;
@@ -34,8 +34,8 @@ int sign_bwt(char (*buffer)[65], const uint8_t *id, const size_t id_len) {
 
 // TODO: implement actual verification
 int verify_bwt(const char *cookie, bwt_t *bwt) {
-	char buffer[65];
-	if (sscanf(cookie, "auth=%64s\r\n", buffer) != 1) {
+	char buffer[129];
+	if (sscanf(cookie, "auth=%128s\r\n", buffer) != 1) {
 		warn("no auth value in cookie header\n");
 		return -1;
 	}
