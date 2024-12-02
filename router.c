@@ -4,7 +4,9 @@
 #include "flight.h"
 #include "request.h"
 #include "response.h"
+#include "user.h"
 #include <sqlite3.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -196,6 +198,22 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			struct bwt_t bwt;
 			if (verify_bwt(cookie, &bwt) == -1) {
 				response->status = 401;
+				goto respond;
+			}
+
+			struct user_t user;
+			bool found = find_user(database, &request->pathname[1], &user, response);
+			if (response->status != 0) {
+				goto respond;
+			}
+
+			if (found == false) {
+				response->status = 404;
+				goto respond;
+			}
+
+			if (user.public == false && memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+				response->status = 403;
 				goto respond;
 			}
 
