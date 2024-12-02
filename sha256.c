@@ -148,3 +148,34 @@ void sha256(const void *data, const size_t data_len, uint8_t (*hash)[32]) {
 	sha256_update(&ctx, data, data_len);
 	sha256_final(&ctx, hash);
 }
+
+void sha256_hmac(const uint8_t *key, const size_t key_len, const void *data, const size_t data_len, uint8_t (*hmac)[32]) {
+	uint8_t key_block[64] = {0};
+	uint8_t outer_padding[64];
+	uint8_t inner_padding[64];
+	uint8_t hash[32];
+
+	if (key_len > sizeof(key_block)) {
+		sha256(key, key_len, (uint8_t(*)[32])key_block);
+	} else {
+		memcpy(key_block, key, key_len);
+	}
+
+	uint8_t index = 0;
+	for (; index < sizeof(key_block); index++) {
+		outer_padding[index] = key_block[index] ^ 0x5c;
+		inner_padding[index] = key_block[index] ^ 0x36;
+	}
+
+	sha256_ctx ctx;
+
+	sha256_init(&ctx);
+	sha256_update(&ctx, inner_padding, sizeof(inner_padding));
+	sha256_update(&ctx, data, data_len);
+	sha256_final(&ctx, &hash);
+
+	sha256_init(&ctx);
+	sha256_update(&ctx, outer_padding, sizeof(outer_padding));
+	sha256_update(&ctx, hash, sizeof(hash));
+	sha256_final(&ctx, hmac);
+}
