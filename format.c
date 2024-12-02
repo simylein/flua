@@ -19,25 +19,25 @@ void human_duration(char (*buffer)[8], struct timespec *start, struct timespec *
 	time_t stop_nanoseconds = stop->tv_sec * 1000000000 + stop->tv_nsec;
 	time_t nanoseconds = stop_nanoseconds - start_nanoseconds;
 	if (nanoseconds < 1000) {
-		sprintf(*buffer, "%ldns", nanoseconds);
+		sprintf(*buffer, "%zuns", nanoseconds);
 	} else if (nanoseconds < 1000000) {
-		sprintf(*buffer, "%ldus", nanoseconds / 1000);
+		sprintf(*buffer, "%zuus", nanoseconds / 1000);
 	} else if (nanoseconds < 1000000000) {
-		sprintf(*buffer, "%ldms", nanoseconds / 1000000);
+		sprintf(*buffer, "%zums", nanoseconds / 1000000);
 	} else {
-		sprintf(*buffer, "%lds", nanoseconds / 1000000000);
+		sprintf(*buffer, "%zus", nanoseconds / 1000000000);
 	}
 }
 
 void human_bytes(char (*buffer)[8], size_t bytes) {
 	if (bytes < 1000) {
-		sprintf(*buffer, "%ldb", bytes);
+		sprintf(*buffer, "%zub", bytes);
 	} else if (bytes < 1000000) {
-		sprintf(*buffer, "%ldkb", bytes / 1000);
+		sprintf(*buffer, "%zukb", bytes / 1000);
 	} else if (bytes < 1000000000) {
-		sprintf(*buffer, "%ldmb", bytes / 1000000);
+		sprintf(*buffer, "%zumb", bytes / 1000000);
 	} else {
-		sprintf(*buffer, "%ldgb", bytes / 1000000000);
+		sprintf(*buffer, "%zugb", bytes / 1000000000);
 	}
 }
 
