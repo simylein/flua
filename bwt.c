@@ -52,7 +52,7 @@ int verify_bwt(const char *cookie, bwt_t *bwt) {
 	}
 
 	uint64_t n_exp;
-	if (hex_to_bin(&n_exp, sizeof(n_exp), &buffer[48], sizeof(n_exp) * 2) == -1) {
+	if (hex_to_bin(&n_exp, sizeof(n_exp), &buffer[sizeof(bwt->id) * 2 + sizeof(n_iat) * 2], sizeof(n_exp) * 2) == -1) {
 		error("failed to convert exp to binary\n");
 		return -1;
 	}
