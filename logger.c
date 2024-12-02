@@ -33,12 +33,12 @@ void timestamp(char (*buffer)[9]) {
 	(*buffer)[8] = '\0';
 }
 
-void print(const char *level, const char *color, const char *message, va_list args) {
+void print(FILE *file, const char *level, const char *color, const char *message, va_list args) {
 	char buffer[9];
 	timestamp(&buffer);
 	pthread_mutex_lock(&mutex);
-	fprintf(stdout, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, buffer, bold, color, level, reset, normal);
-	vfprintf(stdout, message, args);
+	fprintf(file, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, buffer, bold, color, level, reset, normal);
+	vfprintf(file, message, args);
 	pthread_mutex_unlock(&mutex);
 }
 
@@ -46,7 +46,7 @@ void req(const char *message, ...) {
 	if (log_requests >= 1) {
 		va_list args;
 		va_start(args, message);
-		print("req", reset, message, args);
+		print(stdout, "req", reset, message, args);
 		va_end(args);
 	}
 }
@@ -55,7 +55,7 @@ void res(const char *message, ...) {
 	if (log_responses >= 1) {
 		va_list args;
 		va_start(args, message);
-		print("res", reset, message, args);
+		print(stdout, "res", reset, message, args);
 		va_end(args);
 	}
 }
@@ -64,7 +64,7 @@ void trace(const char *message, ...) {
 	if (log_level >= 6) {
 		va_list args;
 		va_start(args, message);
-		print("trace", blue, message, args);
+		print(stdout, "trace", blue, message, args);
 		va_end(args);
 	}
 }
@@ -73,7 +73,7 @@ void debug(const char *message, ...) {
 	if (log_level >= 5) {
 		va_list args;
 		va_start(args, message);
-		print("debug", cyan, message, args);
+		print(stdout, "debug", cyan, message, args);
 		va_end(args);
 	}
 }
@@ -82,7 +82,7 @@ void info(const char *message, ...) {
 	if (log_level >= 4) {
 		va_list args;
 		va_start(args, message);
-		print("info", green, message, args);
+		print(stdout, "info", green, message, args);
 		va_end(args);
 	}
 }
@@ -91,7 +91,7 @@ void warn(const char *message, ...) {
 	if (log_level >= 3) {
 		va_list args;
 		va_start(args, message);
-		print("warn", yellow, message, args);
+		print(stderr, "warn", yellow, message, args);
 		va_end(args);
 	}
 }
@@ -100,7 +100,7 @@ void error(const char *message, ...) {
 	if (log_level >= 2) {
 		va_list args;
 		va_start(args, message);
-		print("error", red, message, args);
+		print(stderr, "error", red, message, args);
 		va_end(args);
 	}
 }
@@ -109,7 +109,7 @@ void fatal(const char *message, ...) {
 	if (log_level >= 1) {
 		va_list args;
 		va_start(args, message);
-		print("fatal", purple, message, args);
+		print(stderr, "fatal", purple, message, args);
 		va_end(args);
 	}
 }
