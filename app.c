@@ -64,7 +64,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		packets_received++;
 	}
 
-	trace("received %zd bytes in %zd packets from %s:%d\n", bytes_received, packets_received, inet_ntoa(client_addr->sin_addr),
+	trace("received %zd bytes in %zu packets from %s:%d\n", bytes_received, packets_received, inet_ntoa(client_addr->sin_addr),
 				ntohs(client_addr->sin_port));
 
 	struct timespec start;
@@ -137,7 +137,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		packets_sent++;
 	}
 
-	trace("sent %zd bytes in %zd packets to %s:%d\n", bytes_sent, packets_sent, inet_ntoa(client_addr->sin_addr),
+	trace("sent %zd bytes in %zu packets to %s:%d\n", bytes_sent, packets_sent, inet_ntoa(client_addr->sin_addr),
 				ntohs(client_addr->sin_port));
 
 cleanup:
