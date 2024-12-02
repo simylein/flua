@@ -5,6 +5,7 @@ extern int backlog;
 extern int workers;
 
 extern int bwt_ttl;
+extern char *bwt_key;
 
 extern char *database_file;
 
