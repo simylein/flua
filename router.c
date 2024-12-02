@@ -10,12 +10,12 @@
 #include <stdint.h>
 #include <string.h>
 
-int match(request_t *request, const char *method, const char *pathname, int *method_found, int *pathname_found) {
+int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
 	if (strcmp(request->pathname, pathname) == 0) {
-		*pathname_found = 1;
+		*pathname_found = true;
 
 		if (strcmp(request->method, method) == 0) {
-			*method_found = 1;
+			*method_found = true;
 
 			return 0;
 		}
@@ -25,8 +25,8 @@ int match(request_t *request, const char *method, const char *pathname, int *met
 }
 
 void route(sqlite3 *database, request_t *request, response_t *response) {
-	int method_found = 0;
-	int pathname_found = 0;
+	bool method_found = false;
+	bool pathname_found = false;
 
 	if (match(request, "get", "/", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
@@ -223,10 +223,10 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 
 respond:
 
-	if (pathname_found == 0 && method_found == 0) {
+	if (pathname_found == false && method_found == false) {
 		response->status = 404;
 	}
-	if (pathname_found == 1 && method_found == 0) {
+	if (pathname_found == true && method_found == false) {
 		response->status = 405;
 	}
 
