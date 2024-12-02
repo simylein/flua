@@ -58,7 +58,7 @@ cleanup:
 void create_signup(sqlite3 *database, char *username, char *password, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "insert into user (id, username, password) values (randomblob(16), ?, ?) returning id";
+	const char *sql = "insert into user (id, username, password, public) values (randomblob(16), ?, ?, 0) returning id";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
