@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	queue.tasks = malloc((size_t)workers * 2 * sizeof(task_t));
+	queue.tasks = malloc((size_t)queue_size * sizeof(task_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for tasks\n");
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 	while (1) {
 		pthread_mutex_lock(&queue.lock);
 
-		while (queue.size >= (size_t)workers * 2) {
+		while (queue.size >= (size_t)queue_size) {
 			warn("waiting for queue size to decrease\n");
 			pthread_cond_wait(&queue.available, &queue.lock);
 		}
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 
 		queue.tasks[queue.back].client_sock = client_sock;
 		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
-		queue.back = (queue.back + 1) % ((size_t)workers * 2);
+		queue.back = (queue.back + 1) % ((size_t)queue_size);
 		queue.size++;
 		trace("main thread increased queue size to %zu\n", queue.size);
 
