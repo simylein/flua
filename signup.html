@@ -398,11 +398,15 @@
 					if (!value) return 'username is required';
 					if (value.length < 4) return 'username is too short';
 					if (value.length > 16) return 'username is too long';
+					if (!value.match(/^[a-z]+$/)) return 'username must be lowercase letters';
 				},
 				password: (value) => {
 					if (!value) return 'password is required';
 					if (value.length < 8) return 'password is too short';
 					if (value.length > 64) return 'password is too long';
+					if (!value.match(/[0-9]/)) return 'password must include digits';
+					if (!value.match(/[a-z]/)) return 'password must include lowercase letters';
+					if (!value.match(/[A-Z]/)) return 'password must include uppercase letters';
 				},
 			},
 			async (values) => {
