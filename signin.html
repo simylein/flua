@@ -406,7 +406,7 @@
 				},
 			},
 			async (values) => {
-				const data = new Blob([`username=${values.username}&password=${values.password}`]);
+				const data = new Blob([values.username, '\0', values.password, '\0']);
 				try {
 					if (window.location.origin.startsWith('http://localhost')) {
 						await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
