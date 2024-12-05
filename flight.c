@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <string.h>
 
-void find_years(sqlite3 *database, bwt_t *bwt, response_t *response) {
+void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select distinct strftime('%Y', datetime(starts_at, 'unixepoch')) as year from flight "
@@ -21,7 +21,7 @@ void find_years(sqlite3 *database, bwt_t *bwt, response_t *response) {
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, *user_id, sizeof(*user_id), SQLITE_STATIC);
 
 	size_t rows = 0;
 	while (1) {
@@ -56,7 +56,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flights(sqlite3 *database, bwt_t *bwt, char *year, response_t *response) {
+void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select starts_at, ends_at from flight "
@@ -70,7 +70,7 @@ void find_flights(sqlite3 *database, bwt_t *bwt, char *year, response_t *respons
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, *user_id, sizeof(*user_id), SQLITE_STATIC);
 	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
 
 	size_t rows = 0;

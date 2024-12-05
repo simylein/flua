@@ -104,11 +104,6 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 	}
 
 	if (match(request, "get", "/api/year", &method_found, &pathname_found) == 0) {
-		if (request->search_len != 0) {
-			response->status = 400;
-			goto respond;
-		}
-
 		const char *cookie = find_header(request, "cookie:");
 		if (cookie == NULL) {
 			response->status = 401;
@@ -121,7 +116,29 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		find_years(database, &bwt, response);
+		char name[17];
+		if (sscanf(request->search, "user=%16s", name) != 1) {
+			response->status = 400;
+			goto respond;
+		}
+
+		struct user_t user;
+		bool found = find_user(database, name, &user, response);
+		if (response->status != 0) {
+			goto respond;
+		}
+
+		if (found == false) {
+			response->status = 404;
+			goto respond;
+		}
+
+		if (user.public == false && memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+			response->status = 403;
+			goto respond;
+		}
+
+		find_years(database, &user.id, response);
 	}
 
 	if (match(request, "get", "/api/flight", &method_found, &pathname_found) == 0) {
@@ -137,13 +154,30 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
+		char name[17];
 		char year[5];
-		if (sscanf(request->search, "year=%4s", year) != 1) {
+		if (sscanf(request->search, "user=%16[^&]&year=%4s", name, year) != 2) {
 			response->status = 400;
 			goto respond;
 		}
 
-		find_flights(database, &bwt, year, response);
+		struct user_t user;
+		bool found = find_user(database, name, &user, response);
+		if (response->status != 0) {
+			goto respond;
+		}
+
+		if (found == false) {
+			response->status = 404;
+			goto respond;
+		}
+
+		if (user.public == false && memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+			response->status = 403;
+			goto respond;
+		}
+
+		find_flights(database, &user.id, year, response);
 	}
 
 	if (match(request, "post", "/api/flight", &method_found, &pathname_found) == 0) {
