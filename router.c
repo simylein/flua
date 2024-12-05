@@ -2,6 +2,8 @@
 #include "bwt.h"
 #include "file.h"
 #include "flight.h"
+#include "logger.h"
+#include "parse.h"
 #include "request.h"
 #include "response.h"
 #include "user.h"
@@ -63,15 +65,14 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 
 		char username[17];
 		char password[65];
-
-		request->body[request->body_len] = '\0';
-
-		if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
+		if (parse_credentials(&username, &password, request) == -1) {
+			debug("failed to parse username and password\n");
 			response->status = 400;
 			goto respond;
-		}
+		};
 
-		if (strlen(username) < 4 || strlen(password) < 8) {
+		if (validate_credentials(&username, &password) == -1) {
+			debug("failed to validate username and password\n");
 			response->status = 400;
 			goto respond;
 		}
@@ -87,15 +88,14 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 
 		char username[17];
 		char password[65];
-
-		request->body[request->body_len] = '\0';
-
-		if (sscanf(request->body, "username=%16[^&]&password=%64s", username, password) != 2) {
+		if (parse_credentials(&username, &password, request) == -1) {
+			debug("failed to parse username and password\n");
 			response->status = 400;
 			goto respond;
-		}
+		};
 
-		if (strlen(username) < 4 || strlen(password) < 8) {
+		if (validate_credentials(&username, &password) == -1) {
+			debug("failed to validate username and password\n");
 			response->status = 400;
 			goto respond;
 		}
