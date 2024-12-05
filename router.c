@@ -36,6 +36,19 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie != NULL) {
+			struct bwt_t bwt;
+			if (verify_bwt(cookie, &bwt) == 0) {
+				struct user_t user;
+				if (find_user_by_id(database, &bwt.id, &user) == 0) {
+					response->status = 307;
+					append_header(response, "location:/%s\r\n", user.username);
+					goto respond;
+				}
+			}
+		}
+
 		file("home.html", response);
 	}
 
