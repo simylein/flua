@@ -225,7 +225,8 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 
 			const char *cookie = find_header(request, "cookie:");
 			if (cookie == NULL) {
-				response->status = 401;
+				response->status = 307;
+				append_header(response, "location:/signin\r\n");
 				goto respond;
 			}
 
