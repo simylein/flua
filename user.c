@@ -2,20 +2,19 @@
 #include "logger.h"
 #include "response.h"
 #include <sqlite3.h>
-#include <stdbool.h>
 #include <string.h>
 
-bool find_user(sqlite3 *database, char *name, user_t *user, response_t *response) {
+int find_user_by_name(sqlite3 *database, char *name, user_t *user) {
 	sqlite3_stmt *stmt;
 
-	bool found = false;
+	int status = 404;
 
 	const char *sql = "select id, username, public from user where username = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to prepare statement\n");
-		response->status = 500;
+		status = 500;
 		goto cleanup;
 	}
 
@@ -30,28 +29,28 @@ bool find_user(sqlite3 *database, char *name, user_t *user, response_t *response
 		const bool public = (bool)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
 			error("id length does not match buffer\n");
-			response->status = 500;
+			status = 500;
 			goto cleanup;
 		}
 		if (username_len > sizeof(user->username) - 1) {
 			error("username length exceeds buffer\n");
-			response->status = 500;
+			status = 500;
 			goto cleanup;
 		}
 		memcpy(user->id, id, id_len);
 		memcpy(user->username, username, username_len + 1);
 		user->public = public;
-		found = true;
+		status = 0;
 	} else if (result == SQLITE_DONE) {
 		goto cleanup;
 	} else {
 		error("%s\n", sqlite3_errmsg(database));
 		error("failed to execute statement\n");
-		response->status = 500;
+		status = 500;
 		goto cleanup;
 	}
 
 cleanup:
 	sqlite3_finalize(stmt);
-	return found;
+	return status;
 }

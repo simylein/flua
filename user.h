@@ -9,4 +9,4 @@ typedef struct user_t {
 	bool public;
 } user_t;
 
-bool find_user(sqlite3 *database, char *name, user_t *user, response_t *response);
+int find_user_by_name(sqlite3 *database, char *name, user_t *user);
