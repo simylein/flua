@@ -631,6 +631,10 @@
 				index++;
 			}
 		};
+		const getUser = () => {
+			const user = window.location.pathname.substring(1)
+			return user ?? null
+		}
 		const getYear = () => {
 			const year = new URLSearchParams(window.location.search).get('year');
 			return +(year ?? new Date().getFullYear());
@@ -806,7 +810,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch('/api/year');
+				const response = await fetch(`/api/year?user=${getUser()}`);
 				if (response.status < 200 || response.status > 299) {
 					throw Error(response);
 				}
@@ -826,7 +830,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch(`/api/flight?year=${getYear()}`);
+				const response = await fetch(`/api/flight?user=${getUser()}&year=${getYear()}`);
 				if (response.status < 200 || response.status > 299) {
 					throw Error(response);
 				}
