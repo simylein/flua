@@ -3,6 +3,7 @@ extern int port;
 
 extern int backlog;
 extern int workers;
+extern int queue_size;
 
 extern int bwt_ttl;
 extern char *bwt_key;
