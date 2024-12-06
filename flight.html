@@ -632,9 +632,9 @@
 			}
 		};
 		const getUser = () => {
-			const user = window.location.pathname.substring(1)
-			return user ?? null
-		}
+			const user = window.location.pathname.substring(1);
+			return user ?? null;
+		};
 		const getYear = () => {
 			const year = new URLSearchParams(window.location.search).get('year');
 			return +(year ?? new Date().getFullYear());
@@ -855,10 +855,16 @@
 			const buffer = await crypto.subtle.digest('sha-256', data);
 			const array = Array.from(new Uint8Array(buffer));
 			const hex = array.map((byte) => byte.toString(16).padStart(2, '0'));
-			return hex.join('');
+			return [hex.join(''), buffer];
 		};
-		const postFlight = async (hash, startsAt, endsAt) => {
-			const data = new Blob([`hash=${hash.substring(0, 32)}&starts_at=${startsAt}&ends_at=${endsAt}`]);
+		const postFlight = async (hexHash, binHash, startsAt, endsAt) => {
+			const buffer = new ArrayBuffer(16);
+			const view = new DataView(buffer);
+			view.setUint32(0, Number(startsAt >> 32n));
+			view.setUint32(4, Number(startsAt & 0xffffffffn));
+			view.setUint32(8, Number(endsAt >> 32n));
+			view.setUint32(12, Number(endsAt & 0xffffffffn));
+			const data = new Blob([binHash, buffer]);
 			try {
 				if (window.location.origin.startsWith('http://localhost')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -868,11 +874,11 @@
 				}
 				const response = await fetch('/api/flight', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
 				if (response.status >= 200 && response.status <= 299) {
-					notification('success', `Successfully uploaded flight ${hash.substring(0, 8)}`);
-					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(startsAt * 1000).getFullYear())) {
+					notification('success', `Successfully uploaded flight ${hexHash.substring(0, 8)}`);
+					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(Number(startsAt) * 1000).getFullYear())) {
 						loadYears();
 					}
-					if (getYear() === new Date(startsAt * 1000).getFullYear()) {
+					if (getYear() === new Date(Number(startsAt) * 1000).getFullYear()) {
 						loadFlights();
 					}
 					return;
@@ -898,13 +904,13 @@
 			const files = Array.from(event.target.files);
 			for (const file of files) {
 				const content = await readFile(file);
-				const hash = await hashFile(content);
+				const [hexHash, binHash] = await hashFile(content);
 				const data = parseIgcFile(content);
 				if (data.length < 64) {
-					notification('info', `Flight ${hash.substring(0, 8)} is too short`);
+					notification('info', `Flight ${hexHash.substring(0, 8)} is too short`);
 					continue;
 				}
-				await postFlight(hash, data[0].time, data[data.length - 1].time);
+				await postFlight(hexHash, binHash, BigInt(data[0].time), BigInt(data[data.length - 1].time));
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
