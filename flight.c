@@ -1,3 +1,4 @@
+#include "flight.h"
 #include "bwt.h"
 #include "endian.h"
 #include "format.h"
@@ -108,7 +109,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void create_flight(sqlite3 *database, bwt_t *bwt, char *hex_hash, uint64_t starts_at, uint64_t ends_at, response_t *response) {
+void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "insert into flight (id, hash, starts_at, ends_at, user_id) values (randomblob(16), ?, ?, ?, ?)";
@@ -120,23 +121,16 @@ void create_flight(sqlite3 *database, bwt_t *bwt, char *hex_hash, uint64_t start
 		goto cleanup;
 	}
 
-	uint8_t hash[16];
-	if (hex_to_bin(hash, sizeof(hash), hex_hash, strlen(hex_hash)) == -1) {
-		error("failed to convert hash to binary\n");
-		response->status = 500;
-		goto cleanup;
-	}
-
-	sqlite3_bind_blob(stmt, 1, hash, sizeof(hash), SQLITE_STATIC);
-	sqlite3_bind_int64(stmt, 2, (int64_t)starts_at);
-	sqlite3_bind_int64(stmt, 3, (int64_t)ends_at);
+	sqlite3_bind_blob(stmt, 1, flight->hash, sizeof(flight->hash), SQLITE_STATIC);
+	sqlite3_bind_int64(stmt, 2, (int64_t)flight->starts_at);
+	sqlite3_bind_int64(stmt, 3, (int64_t)flight->ends_at);
 	sqlite3_bind_blob(stmt, 4, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_DONE) {
 		response->status = 201;
 	} else if (result == SQLITE_CONSTRAINT) {
-		warn("flight %.8s already exists\n", hex_hash);
+		warn("flight %.8x already exists\n", *(uint32_t *)flight->hash);
 		response->status = 409;
 		goto cleanup;
 	} else {
@@ -146,7 +140,7 @@ void create_flight(sqlite3 *database, bwt_t *bwt, char *hex_hash, uint64_t start
 		goto cleanup;
 	}
 
-	info("created flight %.8s\n", hex_hash);
+	info("created flight %.8x\n", *(uint32_t *)flight->hash);
 
 cleanup:
 	sqlite3_finalize(stmt);

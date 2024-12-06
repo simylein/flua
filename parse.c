@@ -1,3 +1,4 @@
+#include "flight.h"
 #include "logger.h"
 #include "request.h"
 #include <stdbool.h>
@@ -84,6 +85,32 @@ int validate_credentials(char (*username)[17], char (*password)[65]) {
 	}
 
 	if (!lower || !upper || !digit) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int parse_flight(flight_t *flight, request_t *request) {
+	if (request->body_len != 48) {
+		return -1;
+	}
+
+	uint64_t n_starts_at;
+	uint64_t n_ends_at;
+
+	memcpy(&flight->hash, request->body, sizeof(flight->hash));
+	memcpy(&n_starts_at, &request->body[sizeof(flight->hash)], sizeof(flight->starts_at));
+	memcpy(&n_ends_at, &request->body[sizeof(flight->hash) + sizeof(flight->starts_at)], sizeof(flight->ends_at));
+
+	flight->starts_at = ntohll(n_starts_at);
+	flight->ends_at = ntohll(n_ends_at);
+
+	return 0;
+}
+
+int validate_flight(flight_t *flight) {
+	if (flight->starts_at > flight->ends_at) {
 		return -1;
 	}
 

@@ -80,13 +80,13 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		char username[17];
 		char password[65];
 		if (parse_credentials(&username, &password, request) == -1) {
-			debug("failed to parse username and password\n");
+			debug("failed to parse credentials\n");
 			response->status = 400;
 			goto respond;
 		};
 
 		if (validate_credentials(&username, &password) == -1) {
-			debug("failed to validate username and password\n");
+			debug("failed to validate credentials\n");
 			response->status = 400;
 			goto respond;
 		}
@@ -103,13 +103,13 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		char username[17];
 		char password[65];
 		if (parse_credentials(&username, &password, request) == -1) {
-			debug("failed to parse username and password\n");
+			debug("failed to parse credentials\n");
 			response->status = 400;
 			goto respond;
 		};
 
 		if (validate_credentials(&username, &password) == -1) {
-			debug("failed to validate username and password\n");
+			debug("failed to validate credentials\n");
 			response->status = 400;
 			goto respond;
 		}
@@ -204,18 +204,20 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char hash[33];
-		uint64_t starts_at;
-		uint64_t ends_at;
-
-		request->body[request->body_len] = '\0';
-
-		if (sscanf(request->body, "hash=%32s&starts_at=%lld&ends_at=%lld", hash, &starts_at, &ends_at) != 3) {
+		struct flight_t flight;
+		if (parse_flight(&flight, request) == -1) {
+			debug("failed to parse flight\n");
 			response->status = 400;
 			goto respond;
-		}
+		};
 
-		create_flight(database, &bwt, hash, starts_at, ends_at, response);
+		if (validate_flight(&flight) == -1) {
+			debug("failed to validate flight\n");
+			response->status = 400;
+			goto respond;
+		};
+
+		create_flight(database, &bwt, &flight, response);
 	}
 
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
