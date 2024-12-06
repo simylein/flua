@@ -620,12 +620,12 @@
 		};
 		const skeleton = (element, length) => {
 			let index = 0;
-			while (element.children.length - length) {
+			while (element.children.length !== length) {
 				const diff = element.children.length - length;
 				if (diff < 0) {
-					const copy = element.children[index % 2].cloneNode(true);
+					const copy = element.children[0].cloneNode(true);
 					element.appendChild(copy);
-				} else if (diff > 0) {
+				} else if (diff > 0 && element.children.length > 0) {
 					element.children[element.children.length - 1].remove();
 				}
 				index++;
@@ -667,15 +667,17 @@
 		const paintYears = (data) => {
 			skeleton(years, data.length);
 			array(years.children.length).forEach((ind) => {
-				years.children[ind].classList.remove('cursor-default');
-				years.children[ind].classList.add('cursor-pointer');
-				years.children[ind].children[0].classList.remove('w-9', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
-				years.children[ind].children[0].innerText = data[ind].year;
-				years.children[ind].onclick = () => {
-					highlightYear(data[ind].year);
-					setYear(data[ind].year);
-					loadFlights();
-				};
+				if (data[ind].year) {
+					years.children[ind].classList.remove('cursor-default');
+					years.children[ind].classList.add('cursor-pointer');
+					years.children[ind].children[0].classList.remove('w-9', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+					years.children[ind].children[0].innerText = data[ind].year;
+					years.children[ind].onclick = () => {
+						highlightYear(data[ind].year);
+						setYear(data[ind].year);
+						loadFlights();
+					};
+				}
 			});
 			highlightYear(getYear());
 		};
@@ -815,7 +817,7 @@
 					throw Error(response);
 				}
 				const data = await parseYears(response);
-				window.requestAnimationFrame(() => paintYears(data));
+				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [{ year: null }]));
 			} catch {
 				window.requestAnimationFrame(() => erroredYears());
 			}
