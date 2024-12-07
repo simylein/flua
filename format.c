@@ -40,32 +40,3 @@ void human_bytes(char (*buffer)[8], size_t bytes) {
 		sprintf(*buffer, "%zugb", bytes / 1000000000);
 	}
 }
-
-int bin_to_hex(char *buffer, const size_t buffer_len, const void *bin, const size_t bin_len) {
-	if (bin_len != (buffer_len - 1) / 2) {
-		return -1;
-	}
-	size_t index = 0;
-	while (index < (buffer_len - 1) / 2) {
-		sprintf(buffer + index * 2, "%02x", ((const uint8_t *)bin)[index]);
-		index++;
-	}
-	buffer[index * 2] = '\0';
-	return 0;
-}
-
-int hex_to_bin(void *buffer, const size_t buffer_len, const char *hex, const size_t hex_len) {
-	if (hex_len != buffer_len * 2) {
-		return -1;
-	}
-	size_t index = 0;
-	while (index < buffer_len) {
-		unsigned int byte;
-		if (sscanf(hex + index * 2, "%2x", &byte) != 1) {
-			return -1;
-		}
-		((uint8_t *)buffer)[index] = (uint8_t)byte;
-		index++;
-	}
-	return 0;
-}
