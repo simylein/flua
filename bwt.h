@@ -9,5 +9,5 @@ typedef struct bwt_t {
 	time_t exp;
 } bwt_t;
 
-int sign_bwt(char (*buffer)[129], const uint8_t *id, const size_t id_len);
+int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len);
 int verify_bwt(const char *cookie, bwt_t *bwt);
