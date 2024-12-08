@@ -421,7 +421,8 @@
 					const response = await fetch('/api/signin', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
 					if (response.status >= 200 && response.status <= 299) {
 						notification('success', `Successfully signed in as ${values.username}`);
-						window.location.href = `/${values.username}`;
+						const memo = document.cookie.match(/memo=([^;]*)/);
+						window.location.href = memo?.[1] ?? `/${values.username}`;
 						return;
 					}
 					throw response;
