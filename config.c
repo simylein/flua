@@ -13,6 +13,7 @@ int bwt_ttl = 2764800;
 const char *bwt_key = "f2l2u5a4";
 
 const char *database_file = "flua.sqlite";
+int database_timeout = 800;
 
 int log_level = 4;
 int log_requests = 1;
@@ -147,12 +148,13 @@ int configure(int argc, char *argv[]) {
 			info("--bwt-ttl           -bt  time to live for bwt expiry        (%d)\n", bwt_ttl);
 			info("--bwt-key           -bk  random bytes for bwt signing       (%s)\n", bwt_key);
 			info("--database-file     -df  path to sqlite database file       (%s)\n", database_file);
+			info("--database-timeout  -dt  milliseconds to wait for lock      (%d)\n", database_timeout);
 			info("--log-level         -ll  logging verbosity to print         (%s)\n", human_log_level(log_level));
 			info("--log-requests      -lq  logs incoming requests true false  (%s)\n", human_bool(log_requests));
 			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.3\n");
+			info("flua flights version 0.10.4\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -179,6 +181,9 @@ int configure(int argc, char *argv[]) {
 		} else if (strcmp(flag, "--database-file") == 0 || strcmp(flag, "-df") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_str(arg, "database file", 4, 64, &database_file);
+		} else if (strcmp(flag, "--database-timeout") == 0 || strcmp(flag, "-dt") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_int(arg, "database timeout", 200, 8000, &database_timeout);
 		} else if (strcmp(flag, "--log-level") == 0 || strcmp(flag, "-ll") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_log_level(arg, "log level", &log_level);

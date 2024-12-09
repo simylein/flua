@@ -9,6 +9,7 @@ extern int bwt_ttl;
 extern char *bwt_key;
 
 extern char *database_file;
+extern int database_timeout;
 
 extern int log_level;
 extern int log_requests;
