@@ -88,6 +88,8 @@ int main(int argc, char *argv[]) {
 			exit(1);
 		}
 
+		sqlite3_busy_timeout(args[index].database, database_timeout);
+
 		int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
 		if (spawn_error != 0) {
 			errno = spawn_error;
