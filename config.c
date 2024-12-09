@@ -139,20 +139,20 @@ int configure(int argc, char *argv[]) {
 		const char *flag = argv[ind];
 		if (strcmp(flag, "--help") == 0 || strcmp(flag, "-h") == 0) {
 			info("available command line flags\n");
-			info("--address        -a   ip address to bind                 (%s)\n", address);
-			info("--port           -p   int between 1 and 65535            (%d)\n", port);
-			info("--backlog        -b   int between 1 and 256              (%d)\n", backlog);
-			info("--workers        -w   int between 1 and 64               (%d)\n", workers);
-			info("--queue-size     -qs  int between 1 and 128              (%d)\n", queue_size);
-			info("--bwt-ttl        -bt  int between 3600 and 15768000      (%d)\n", bwt_ttl);
-			info("--bwt-key        -bk  random bytes for bwt signing       (%s)\n", bwt_key);
-			info("--database-file  -df  path to sqlite database file       (%s)\n", database_file);
-			info("--log-level      -ll  trace debug info warn error panic  (%s)\n", human_log_level(log_level));
-			info("--log-requests   -lq  bool true or false                 (%s)\n", human_bool(log_requests));
-			info("--log-responses  -ls  bool true or false                 (%s)\n", human_bool(log_responses));
+			info("--address           -a   ip address to bind                 (%s)\n", address);
+			info("--port              -p   port to listen on                  (%d)\n", port);
+			info("--backlog           -b   backlog allowed on socket          (%d)\n", backlog);
+			info("--workers           -w   amount of threads to spawn         (%d)\n", workers);
+			info("--queue-size        -qs  size of clients in queue           (%d)\n", queue_size);
+			info("--bwt-ttl           -bt  time to live for bwt expiry        (%d)\n", bwt_ttl);
+			info("--bwt-key           -bk  random bytes for bwt signing       (%s)\n", bwt_key);
+			info("--database-file     -df  path to sqlite database file       (%s)\n", database_file);
+			info("--log-level         -ll  logging verbosity to print         (%s)\n", human_log_level(log_level));
+			info("--log-requests      -lq  logs incoming requests true false  (%s)\n", human_bool(log_requests));
+			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.2\n");
+			info("flua flights version 0.10.3\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
