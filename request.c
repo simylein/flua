@@ -16,7 +16,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 		}
 		if (*byte == ' ') {
 			stage = 1;
-		} else if (*byte >= '\0' && *byte <= '\037') {
+		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
 		} else {
@@ -40,7 +40,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 			stage = 2;
 		} else if (*byte == ' ') {
 			stage = 3;
-		} else if (*byte >= '\0' && *byte <= '\037') {
+		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
 		} else {
@@ -62,7 +62,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 		char *byte = &buffer[index];
 		if (*byte == ' ') {
 			stage = 3;
-		} else if (*byte >= '\0' && *byte <= '\037') {
+		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
 		} else {
@@ -89,7 +89,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 			stage = 4;
 		} else if (*byte == '\n') {
 			stage = 5;
-		} else if (*byte >= '\0' && *byte <= '\037') {
+		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
 		} else {
@@ -123,7 +123,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 		if (*byte == '\r' || *byte == '\n') {
 			header_key = 1;
 			stage += 1;
-		} else if (*byte >= '\0' && *byte <= '\037') {
+		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
 		} else {
