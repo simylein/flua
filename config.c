@@ -10,7 +10,7 @@ uint8_t backlog = 16;
 uint8_t workers = 4;
 uint8_t queue_size = 8;
 
-int bwt_ttl = 2764800;
+uint32_t bwt_ttl = 2764800;
 const char *bwt_key = "f2l2u5a4";
 
 const char *database_file = "flua.sqlite";
@@ -26,22 +26,6 @@ const char *next_arg(const int argc, char *argv[], int *ind) {
 		return argv[*ind];
 	}
 	return NULL;
-}
-
-int parse_int(const char *arg, const char *name, const int min, const int max, int *value) {
-	if (arg == NULL) {
-		error("please provide a value for %s\n", name);
-		return 1;
-	}
-
-	const int new_value = atoi(arg);
-	if (new_value < min || new_value > max) {
-		error("%s must be between %d and %d\n", name, min, max);
-		return 1;
-	}
-
-	*value = new_value;
-	return 0;
 }
 
 int parse_uint8(const char *arg, const char *name, const uint8_t min, const uint8_t max, uint8_t *value) {
@@ -85,6 +69,28 @@ int parse_uint16(const char *arg, const char *name, const uint16_t min, const ui
 	}
 
 	*value = (uint16_t)new_value;
+	return 0;
+}
+
+int parse_uint32(const char *arg, const char *name, const uint32_t min, const uint32_t max, uint32_t *value) {
+	if (arg == NULL) {
+		error("please provide a value for %s\n", name);
+		return 1;
+	}
+
+	char *arg_end;
+	const uint64_t new_value = strtoul(arg, &arg_end, 10);
+	if (*arg_end != '\0') {
+		error("%s must be an unsigned integer\n", name);
+		return 1;
+	}
+
+	if (new_value < min || new_value > max) {
+		error("%s must be between %u and %u\n", name, min, max);
+		return 1;
+	}
+
+	*value = (uint32_t)new_value;
 	return 0;
 }
 
@@ -199,7 +205,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.18\n");
+			info("flua flights version 0.10.19\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -219,7 +225,7 @@ int configure(int argc, char *argv[]) {
 			errors += parse_uint8(arg, "queue size", 0, 127, &queue_size);
 		} else if (strcmp(flag, "--bwt-ttl") == 0 || strcmp(flag, "-bt") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
-			errors += parse_int(arg, "bwt ttl", 3600, 15768000, &bwt_ttl);
+			errors += parse_uint32(arg, "bwt ttl", 3600, 15768000, &bwt_ttl);
 		} else if (strcmp(flag, "--bwt-key") == 0 || strcmp(flag, "-bk") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_str(arg, "bwt key", 16, 64, &bwt_key);

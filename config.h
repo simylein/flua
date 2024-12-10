@@ -7,7 +7,7 @@ extern uint8_t backlog;
 extern uint8_t workers;
 extern uint8_t queue_size;
 
-extern int bwt_ttl;
+extern uint32_t bwt_ttl;
 extern char *bwt_key;
 
 extern char *database_file;
