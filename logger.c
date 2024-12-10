@@ -42,83 +42,145 @@ void timestamp(char (*buffer)[9]) {
 	(*buffer)[8] = '\0';
 }
 
-void print_color(FILE *file, const char *level, const char *color, const char *message, va_list args) {
-	char buffer[9];
-	timestamp(&buffer);
+void print(FILE *file, const char *time, const char *level, const char *message, va_list args) {
 	flockfile(file);
-	fprintf(file, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, buffer, bold, color, level, reset, normal);
+	fprintf(file, "flua %s %s ", time, level);
+	vfprintf(file, message, args);
+	funlockfile(file);
+	fflush(file);
+}
+
+void print_color(FILE *file, const char *time, const char *level, const char *color, const char *message, va_list args) {
+	flockfile(file);
+	fprintf(file, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, time, bold, color, level, reset, normal);
 	vfprintf(file, message, args);
 	funlockfile(file);
 }
 
 void req(const char *message, ...) {
-	if (log_requests >= 1) {
+	if (req_file != NULL || log_requests >= 1) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stdout, "req", reset, message, args);
+		if (req_file != NULL) {
+			print(req_file, buffer, "req", message, args);
+		}
+		if (log_requests >= 1) {
+			print_color(stdout, buffer, "req", reset, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void res(const char *message, ...) {
-	if (log_responses >= 1) {
+	if (res_file != NULL || log_responses >= 1) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stdout, "res", reset, message, args);
+		if (res_file != NULL) {
+			print(res_file, buffer, "res", message, args);
+		}
+		if (log_responses >= 1) {
+			print_color(stdout, buffer, "res", reset, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void trace(const char *message, ...) {
-	if (log_level >= 6) {
+	if (trace_file != NULL || log_level >= 6) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stdout, "trace", blue, message, args);
+		if (trace_file != NULL) {
+			print(trace_file, buffer, "trace", message, args);
+		}
+		if (log_level >= 6) {
+			print_color(stdout, buffer, "trace", blue, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void debug(const char *message, ...) {
-	if (log_level >= 5) {
+	if (debug_file != NULL || log_level >= 5) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stdout, "debug", cyan, message, args);
+		if (debug_file != NULL) {
+			print(debug_file, buffer, "debug", message, args);
+		}
+		if (log_level >= 5) {
+			print_color(stdout, buffer, "debug", cyan, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void info(const char *message, ...) {
-	if (log_level >= 4) {
+	if (info_file != NULL || log_level >= 4) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stdout, "info", green, message, args);
+		if (info_file != NULL) {
+			print(info_file, buffer, "info", message, args);
+		}
+		if (log_level >= 4) {
+			print_color(stdout, buffer, "info", green, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void warn(const char *message, ...) {
-	if (log_level >= 3) {
+	if (warn_file != NULL || log_level >= 3) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stderr, "warn", yellow, message, args);
+		if (warn_file != NULL) {
+			print(warn_file, buffer, "warn", message, args);
+		}
+		if (log_level >= 3) {
+			print_color(stderr, buffer, "warn", yellow, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void error(const char *message, ...) {
-	if (log_level >= 2) {
+	if (error_file != NULL || log_level >= 2) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stderr, "error", red, message, args);
+		if (error_file != NULL) {
+			print(error_file, buffer, "error", message, args);
+		}
+		if (log_level >= 2) {
+			print_color(stderr, buffer, "error", red, message, args);
+		}
 		va_end(args);
 	}
 }
 
 void fatal(const char *message, ...) {
-	if (log_level >= 1) {
+	if (fatal_file != NULL || log_level >= 1) {
+		char buffer[9];
+		timestamp(&buffer);
 		va_list args;
 		va_start(args, message);
-		print_color(stderr, "fatal", purple, message, args);
+		if (fatal_file != NULL) {
+			print(fatal_file, buffer, "fatal", message, args);
+		}
+		if (log_level >= 1) {
+			print_color(stderr, buffer, "fatal", purple, message, args);
+		}
 		va_end(args);
 	}
 }
