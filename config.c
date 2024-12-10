@@ -1,9 +1,10 @@
 #include "logger.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 const char *address = "0.0.0.0";
-int port = 2254;
+uint16_t port = 2254;
 
 int backlog = 16;
 int workers = 4;
@@ -40,6 +41,28 @@ int parse_int(const char *arg, const char *name, const int min, const int max, i
 	}
 
 	*value = new_value;
+	return 0;
+}
+
+int parse_uint16(const char *arg, const char *name, const uint16_t min, const uint16_t max, uint16_t *value) {
+	if (arg == NULL) {
+		error("please provide a value for %s\n", name);
+		return 1;
+	}
+
+	char *arg_end;
+	const uint64_t new_value = strtoul(arg, &arg_end, 10);
+	if (*arg_end != '\0') {
+		error("%s must be an unsigned integer\n", name);
+		return 1;
+	}
+
+	if (new_value < min || new_value > max) {
+		error("%s must be between %u and %u\n", name, min, max);
+		return 1;
+	}
+
+	*value = (uint16_t)new_value;
 	return 0;
 }
 
@@ -154,7 +177,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.12\n");
+			info("flua flights version 0.10.13\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -162,7 +185,7 @@ int configure(int argc, char *argv[]) {
 			errors += parse_str(arg, "address", 4, 16, &address);
 		} else if (strcmp(flag, "--port") == 0 || strcmp(flag, "-p") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
-			errors += parse_int(arg, "port", 1, 65535, &port);
+			errors += parse_uint16(arg, "port", 0, 65535, &port);
 		} else if (strcmp(flag, "--backlog") == 0 || strcmp(flag, "-b") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_int(arg, "backlog", 1, 256, &backlog);

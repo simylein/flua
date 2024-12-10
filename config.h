@@ -1,5 +1,7 @@
+#include <stdint.h>
+
 extern char *address;
-extern int port;
+extern uint16_t port;
 
 extern int backlog;
 extern int workers;
