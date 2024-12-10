@@ -12,9 +12,9 @@
 
 int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
 	const time_t iat = time(NULL);
-	const uint64_t n_iat = htonll(iat);
+	const uint64_t n_iat = htonll((uint64_t)iat);
 	const time_t exp = iat + bwt_ttl;
-	const uint64_t n_exp = htonll(exp);
+	const uint64_t n_exp = htonll((uint64_t)exp);
 
 	const size_t offset = id_len + sizeof(n_iat) + sizeof(n_exp);
 
