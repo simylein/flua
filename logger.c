@@ -2,6 +2,7 @@
 #include "error.h"
 #include <fcntl.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
@@ -58,7 +59,7 @@ void print_color(FILE *file, const char *time, const char *level, const char *co
 }
 
 void req(const char *message, ...) {
-	if (req_file != NULL || log_requests >= 1) {
+	if (req_file != NULL || log_requests == true) {
 		char buffer[9];
 		timestamp(&buffer);
 		va_list args;
@@ -66,7 +67,7 @@ void req(const char *message, ...) {
 		if (req_file != NULL) {
 			print(req_file, buffer, "req", message, args);
 		}
-		if (log_requests >= 1) {
+		if (log_requests == true) {
 			print_color(stdout, buffer, "req", reset, message, args);
 		}
 		va_end(args);
@@ -74,7 +75,7 @@ void req(const char *message, ...) {
 }
 
 void res(const char *message, ...) {
-	if (res_file != NULL || log_responses >= 1) {
+	if (res_file != NULL || log_responses == true) {
 		char buffer[9];
 		timestamp(&buffer);
 		va_list args;
@@ -82,7 +83,7 @@ void res(const char *message, ...) {
 		if (res_file != NULL) {
 			print(res_file, buffer, "res", message, args);
 		}
-		if (log_responses >= 1) {
+		if (log_responses == true) {
 			print_color(stdout, buffer, "res", reset, message, args);
 		}
 		va_end(args);

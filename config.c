@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,9 +17,9 @@ const char *bwt_key = "f2l2u5a4";
 const char *database_file = "flua.sqlite";
 uint16_t database_timeout = 512;
 
-int log_level = 4;
-int log_requests = 1;
-int log_responses = 1;
+uint8_t log_level = 4;
+bool log_requests = true;
+bool log_responses = true;
 
 const char *next_arg(const int argc, char *argv[], int *ind) {
 	(*ind)++;
@@ -94,16 +95,16 @@ int parse_uint32(const char *arg, const char *name, const uint32_t min, const ui
 	return 0;
 }
 
-int parse_bool(const char *arg, const char *name, int *value) {
+int parse_bool(const char *arg, const char *name, bool *value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
 	}
 
 	if (strcmp(arg, "false") == 0) {
-		*value = 0;
+		*value = false;
 	} else if (strcmp(arg, "true") == 0) {
-		*value = 1;
+		*value = true;
 	} else {
 		error("%s must be either true or false\n", name);
 		return 1;
@@ -128,7 +129,7 @@ int parse_str(const char *arg, const char *name, size_t min, size_t max, const c
 	return 0;
 }
 
-int parse_log_level(const char *arg, const char *name, int *value) {
+int parse_log_level(const char *arg, const char *name, uint8_t *value) {
 	if (arg == NULL) {
 		error("please provide a value for %s\n", name);
 		return 1;
@@ -205,7 +206,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.19\n");
+			info("flua flights version 0.10.20\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {

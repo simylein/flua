@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 
 extern char *address;
@@ -13,8 +14,8 @@ extern char *bwt_key;
 extern char *database_file;
 extern uint16_t database_timeout;
 
-extern int log_level;
-extern int log_requests;
-extern int log_responses;
+extern uint8_t log_level;
+extern bool log_requests;
+extern bool log_responses;
 
 int configure(int argc, char *argv[]);
