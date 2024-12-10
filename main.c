@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+	logopen("req.log", "res.log", "trace.log", "debug.log", "info.log", "warn.log", "error.log", "fatal.log");
 	info("using database %s\n", database_file);
 
 	int server_sock;

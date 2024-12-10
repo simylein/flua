@@ -1,7 +1,9 @@
 #include "config.h"
+#include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 
 const char *purple = "\x1b[35m";
 const char *blue = "\x1b[34m";
@@ -12,6 +14,59 @@ const char *red = "\x1b[31m";
 const char *bold = "\x1b[1m";
 const char *normal = "\x1b[22m";
 const char *reset = "\x1b[39m";
+
+FILE *req_file = NULL;
+FILE *res_file = NULL;
+FILE *trace_file = NULL;
+FILE *debug_file = NULL;
+FILE *info_file = NULL;
+FILE *warn_file = NULL;
+FILE *error_file = NULL;
+FILE *fatal_file = NULL;
+
+void logopen(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
+						 const char *warn_log, const char *error_log, const char *fatal_log) {
+	int req_fd = open(req_log, O_RDONLY);
+	if (req_fd != -1) {
+		close(req_fd);
+		req_file = fopen(req_log, "a");
+	}
+	int res_fd = open(res_log, O_RDONLY);
+	if (res_fd != -1) {
+		close(res_fd);
+		res_file = fopen(res_log, "a");
+	}
+	int trace_fd = open(trace_log, O_RDONLY);
+	if (trace_fd != -1) {
+		close(trace_fd);
+		trace_file = fopen(trace_log, "a");
+	}
+	int debug_fd = open(debug_log, O_RDONLY);
+	if (debug_fd != -1) {
+		close(debug_fd);
+		debug_file = fopen(debug_log, "a");
+	}
+	int info_fd = open(info_log, O_RDONLY);
+	if (info_fd != -1) {
+		close(info_fd);
+		info_file = fopen(info_log, "a");
+	}
+	int warn_fd = open(warn_log, O_RDONLY);
+	if (warn_fd != -1) {
+		close(warn_fd);
+		warn_file = fopen(warn_log, "a");
+	}
+	int error_fd = open(error_log, O_RDONLY);
+	if (error_fd != -1) {
+		close(error_fd);
+		error_file = fopen(error_log, "a");
+	}
+	int fatal_fd = open(fatal_log, O_RDONLY);
+	if (fatal_fd != -1) {
+		close(fatal_fd);
+		fatal_file = fopen(fatal_log, "a");
+	}
+}
 
 void timestamp(char (*buffer)[9]) {
 	time_t now = time(NULL);
