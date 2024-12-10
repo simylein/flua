@@ -198,6 +198,7 @@ FILE *logfile(const char *log_path, int *errors) {
 		}
 		return file;
 	}
+	return NULL;
 }
 
 int logfiles(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
