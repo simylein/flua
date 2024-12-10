@@ -27,18 +27,18 @@ FILE *fatal_file = NULL;
 
 void timestamp(char (*buffer)[9]) {
 	time_t now = time(NULL);
-	int elapsed = now % 86400;
-	int seconds = elapsed % 60;
-	int minutes = elapsed / 60 % 60;
-	int hours = elapsed / 3600;
-	(*buffer)[0] = (char)hours / 10 + 48;
-	(*buffer)[1] = (char)hours % 10 + 48;
+	time_t elapsed = now % 86400;
+	uint8_t seconds = (uint8_t)(elapsed % 60);
+	uint8_t minutes = (uint8_t)(elapsed / 60 % 60);
+	uint8_t hours = (uint8_t)(elapsed / 3600);
+	(*buffer)[0] = hours / 10 + 48;
+	(*buffer)[1] = hours % 10 + 48;
 	(*buffer)[2] = ':';
-	(*buffer)[3] = (char)minutes / 10 + 48;
-	(*buffer)[4] = (char)minutes % 10 + 48;
+	(*buffer)[3] = minutes / 10 + 48;
+	(*buffer)[4] = minutes % 10 + 48;
 	(*buffer)[5] = ':';
-	(*buffer)[6] = (char)seconds / 10 + 48;
-	(*buffer)[7] = (char)seconds % 10 + 48;
+	(*buffer)[6] = seconds / 10 + 48;
+	(*buffer)[7] = seconds % 10 + 48;
 	(*buffer)[8] = '\0';
 }
 
