@@ -14,7 +14,7 @@ int bwt_ttl = 2764800;
 const char *bwt_key = "f2l2u5a4";
 
 const char *database_file = "flua.sqlite";
-int database_timeout = 800;
+uint16_t database_timeout = 512;
 
 int log_level = 4;
 int log_requests = 1;
@@ -199,7 +199,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.10.17\n");
+			info("flua flights version 0.10.18\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -228,7 +228,7 @@ int configure(int argc, char *argv[]) {
 			errors += parse_str(arg, "database file", 4, 64, &database_file);
 		} else if (strcmp(flag, "--database-timeout") == 0 || strcmp(flag, "-dt") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
-			errors += parse_int(arg, "database timeout", 200, 8000, &database_timeout);
+			errors += parse_uint16(arg, "database timeout", 0, 8192, &database_timeout);
 		} else if (strcmp(flag, "--log-level") == 0 || strcmp(flag, "-ll") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_log_level(arg, "log level", &log_level);
