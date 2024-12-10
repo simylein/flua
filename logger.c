@@ -1,4 +1,5 @@
 #include "config.h"
+#include "error.h"
 #include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -23,50 +24,6 @@ FILE *info_file = NULL;
 FILE *warn_file = NULL;
 FILE *error_file = NULL;
 FILE *fatal_file = NULL;
-
-void logopen(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
-						 const char *warn_log, const char *error_log, const char *fatal_log) {
-	int req_fd = open(req_log, O_RDONLY);
-	if (req_fd != -1) {
-		close(req_fd);
-		req_file = fopen(req_log, "a");
-	}
-	int res_fd = open(res_log, O_RDONLY);
-	if (res_fd != -1) {
-		close(res_fd);
-		res_file = fopen(res_log, "a");
-	}
-	int trace_fd = open(trace_log, O_RDONLY);
-	if (trace_fd != -1) {
-		close(trace_fd);
-		trace_file = fopen(trace_log, "a");
-	}
-	int debug_fd = open(debug_log, O_RDONLY);
-	if (debug_fd != -1) {
-		close(debug_fd);
-		debug_file = fopen(debug_log, "a");
-	}
-	int info_fd = open(info_log, O_RDONLY);
-	if (info_fd != -1) {
-		close(info_fd);
-		info_file = fopen(info_log, "a");
-	}
-	int warn_fd = open(warn_log, O_RDONLY);
-	if (warn_fd != -1) {
-		close(warn_fd);
-		warn_file = fopen(warn_log, "a");
-	}
-	int error_fd = open(error_log, O_RDONLY);
-	if (error_fd != -1) {
-		close(error_fd);
-		error_file = fopen(error_log, "a");
-	}
-	int fatal_fd = open(fatal_log, O_RDONLY);
-	if (fatal_fd != -1) {
-		close(fatal_fd);
-		fatal_file = fopen(fatal_log, "a");
-	}
-}
 
 void timestamp(char (*buffer)[9]) {
 	time_t now = time(NULL);
@@ -164,4 +121,33 @@ void fatal(const char *message, ...) {
 		print_color(stderr, "fatal", purple, message, args);
 		va_end(args);
 	}
+}
+
+FILE *logfile(const char *log_path, int *errors) {
+	int fd = open(log_path, O_RDONLY);
+	if (fd != -1) {
+		close(fd);
+		trace("opening %s log file\n", log_path);
+		FILE *file = fopen(log_path, "a");
+		if (file == NULL) {
+			error("%s\n", errno_str());
+			error("failed to open %s\n", log_path);
+			(*errors)++;
+		}
+		return file;
+	}
+}
+
+int logfiles(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
+						 const char *warn_log, const char *error_log, const char *fatal_log) {
+	int errors = 0;
+	req_file = logfile(req_log, &errors);
+	res_file = logfile(res_log, &errors);
+	trace_file = logfile(trace_log, &errors);
+	debug_file = logfile(debug_log, &errors);
+	info_file = logfile(info_log, &errors);
+	warn_file = logfile(warn_log, &errors);
+	error_file = logfile(error_log, &errors);
+	fatal_file = logfile(fatal_log, &errors);
+	return errors;
 }

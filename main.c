@@ -14,7 +14,12 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	logopen("req.log", "res.log", "trace.log", "debug.log", "info.log", "warn.log", "error.log", "fatal.log");
+	int log_errors = logfiles("req.log", "res.log", "trace.log", "debug.log", "info.log", "warn.log", "error.log", "fatal.log");
+	if (log_errors != 0) {
+		fatal("failed to open %d log files\n", log_errors);
+		exit(1);
+	}
+
 	info("using database %s\n", database_file);
 
 	int server_sock;

@@ -1,4 +1,4 @@
-void logopen(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
+int logfiles(const char *req_log, const char *res_log, const char *trace_log, const char *debug_log, const char *info_log,
 						 const char *warn_log, const char *error_log, const char *fatal_log);
 
 void req(const char *message, ...) __attribute__((format(printf, 1, 2)));
