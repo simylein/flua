@@ -1,5 +1,4 @@
 #include "config.h"
-#include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
@@ -13,8 +12,6 @@ const char *red = "\x1b[31m";
 const char *bold = "\x1b[1m";
 const char *normal = "\x1b[22m";
 const char *reset = "\x1b[39m";
-
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void timestamp(char (*buffer)[9]) {
 	time_t now = time(NULL);
@@ -36,10 +33,10 @@ void timestamp(char (*buffer)[9]) {
 void print(FILE *file, const char *level, const char *color, const char *message, va_list args) {
 	char buffer[9];
 	timestamp(&buffer);
-	pthread_mutex_lock(&mutex);
+	flockfile(file);
 	fprintf(file, "%s%sflua%s%s %s %s%s%s%s%s ", bold, blue, reset, normal, buffer, bold, color, level, reset, normal);
 	vfprintf(file, message, args);
-	pthread_mutex_unlock(&mutex);
+	funlockfile(file);
 }
 
 void req(const char *message, ...) {
