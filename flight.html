@@ -950,7 +950,7 @@
 		const loadYears = async () => {
 			window.requestAnimationFrame(() => loadingYears());
 			try {
-				if (window.location.origin.startsWith('http://localhost')) {
+				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 					if (Math.random() < 0.1) {
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
@@ -971,7 +971,7 @@
 			window.requestAnimationFrame(() => loadingAirtime());
 			window.requestAnimationFrame(() => loadingAltitude());
 			try {
-				if (window.location.origin.startsWith('http://localhost')) {
+				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 					if (Math.random() < 0.1) {
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
@@ -1020,7 +1020,7 @@
 			view.setUint16(24, altitude[4] & 0xffff);
 			const data = new Blob([binHash, buffer]);
 			try {
-				if (window.location.origin.startsWith('http://localhost')) {
+				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
 					if (Math.random() < 0.1) {
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
