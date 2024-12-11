@@ -800,10 +800,11 @@
 			const blob = await response.blob();
 			const buffer = await blob.arrayBuffer();
 			const data = new DataView(buffer);
-			return array(buffer.byteLength / 16).map((ind) => {
-				const startsAt = (BigInt(data.getUint32(ind * 16 + 0)) << 32n) | BigInt(data.getUint32(ind * 16 + 4));
-				const endsAt = (BigInt(data.getUint32(ind * 16 + 8)) << 32n) | BigInt(data.getUint32(ind * 16 + 12));
-				return { startsAt, endsAt };
+			return array(buffer.byteLength / 26).map((ind) => {
+				const startsAt = (BigInt(data.getUint32(ind * 26 + 0)) << 32n) | BigInt(data.getUint32(ind * 26 + 4));
+				const endsAt = (BigInt(data.getUint32(ind * 26 + 8)) << 32n) | BigInt(data.getUint32(ind * 26 + 12));
+				const altitude = [data.getUint16(ind * 26 + 16), data.getUint16(ind * 26 + 18), data.getUint16(ind * 26 + 20), data.getUint16(ind * 26 + 22), data.getUint16(ind * 26 + 24)];
+				return { startsAt, endsAt, altitude };
 			});
 		};
 		const loadYears = async () => {
@@ -862,13 +863,18 @@
 			const hex = array.map((byte) => byte.toString(16).padStart(2, '0'));
 			return [hex.join(''), buffer];
 		};
-		const postFlight = async (hexHash, binHash, startsAt, endsAt) => {
-			const buffer = new ArrayBuffer(16);
+		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude) => {
+			const buffer = new ArrayBuffer(26);
 			const view = new DataView(buffer);
 			view.setUint32(0, Number(startsAt >> 32n));
 			view.setUint32(4, Number(startsAt & 0xffffffffn));
 			view.setUint32(8, Number(endsAt >> 32n));
 			view.setUint32(12, Number(endsAt & 0xffffffffn));
+			view.setUint16(16, altitude[0] & 0xffff);
+			view.setUint16(18, altitude[1] & 0xffff);
+			view.setUint16(20, altitude[2] & 0xffff);
+			view.setUint16(22, altitude[3] & 0xffff);
+			view.setUint16(24, altitude[4] & 0xffff);
 			const data = new Blob([binHash, buffer]);
 			try {
 				if (window.location.origin.startsWith('http://localhost')) {
@@ -915,7 +921,17 @@
 					notification('info', `Flight ${hexHash.substring(0, 8)} is too short`);
 					continue;
 				}
-				await postFlight(hexHash, binHash, BigInt(data[0].time), BigInt(data[data.length - 1].time));
+				const altitude = data.reduce(
+					(accumulator, point) => {
+						const index = Math.floor(point.alt / 1000);
+						if (index >= 0 && index <= 4) {
+							accumulator[index]++;
+						}
+						return accumulator;
+					},
+					[0, 0, 0, 0, 0]
+				);
+				await postFlight(hexHash, binHash, BigInt(data[0].time), BigInt(data[data.length - 1].time), altitude);
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
