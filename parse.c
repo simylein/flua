@@ -93,7 +93,7 @@ int validate_credentials(char (*username)[17], char (*password)[65]) {
 }
 
 int parse_flight(flight_t *flight, request_t *request) {
-	if (request->body_len != 48) {
+	if (request->body_len != 58) {
 		return -1;
 	}
 
@@ -103,6 +103,8 @@ int parse_flight(flight_t *flight, request_t *request) {
 	memcpy(&flight->hash, request->body, sizeof(flight->hash));
 	memcpy(&n_starts_at, &request->body[sizeof(flight->hash)], sizeof(flight->starts_at));
 	memcpy(&n_ends_at, &request->body[sizeof(flight->hash) + sizeof(flight->starts_at)], sizeof(flight->ends_at));
+	memcpy(&flight->altitude, &request->body[sizeof(flight->hash) + sizeof(flight->starts_at) + sizeof(flight->ends_at)],
+				 sizeof(flight->altitude));
 
 	flight->starts_at = ntohll(n_starts_at);
 	flight->ends_at = ntohll(n_ends_at);

@@ -112,7 +112,8 @@ cleanup:
 void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "insert into flight (id, hash, starts_at, ends_at, user_id) values (randomblob(16), ?, ?, ?, ?)";
+	const char *sql =
+			"insert into flight (id, hash, starts_at, ends_at, altitude, user_id) values (randomblob(16), ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("%s\n", sqlite3_errmsg(database));
@@ -124,7 +125,8 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 	sqlite3_bind_blob(stmt, 1, flight->hash, sizeof(flight->hash), SQLITE_STATIC);
 	sqlite3_bind_int64(stmt, 2, (int64_t)flight->starts_at);
 	sqlite3_bind_int64(stmt, 3, (int64_t)flight->ends_at);
-	sqlite3_bind_blob(stmt, 4, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 4, flight->altitude, sizeof(flight->altitude), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 5, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_DONE) {
