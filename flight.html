@@ -902,7 +902,6 @@
 			});
 		};
 		const paintAltitude = (data) => {
-			altitudeScale.classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
 			const altitudes = data.reduce(
 				(accumulator, flight) => {
 					flight.altitude.forEach((altitude, ind) => (accumulator[ind] += altitude));
@@ -911,6 +910,9 @@
 				[0, 0, 0, 0, 0]
 			);
 			const max = altitudes.reduce((accumulator, altitude) => accumulator + altitude, 0);
+			if (max > 0) {
+				altitudeScale.classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+			}
 			array(altitudeScale.children.length).forEach((ind) => {
 				if (altitudes[ind] > 0) {
 					altitudeScale.children[ind].classList.add('flex');
@@ -922,7 +924,7 @@
 				altitudeScale.children[ind].children[2].innerHTML = times(altitudes[ind]);
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
-				const percent = (altitudes[ind] / max) * 100;
+				const percent = max === 0 ? 0 : (altitudes[ind] / max) * 100;
 				altitudeGraph.children[ind].style.width = `${percent}%`;
 				altitudeGraph.children[ind].classList.add(...altitudeColors[ind]);
 				altitudeGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
