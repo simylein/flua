@@ -10,4 +10,4 @@ typedef struct user_t {
 } user_t;
 
 int find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user);
-int find_user_by_name(sqlite3 *database, char *name, user_t *user);
+int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *user);

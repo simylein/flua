@@ -7,16 +7,17 @@
 #include "request.h"
 #include "response.h"
 #include "user.h"
+#include "utils.h"
 #include <sqlite3.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
 int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
-	if (strcmp(request->pathname, pathname) == 0) {
+	if (request->pathname_len == strlen(pathname) && memcmp(request->pathname, pathname, request->pathname_len) == 0) {
 		*pathname_found = true;
 
-		if (strcmp(request->method, method) == 0) {
+		if (request->method_len == strlen(method) && memcmp(request->method, method, request->method_len) == 0) {
 			*method_found = true;
 
 			return 0;
@@ -130,14 +131,15 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char name[17];
-		if (sscanf(request->search, "user=%16s", name) != 1) {
+		char *name;
+		size_t name_len;
+		if (strnfind(request->search, request->search_len, "user=", "", &name, &name_len, 16) == -1) {
 			response->status = 400;
 			goto respond;
 		}
 
 		struct user_t user;
-		int status = find_user_by_name(database, name, &user);
+		int status = find_user_by_name(database, name, name_len, &user);
 		if (status != 0) {
 			response->status = status;
 			goto respond;
@@ -164,15 +166,22 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char name[17];
-		char year[5];
-		if (sscanf(request->search, "user=%16[^&]&year=%4s", name, year) != 2) {
+		char *name;
+		size_t name_len;
+		if (strnfind(request->search, request->search_len, "user=", "&", &name, &name_len, 16) == -1) {
+			response->status = 400;
+			goto respond;
+		}
+
+		char *year;
+		size_t year_len;
+		if (strnfind(request->search, request->search_len, "&year=", "", &year, &year_len, 4) == -1) {
 			response->status = 400;
 			goto respond;
 		}
 
 		struct user_t user;
-		int status = find_user_by_name(database, name, &user);
+		int status = find_user_by_name(database, name, name_len, &user);
 		if (status != 0) {
 			response->status = status;
 			goto respond;
@@ -183,7 +192,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		find_flights(database, &user.id, year, response);
+		find_flights(database, &user.id, year, year_len, response);
 	}
 
 	if (match(request, "post", "/api/flight", &method_found, &pathname_found) == 0) {
@@ -228,7 +237,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		pathname_found = 1;
-		if (strcmp(request->method, "get") == 0) {
+		if (request->method_len == 3 && memcmp(request->method, "get", request->method_len) == 0) {
 			method_found = 1;
 
 			const char *cookie = find_header(request, "cookie:");
@@ -247,7 +256,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 
 			struct user_t user;
-			int status = find_user_by_name(database, &request->pathname[1], &user);
+			int status = find_user_by_name(database, &request->pathname[1], request->pathname_len - 1, &user);
 			if (status != 0) {
 				response->status = status;
 				goto respond;

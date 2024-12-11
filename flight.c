@@ -57,7 +57,7 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, response_t *response) {
+void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t year_len, response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select starts_at, ends_at, altitude from flight "
@@ -72,7 +72,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, respons
 	}
 
 	sqlite3_bind_blob(stmt, 1, *user_id, sizeof(*user_id), SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, year, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, year, (int)year_len, SQLITE_STATIC);
 
 	size_t rows = 0;
 	while (1) {
@@ -109,7 +109,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, respons
 	}
 
 partial:
-	info("found %zu flights in %s\n", rows, year);
+	info("found %zu flights in %.*s\n", rows, (int)year_len, year);
 
 	append_header(response, "content-type:application/octet-stream\r\n");
 	append_header(response, "content-length:%zu\r\n", response->body_len);

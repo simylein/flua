@@ -11,5 +11,5 @@ typedef struct flight_t {
 } flight_t;
 
 void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response);
-void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, response_t *response);
+void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t year_len, response_t *response);
 void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *response);

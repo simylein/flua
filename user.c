@@ -55,7 +55,7 @@ cleanup:
 	return status;
 }
 
-int find_user_by_name(sqlite3 *database, char *name, user_t *user) {
+int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *user) {
 	sqlite3_stmt *stmt;
 
 	int status = 404;
@@ -69,7 +69,7 @@ int find_user_by_name(sqlite3 *database, char *name, user_t *user) {
 		goto cleanup;
 	}
 
-	sqlite3_bind_text(stmt, 1, name, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 1, name, (int)name_len, SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
