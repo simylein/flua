@@ -793,7 +793,7 @@
 			});
 			highlightYear(getYear());
 		};
-		const erroredYears = () => {
+		const errorYears = () => {
 			array(years.children.length).forEach((ind) => {
 				years.children[ind].classList.remove('cursor-default');
 				years.children[ind].classList.add('cursor-not-allowed');
@@ -829,7 +829,7 @@
 				flightGraph.children[index].children[0].classList.add('bg-green-400/80', 'dark:bg-green-600/80');
 			});
 		};
-		const erroredFlights = () => {
+		const errorFlights = () => {
 			flightCount.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
 			flightCount.classList.add('bg-red-200', 'dark:bg-red-800');
 			array(flightScale.children.length).forEach((ind) => {
@@ -872,7 +872,7 @@
 				airtimeGraph.children[index].children[0].classList.add('bg-blue-400/80', 'dark:bg-blue-600/80');
 			});
 		};
-		const erroredAirtime = () => {
+		const errorAirtime = () => {
 			airtimeCount.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
 			airtimeCount.classList.add('bg-red-200', 'dark:bg-red-800');
 			array(airtimeScale.children.length).forEach((ind) => {
@@ -924,7 +924,7 @@
 				altitudeGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
 			});
 		};
-		const erroredAltitude = () => {
+		const errorAltitude = () => {
 			altitudeScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
 			altitudeScale.classList.add('bg-red-200', 'dark:bg-red-800');
 			array(altitudeGraph.children.length).forEach((ind) => {
@@ -969,7 +969,7 @@
 				const data = await parseYears(response);
 				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [{ year: null }]));
 			} catch {
-				window.requestAnimationFrame(() => erroredYears());
+				window.requestAnimationFrame(() => errorYears());
 			}
 		};
 		const loadFlights = async () => {
@@ -992,9 +992,9 @@
 				window.requestAnimationFrame(() => paintAirtime(data));
 				window.requestAnimationFrame(() => paintAltitude(data));
 			} catch {
-				window.requestAnimationFrame(() => erroredFlights());
-				window.requestAnimationFrame(() => erroredAirtime());
-				window.requestAnimationFrame(() => erroredAltitude());
+				window.requestAnimationFrame(() => errorFlights());
+				window.requestAnimationFrame(() => errorAirtime());
+				window.requestAnimationFrame(() => errorAltitude());
 			}
 		};
 		const upload = document.getElementById('upload');
