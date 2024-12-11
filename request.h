@@ -3,17 +3,17 @@
 
 #pragma once
 typedef struct request_t {
-	char method[16];
+	char *method;
 	size_t method_len;
-	char pathname[128];
+	char *pathname;
 	size_t pathname_len;
-	char search[256];
+	char *search;
 	size_t search_len;
-	char protocol[16];
+	char *protocol;
 	size_t protocol_len;
-	char header[3584];
+	char *header;
 	size_t header_len;
-	char body[61440];
+	char *body;
 	size_t body_len;
 } request_t;
 

@@ -80,7 +80,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	request(request_buffer, bytes_received, &reqs, &resp);
 	trace("method %zub pathname %zub search %zub header %zub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
 				reqs.header_len, reqs.body_len);
-	req("%s %s %s\n", reqs.method, reqs.pathname, bytes_buffer);
+	req("%.*s %.*s %s\n", (int)reqs.method_len, reqs.method, (int)reqs.pathname_len, reqs.pathname, bytes_buffer);
 
 	if (resp.status == 0) {
 		route(database, &reqs, &resp);

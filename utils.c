@@ -3,15 +3,10 @@
 #include <string.h>
 
 void null_init(request_t *request, response_t *response) {
-	request->method[0] = '\0';
 	request->method_len = 0;
-	request->pathname[0] = '\0';
 	request->pathname_len = 0;
-	request->search[0] = '\0';
 	request->search_len = 0;
-	request->protocol[0] = '\0';
 	request->protocol_len = 0;
-	request->header[0] = '\0';
 	request->header_len = 0;
 	request->body_len = 0;
 
