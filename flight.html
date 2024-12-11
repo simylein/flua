@@ -735,6 +735,16 @@
 				index++;
 			}
 		};
+		const loading = (element, add, remove, text, height) => {
+			element.classList.add(...add, 'bg-neutral-200', 'dark:bg-neutral-800');
+			element.classList.remove('bg-red-200', 'dark:bg-red-800', ...remove);
+			if (text !== undefined && text !== null) {
+				element.innerText = text;
+			}
+			if (height !== undefined && height !== null) {
+				element.style.height = `${height}%`;
+			}
+		};
 		const getUser = () => {
 			const user = window.location.pathname.substring(1);
 			return user ?? null;
@@ -763,9 +773,7 @@
 				years.children[ind].onclick = null;
 				years.children[ind].classList.remove('cursor-pointer', 'cursor-not-allowed');
 				years.children[ind].classList.add('cursor-default');
-				years.children[ind].children[0].innerText = '';
-				years.children[ind].children[0].classList.remove('bg-red-200', 'dark:bg-red-800');
-				years.children[ind].children[0].classList.add('w-9', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+				loading(years.children[ind].children[0], ['w-9', 'h-6'], [], '');
 			});
 		};
 		const paintYears = (data) => {
@@ -794,18 +802,12 @@
 			});
 		};
 		const loadingFlights = () => {
-			flightCount.innerText = '';
-			flightCount.classList.remove('bg-red-200', 'dark:bg-red-800');
-			flightCount.classList.add('w-10', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+			loading(flightCount, ['w-10', 'h-6'], [], '');
 			array(flightScale.children.length).forEach((ind) => {
-				flightScale.children[ind].innerText = '';
-				flightScale.children[ind].classList.remove('bg-red-200', 'dark:bg-red-800');
-				flightScale.children[ind].classList.add('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+				loading(flightScale.children[ind], ['h-4'], [], '');
 			});
 			array(flightGraph.children.length).forEach((ind) => {
-				flightGraph.children[ind].children[0].classList.remove('bg-red-200', 'dark:bg-red-800', 'bg-green-400/80', 'dark:bg-green-600/80');
-				flightGraph.children[ind].children[0].classList.add('bg-neutral-200', 'dark:bg-neutral-800');
-				flightGraph.children[ind].children[0].style.height = `${skeletons[ind]}%`;
+				loading(flightGraph.children[ind].children[0], [], ['bg-green-400/80', 'dark:bg-green-600/80'], null, skeletons[ind]);
 			});
 		};
 		const paintFlights = (data) => {
@@ -840,18 +842,12 @@
 			});
 		};
 		const loadingAirtime = () => {
-			airtimeCount.innerText = '';
-			airtimeCount.classList.remove('bg-red-200', 'dark:bg-red-800');
-			airtimeCount.classList.add('w-10', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+			loading(airtimeCount, ['w-10', 'h-6'], [], '');
 			array(airtimeScale.children.length).forEach((ind) => {
-				airtimeScale.children[ind].innerText = '';
-				airtimeScale.children[ind].classList.remove('bg-red-200', 'dark:bg-red-800');
-				airtimeScale.children[ind].classList.add('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+				loading(airtimeScale.children[ind], ['h-4'], [], '');
 			});
 			array(airtimeGraph.children.length).forEach((ind) => {
-				airtimeGraph.children[ind].children[0].classList.remove('bg-red-200', 'dark:bg-red-800', 'bg-blue-400/80', 'dark:bg-blue-600/80');
-				airtimeGraph.children[ind].children[0].classList.add('bg-neutral-200', 'dark:bg-neutral-800');
-				airtimeGraph.children[ind].children[0].style.height = `${skeletons[ind]}%`;
+				loading(airtimeGraph.children[ind].children[0], [], ['bg-blue-400/80', 'dark:bg-blue-600/80'], null, skeletons[ind]);
 			});
 		};
 		const paintAirtime = (data) => {
@@ -889,16 +885,13 @@
 			});
 		};
 		const loadingAltitude = () => {
-			altitudeScale.classList.remove('bg-red-200', 'dark:bg-red-800');
-			altitudeScale.classList.add('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+			loading(altitudeScale, ['h-4'], []);
 			array(altitudeScale.children.length).forEach((ind) => {
 				altitudeScale.children[ind].classList.add('hidden');
 				altitudeScale.children[ind].classList.remove('flex');
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
-				altitudeGraph.children[ind].style.width = `${20}%`;
-				altitudeGraph.children[ind].classList.add('bg-neutral-200', 'dark:bg-neutral-800');
-				altitudeGraph.children[ind].classList.remove('bg-red-200', 'dark:bg-red-800', ...altitudeColors[ind]);
+				loading(altitudeGraph.children[ind], [], altitudeColors[ind]);
 			});
 		};
 		const paintAltitude = (data) => {
