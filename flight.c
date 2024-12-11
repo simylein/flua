@@ -60,7 +60,7 @@ cleanup:
 void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select starts_at, ends_at from flight "
+	const char *sql = "select starts_at, ends_at, altitude from flight "
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
 
@@ -78,15 +78,24 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, respons
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const uint64_t starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
-			const uint64_t ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
-			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) > sizeof(response->body)) {
+			struct flight_t flight;
+			flight.starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
+			flight.ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
+			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(flight.altitude)) {
+				error("altitude length does not match buffer\n");
+				response->status = 500;
+				goto cleanup;
+			}
+			memcpy(&flight.altitude, sqlite3_column_blob(stmt, 2), sizeof(flight.altitude));
+			if (response->body_len + sizeof(flight.starts_at) + sizeof(flight.ends_at) + sizeof(flight.altitude) >
+					sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
 				goto partial;
 			}
-			append_body(response, &starts_at, sizeof(starts_at));
-			append_body(response, &ends_at, sizeof(ends_at));
+			append_body(response, &flight.starts_at, sizeof(flight.starts_at));
+			append_body(response, &flight.ends_at, sizeof(flight.ends_at));
+			append_body(response, &flight.altitude, sizeof(flight.altitude));
 			rows++;
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
