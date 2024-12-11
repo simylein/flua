@@ -10,4 +10,4 @@ typedef struct bwt_t {
 } bwt_t;
 
 int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len);
-int verify_bwt(const char *cookie, bwt_t *bwt);
+int verify_bwt(const char *cookie, const size_t cookie_len, bwt_t *bwt);

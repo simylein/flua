@@ -39,7 +39,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		const char *cookie = find_header(request, "cookie:");
 		if (cookie != NULL) {
 			struct bwt_t bwt;
-			if (verify_bwt(cookie, &bwt) == 0) {
+			if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == 0) {
 				struct user_t user;
 				if (find_user_by_id(database, &bwt.id, &user) == 0) {
 					debug("redirecting to location %s\n", user.username);
@@ -125,7 +125,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct bwt_t bwt;
-		if (verify_bwt(cookie, &bwt) == -1) {
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
 			response->status = 401;
 			goto respond;
 		}
@@ -159,7 +159,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct bwt_t bwt;
-		if (verify_bwt(cookie, &bwt) == -1) {
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
 			response->status = 401;
 			goto respond;
 		}
@@ -199,7 +199,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct bwt_t bwt;
-		if (verify_bwt(cookie, &bwt) == -1) {
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
 			response->status = 401;
 			goto respond;
 		}
@@ -241,7 +241,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 
 			struct bwt_t bwt;
-			if (verify_bwt(cookie, &bwt) == -1) {
+			if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
 				response->status = 401;
 				goto respond;
 			}

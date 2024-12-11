@@ -8,6 +8,7 @@
 #include "sha256.h"
 #include "string.h"
 #include "time.h"
+#include "utils.h"
 #include <stdint.h>
 
 int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
@@ -35,15 +36,16 @@ int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
 	return 0;
 }
 
-int verify_bwt(const char *cookie, bwt_t *bwt) {
-	char buffer[89];
-	if (sscanf(cookie, "auth=%88s\r\n", buffer) != 1) {
+int verify_bwt(const char *cookie, const size_t cookie_len, bwt_t *bwt) {
+	char *buffer;
+	size_t buffer_len;
+	if (strnfind(cookie, cookie_len, "auth=", "\r\n", &buffer, &buffer_len, 88) == -1) {
 		warn("no auth value in cookie header\n");
 		return -1;
 	}
 
 	uint8_t binary[64];
-	if (base64_decode(binary, sizeof(binary), buffer, strlen(buffer)) == -1) {
+	if (base64_decode(binary, sizeof(binary), buffer, buffer_len) == -1) {
 		error("failed to decode bwt from base 64\n");
 		return -1;
 	}
