@@ -911,8 +911,9 @@
 			);
 			const max = altitudes.reduce((accumulator, altitude) => accumulator + altitude, 0);
 			if (max > 0) {
-				altitudeScale.classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+				altitudeScale.classList.remove('h-4');
 			}
+			altitudeScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
 			array(altitudeScale.children.length).forEach((ind) => {
 				if (altitudes[ind] > 0) {
 					altitudeScale.children[ind].classList.add('flex');
