@@ -38,6 +38,7 @@ create table flight (
   hash blob not null unique,
   starts_at datetime not null,
   ends_at datetime not null,
+  altitude blob not null,
   user_id blob not null,
   foreign key (user_id) references user(id) on delete cascade
 );
