@@ -48,8 +48,15 @@
 			.h-8 {
 				height: 32px;
 			}
+			.h-12 {
+				height: 48px;
+			}
 			.h-full {
 				height: 100%;
+			}
+			.size-2 {
+				width: 8px;
+				height: 8px;
 			}
 			.flex {
 				display: flex;
@@ -65,6 +72,9 @@
 			}
 			.flex-col {
 				flex-direction: column;
+			}
+			.flex-wrap {
+				flex-wrap: wrap;
 			}
 			.flex-col-reverse {
 				flex-direction: column-reverse;
@@ -98,6 +108,9 @@
 			}
 			.mt-4 {
 				margin-top: 16px;
+			}
+			.mr-2 {
+				margin-right: 8px;
 			}
 			.mb-1 {
 				margin-bottom: 4px;
@@ -176,6 +189,12 @@
 			.bg-green-400\/80 {
 				background-color: #4ade80cc;
 			}
+			.bg-teal-400\/80 {
+				background-color: #2dd4bfcc;
+			}
+			.bg-sky-400\/80 {
+				background-color: #38bdf8cc;
+			}
 			.bg-blue-200 {
 				background-color: #bfdbfe;
 			}
@@ -184,6 +203,12 @@
 			}
 			.bg-blue-400\/80 {
 				background-color: #60a5facc;
+			}
+			.bg-indigo-400\/80 {
+				background-color: #818cf8cc;
+			}
+			.bg-purple-400\/80 {
+				background-color: #c084fccc;
 			}
 			.border-neutral-300 {
 				border-color: #d4d4d4;
@@ -213,6 +238,9 @@
 				.sm\:gap-2 {
 					gap: 8px;
 				}
+				.sm\:mr-4 {
+					margin-right: 16px;
+				}
 			}
 			@media (min-width: 768px) {
 				.md\:flex-row {
@@ -233,6 +261,9 @@
 				.md\:m-6 {
 					margin: 24px;
 				}
+				.md\:mr-2 {
+					margin-right: 8px;
+				}
 				.md\:p-1\.5 {
 					padding: 6px;
 				}
@@ -252,6 +283,9 @@
 				}
 				.lg\:m-8 {
 					margin: 32px;
+				}
+				.lg\:mr-4 {
+					margin-right: 16px;
 				}
 				.lg\:p-2 {
 					padding: 8px;
@@ -296,6 +330,12 @@
 				.dark\:bg-green-800 {
 					background-color: #166534;
 				}
+				.dark\:bg-teal-600\/80 {
+					background-color: #0d9488cc;
+				}
+				.dark\:bg-sky-600\/80 {
+					background-color: #0284c7cc;
+				}
 				.dark\:bg-blue-600\/80 {
 					background-color: #2563ebcc;
 				}
@@ -304,6 +344,12 @@
 				}
 				.dark\:bg-blue-800 {
 					background-color: #1e40af;
+				}
+				.dark\:bg-indigo-600\/80 {
+					background-color: #4f46e5cc;
+				}
+				.dark\:bg-purple-600\/80 {
+					background-color: #9333eacc;
 				}
 				.dark\:border-neutral-600 {
 					border-color: #525252;
@@ -566,6 +612,52 @@
 					</div>
 				</div>
 			</div>
+			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Altitude</h2>
+					</div>
+					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
+						<div id="altitude-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">0m</label>
+								<p class="m-0">6h</p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-teal-400/80 dark:bg-teal-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">1km</label>
+								<p class="m-0">10h</p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-sky-400/80 dark:bg-sky-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">2km</label>
+								<p class="m-0">20h</p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-indigo-400/80 dark:bg-indigo-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">3km</label>
+								<p class="m-0">14h</p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-purple-400/80 dark:bg-purple-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">4km</label>
+								<p class="m-0">2h</p>
+							</div>
+						</div>
+						<div class="relative flex h-12">
+							<div id="altitude-graph" class="flex w-full h-full">
+								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="flex-1 p-2 md:p-3 lg:p-4"></div>
+			</div>
 		</main>
 	</body>
 	<script>
@@ -577,6 +669,15 @@
 		const airtimeCount = document.getElementById('airtime-count');
 		const airtimeScale = document.getElementById('airtime-scale');
 		const airtimeGraph = document.getElementById('airtime-graph');
+		const altitudeScale = document.getElementById('altitude-scale');
+		const altitudeGraph = document.getElementById('altitude-graph');
+		const altitudeColors = [
+			['bg-green-400/80', 'dark:bg-green-600/80'],
+			['bg-teal-400/80', 'dark:bg-teal-600/80'],
+			['bg-sky-400/80', 'dark:bg-sky-600/80'],
+			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
+			['bg-purple-400/80', 'dark:bg-purple-600/80'],
+		];
 		const array = (length) => {
 			return Array(length)
 				.fill(null)
@@ -787,6 +888,55 @@
 				airtimeGraph.children[ind].children[0].classList.add('bg-red-200', 'dark:bg-red-800');
 			});
 		};
+		const loadingAltitude = () => {
+			altitudeScale.classList.remove('bg-red-200', 'dark:bg-red-800');
+			altitudeScale.classList.add('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+			array(altitudeScale.children.length).forEach((ind) => {
+				altitudeScale.children[ind].classList.add('hidden');
+				altitudeScale.children[ind].classList.remove('flex');
+			});
+			array(altitudeGraph.children.length).forEach((ind) => {
+				altitudeGraph.children[ind].style.width = `${20}%`;
+				altitudeGraph.children[ind].classList.add('bg-neutral-200', 'dark:bg-neutral-800');
+				altitudeGraph.children[ind].classList.remove('bg-red-200', 'dark:bg-red-800', ...altitudeColors[ind]);
+			});
+		};
+		const paintAltitude = (data) => {
+			altitudeScale.classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+			const altitudes = data.reduce(
+				(accumulator, flight) => {
+					flight.altitude.forEach((altitude, ind) => (accumulator[ind] += altitude));
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
+			const max = altitudes.reduce((accumulator, altitude) => accumulator + altitude, 0);
+			array(altitudeScale.children.length).forEach((ind) => {
+				if (altitudes[ind] > 0) {
+					altitudeScale.children[ind].classList.add('flex');
+					altitudeScale.children[ind].classList.remove('hidden');
+				} else {
+					altitudeScale.children[ind].classList.add('hidden');
+					altitudeScale.children[ind].classList.remove('flex');
+				}
+				altitudeScale.children[ind].children[2].innerHTML = times(altitudes[ind]);
+			});
+			array(altitudeGraph.children.length).forEach((ind) => {
+				const percent = (altitudes[ind] / max) * 100;
+				altitudeGraph.children[ind].style.width = `${percent}%`;
+				altitudeGraph.children[ind].classList.add(...altitudeColors[ind]);
+				altitudeGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			});
+		};
+		const erroredAltitude = () => {
+			altitudeScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			altitudeScale.classList.add('bg-red-200', 'dark:bg-red-800');
+			array(altitudeGraph.children.length).forEach((ind) => {
+				altitudeGraph.children[ind].style.width = `${20}%`;
+				altitudeGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+				altitudeGraph.children[ind].classList.add('bg-red-200', 'dark:bg-red-800');
+			});
+		};
 		const parseYears = async (response) => {
 			const blob = await response.blob();
 			const buffer = await blob.arrayBuffer();
@@ -829,6 +979,7 @@
 		const loadFlights = async () => {
 			window.requestAnimationFrame(() => loadingFlights());
 			window.requestAnimationFrame(() => loadingAirtime());
+			window.requestAnimationFrame(() => loadingAltitude());
 			try {
 				if (window.location.origin.startsWith('http://localhost')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -843,9 +994,11 @@
 				const data = await parseFlights(response);
 				window.requestAnimationFrame(() => paintFlights(data));
 				window.requestAnimationFrame(() => paintAirtime(data));
+				window.requestAnimationFrame(() => paintAltitude(data));
 			} catch {
 				window.requestAnimationFrame(() => erroredFlights());
 				window.requestAnimationFrame(() => erroredAirtime());
+				window.requestAnimationFrame(() => erroredAltitude());
 			}
 		};
 		const upload = document.getElementById('upload');
