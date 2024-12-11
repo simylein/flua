@@ -722,7 +722,7 @@
 		const seconds = (item) => {
 			return Number(item.endsAt - item.startsAt);
 		};
-		const skeleton = (element, length) => {
+		const resize = (element, length) => {
 			let index = 0;
 			while (element.children.length !== length) {
 				const diff = element.children.length - length;
@@ -758,7 +758,7 @@
 			});
 		};
 		const loadingYears = () => {
-			skeleton(years, years.children.length);
+			resize(years, years.children.length);
 			array(years.children.length).forEach((ind) => {
 				years.children[ind].onclick = null;
 				years.children[ind].classList.remove('cursor-pointer', 'cursor-not-allowed');
@@ -769,7 +769,7 @@
 			});
 		};
 		const paintYears = (data) => {
-			skeleton(years, data.length);
+			resize(years, data.length);
 			array(years.children.length).forEach((ind) => {
 				if (data[ind].year) {
 					years.children[ind].classList.remove('cursor-default');
