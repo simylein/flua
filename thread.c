@@ -25,7 +25,7 @@ void *thread(void *args) {
 		}
 
 		task_t task = queue.tasks[queue.front];
-		queue.front = (queue.front + 1) % ((size_t)queue_size);
+		queue.front = (queue.front + 1) % (queue_size);
 		queue.size--;
 		trace("worker thread %d decreased queue size to %zu\n", arg->id, queue.size);
 

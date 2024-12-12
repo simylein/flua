@@ -55,21 +55,21 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
-	arg_t *args = malloc((size_t)workers * sizeof(arg_t));
+	arg_t *args = malloc(workers * sizeof(arg_t));
 	if (args == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for args\n");
 		exit(1);
 	}
 
-	pthread_t *threads = malloc((size_t)workers * sizeof(pthread_t));
+	pthread_t *threads = malloc(workers * sizeof(pthread_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for threads\n");
 		exit(1);
 	}
 
-	queue.tasks = malloc((size_t)queue_size * sizeof(task_t));
+	queue.tasks = malloc(queue_size * sizeof(task_t));
 	if (threads == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for tasks\n");
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 	while (1) {
 		pthread_mutex_lock(&queue.lock);
 
-		while (queue.size >= (size_t)queue_size) {
+		while (queue.size >= queue_size) {
 			warn("waiting for queue size to decrease\n");
 			pthread_cond_wait(&queue.available, &queue.lock);
 		}
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
 
 		queue.tasks[queue.back].client_sock = client_sock;
 		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
-		queue.back = (queue.back + 1) % ((size_t)queue_size);
+		queue.back = (queue.back + 1) % (queue_size);
 		queue.size++;
 		trace("main thread increased queue size to %zu\n", queue.size);
 
