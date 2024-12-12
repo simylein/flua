@@ -17,6 +17,7 @@ typedef struct queue_t {
 	size_t front;
 	size_t back;
 	size_t size;
+	size_t load;
 	pthread_mutex_t lock;
 	pthread_cond_t filled;
 	pthread_cond_t available;

@@ -9,6 +9,7 @@ queue_t queue = {
 		.front = 0,
 		.back = 0,
 		.size = 0,
+		.load = 0,
 		.lock = PTHREAD_MUTEX_INITIALIZER,
 		.filled = PTHREAD_COND_INITIALIZER,
 		.available = PTHREAD_COND_INITIALIZER,
@@ -27,11 +28,16 @@ void *thread(void *args) {
 		task_t task = queue.tasks[queue.front];
 		queue.front = (queue.front + 1) % (queue_size);
 		queue.size--;
+		queue.load++;
 		trace("worker thread %d decreased queue size to %zu\n", arg->id, queue.size);
 
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
 
 		handle(arg->database, &task.client_sock, &task.client_addr);
+
+		pthread_mutex_lock(&queue.lock);
+		queue.load--;
+		pthread_mutex_unlock(&queue.lock);
 	}
 }
