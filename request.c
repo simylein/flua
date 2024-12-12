@@ -99,7 +99,7 @@ void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
 
 	int header_key = 1;
 	const size_t header_index = index;
-	while ((stage >= 5 && stage <= 8) && req->header_len < 3584 && index < (size_t)length) {
+	while ((stage >= 5 && stage <= 8) && req->header_len < 2048 && index < (size_t)length) {
 		char *byte = &buffer[index];
 		if (header_key && *byte >= 'A' && *byte <= 'Z') {
 			*byte += 32;
