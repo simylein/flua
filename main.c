@@ -113,6 +113,10 @@ int main(int argc, char *argv[]) {
 			pthread_cond_wait(&queue.available, &queue.lock);
 		}
 
+		if (queue.load >= workers) {
+			warn("all worker threads currently busy\n");
+		}
+
 		pthread_mutex_unlock(&queue.lock);
 
 		struct sockaddr_in client_addr;
