@@ -1,9 +1,10 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <sqlite3.h>
+#include <stdint.h>
 
 typedef struct arg_t {
-	int id;
+	size_t id;
 	sqlite3 *database;
 } arg_t;
 

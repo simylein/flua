@@ -76,9 +76,9 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	for (int index = 0; index < workers; index++) {
+	for (size_t index = 0; index < workers; index++) {
 		args[index].id = index;
-		trace("spawning worker thread %d\n", index);
+		trace("spawning worker thread %zu\n", index);
 
 		int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
 		if (db_error != SQLITE_OK) {
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 		if (spawn_error != 0) {
 			errno = spawn_error;
 			error("%s\n", errno_str());
-			fatal("failed to spawn worker thread %d\n", args[index].id);
+			fatal("failed to spawn worker thread %zu\n", args[index].id);
 			exit(1);
 		}
 	}

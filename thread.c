@@ -28,8 +28,9 @@ void *thread(void *args) {
 		task_t task = queue.tasks[queue.front];
 		queue.front = (queue.front + 1) % (queue_size);
 		queue.size--;
+		trace("worker thread %zu decreased queue size to %zu\n", arg->id, queue.size);
 		queue.load++;
-		trace("worker thread %d decreased queue size to %zu\n", arg->id, queue.size);
+		trace("worker thread %zu increased queue load to %zu\n", arg->id, queue.load);
 
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
@@ -38,6 +39,7 @@ void *thread(void *args) {
 
 		pthread_mutex_lock(&queue.lock);
 		queue.load--;
+		trace("worker thread %zu decreased queue load to %zu\n", arg->id, queue.load);
 		pthread_mutex_unlock(&queue.lock);
 	}
 }
