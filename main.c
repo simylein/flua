@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	queue.tasks = malloc(queue_size * sizeof(task_t));
-	if (threads == NULL) {
+	if (queue.tasks == NULL) {
 		error("%s\n", errno_str());
 		fatal("failed to allocate for tasks\n");
 		exit(1);
