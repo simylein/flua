@@ -60,7 +60,7 @@ cleanup:
 void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t year_len, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select starts_at, ends_at, altitude from flight "
+	const char *sql = "select starts_at, ends_at, altitude, thermal from flight "
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
 
@@ -87,7 +87,14 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 				goto cleanup;
 			}
 			memcpy(&flight.altitude, sqlite3_column_blob(stmt, 2), sizeof(flight.altitude));
-			if (response->body_len + sizeof(flight.starts_at) + sizeof(flight.ends_at) + sizeof(flight.altitude) >
+			if ((size_t)sqlite3_column_bytes(stmt, 3) != sizeof(flight.thermal)) {
+				error("thermal length does not match buffer\n");
+				response->status = 500;
+				goto cleanup;
+			}
+			memcpy(&flight.thermal, sqlite3_column_blob(stmt, 3), sizeof(flight.thermal));
+			if (response->body_len + sizeof(flight.starts_at) + sizeof(flight.ends_at) + sizeof(flight.altitude) +
+							sizeof(flight.thermal) >
 					sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
@@ -96,6 +103,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			append_body(response, &flight.starts_at, sizeof(flight.starts_at));
 			append_body(response, &flight.ends_at, sizeof(flight.ends_at));
 			append_body(response, &flight.altitude, sizeof(flight.altitude));
+			append_body(response, &flight.thermal, sizeof(flight.thermal));
 			rows++;
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
