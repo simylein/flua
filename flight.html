@@ -180,8 +180,14 @@
 			.bg-red-200 {
 				background-color: #fecaca;
 			}
+			.bg-orange-400\/80 {
+				background-color: #fb923ccc;
+			}
 			.bg-amber-200 {
 				background-color: #fde68a;
+			}
+			.bg-yellow-400\/80 {
+				background-color: #facc15cc;
 			}
 			.bg-green-200 {
 				background-color: #bbf7d0;
@@ -209,6 +215,12 @@
 			}
 			.bg-purple-400\/80 {
 				background-color: #c084fccc;
+			}
+			.bg-fuchsia-400\/80 {
+				background-color: #e879f9cc;
+			}
+			.bg-rose-400\/80 {
+				background-color: #fb7185cc;
 			}
 			.border-neutral-300 {
 				border-color: #d4d4d4;
@@ -321,8 +333,14 @@
 				.dark\:bg-red-800 {
 					background-color: #991b1b;
 				}
+				.dark\:bg-orange-600\/80 {
+					background-color: #ea580ccc;
+				}
 				.dark\:bg-amber-800 {
 					background-color: #92400e;
+				}
+				.dark\:bg-yellow-600\/80 {
+					background-color: #ca8a04cc;
 				}
 				.dark\:bg-green-600\/80 {
 					background-color: #16a34acc;
@@ -350,6 +368,12 @@
 				}
 				.dark\:bg-purple-600\/80 {
 					background-color: #9333eacc;
+				}
+				.dark\:bg-fuchsia-600\/80 {
+					background-color: #c026d3cc;
+				}
+				.dark\:bg-rose-600\/80 {
+					background-color: #e11d48cc;
 				}
 				.dark\:border-neutral-600 {
 					border-color: #525252;
@@ -621,7 +645,7 @@
 						<div id="altitude-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
 								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
-								<label class="text-neutral-600 dark:text-neutral-400">0m</label>
+								<label class="text-neutral-600 dark:text-neutral-400">0km</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
@@ -656,7 +680,49 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex-1 p-2 md:p-3 lg:p-4"></div>
+				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Thermal</h2>
+					</div>
+					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
+						<div id="thermal-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">0ms</label>
+								<p class="m-0"></p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-yellow-400/80 dark:bg-yellow-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">1ms</label>
+								<p class="m-0"></p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-orange-400/80 dark:bg-orange-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">2ms</label>
+								<p class="m-0"></p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-rose-400/80 dark:bg-rose-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">3ms</label>
+								<p class="m-0"></p>
+							</div>
+							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-fuchsia-400/80 dark:bg-fuchsia-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">4ms</label>
+								<p class="m-0"></p>
+							</div>
+						</div>
+						<div class="relative flex h-12">
+							<div id="thermal-graph" class="flex w-full h-full">
+								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</main>
 	</body>
@@ -677,6 +743,15 @@
 			['bg-sky-400/80', 'dark:bg-sky-600/80'],
 			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
 			['bg-purple-400/80', 'dark:bg-purple-600/80'],
+		];
+		const thermalScale = document.getElementById('thermal-scale');
+		const thermalGraph = document.getElementById('thermal-graph');
+		const thermalColors = [
+			['bg-green-400/80', 'dark:bg-green-600/80'],
+			['bg-yellow-400/80', 'dark:bg-yellow-600/80'],
+			['bg-orange-400/80', 'dark:bg-orange-600/80'],
+			['bg-rose-400/80', 'dark:bg-rose-600/80'],
+			['bg-fuchsia-400/80', 'dark:bg-fuchsia-600/80'],
 		];
 		const array = (length) => {
 			return Array(length)
@@ -927,6 +1002,52 @@
 				error(altitudeGraph.children[ind]);
 			});
 		};
+		const loadingThermal = () => {
+			loading(thermalScale, ['h-4'], []);
+			array(thermalScale.children.length).forEach((ind) => {
+				thermalScale.children[ind].classList.add('hidden');
+				thermalScale.children[ind].classList.remove('flex');
+			});
+			array(thermalGraph.children.length).forEach((ind) => {
+				loading(thermalGraph.children[ind], [], thermalColors[ind]);
+			});
+		};
+		const paintThermal = (data) => {
+			const thermals = data.reduce(
+				(accumulator, flight) => {
+					flight.thermal.forEach((thermal, ind) => (accumulator[ind] += thermal));
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
+			const max = thermals.reduce((accumulator, thermal) => accumulator + thermal, 0);
+			if (max > 0) {
+				thermalScale.classList.remove('h-4');
+			}
+			thermalScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			array(thermalScale.children.length).forEach((ind) => {
+				if (thermals[ind] > 0) {
+					thermalScale.children[ind].classList.add('flex');
+					thermalScale.children[ind].classList.remove('hidden');
+				} else {
+					thermalScale.children[ind].classList.add('hidden');
+					thermalScale.children[ind].classList.remove('flex');
+				}
+				thermalScale.children[ind].children[2].innerHTML = times(thermals[ind]);
+			});
+			array(thermalGraph.children.length).forEach((ind) => {
+				const percent = max === 0 ? 0 : (thermals[ind] / max) * 100;
+				thermalGraph.children[ind].style.width = `${percent}%`;
+				thermalGraph.children[ind].classList.add(...thermalColors[ind]);
+				thermalGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			});
+		};
+		const errorThermal = () => {
+			error(thermalScale);
+			array(thermalGraph.children.length).forEach((ind) => {
+				error(thermalGraph.children[ind]);
+			});
+		};
 		const parseYears = async (response) => {
 			const blob = await response.blob();
 			const buffer = await blob.arrayBuffer();
@@ -971,6 +1092,7 @@
 			window.requestAnimationFrame(() => loadingFlights());
 			window.requestAnimationFrame(() => loadingAirtime());
 			window.requestAnimationFrame(() => loadingAltitude());
+			window.requestAnimationFrame(() => loadingThermal());
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -986,10 +1108,12 @@
 				window.requestAnimationFrame(() => paintFlights(data));
 				window.requestAnimationFrame(() => paintAirtime(data));
 				window.requestAnimationFrame(() => paintAltitude(data));
+				window.requestAnimationFrame(() => paintThermal(data));
 			} catch {
 				window.requestAnimationFrame(() => errorFlights());
 				window.requestAnimationFrame(() => errorAirtime());
 				window.requestAnimationFrame(() => errorAltitude());
+				window.requestAnimationFrame(() => errorThermal());
 			}
 		};
 		const upload = document.getElementById('upload');
