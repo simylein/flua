@@ -93,7 +93,7 @@ int validate_credentials(char (*username)[17], char (*password)[65]) {
 }
 
 int parse_flight(flight_t *flight, request_t *request) {
-	if (request->body_len != 58) {
+	if (request->body_len != 68) {
 		return -1;
 	}
 
@@ -101,10 +101,18 @@ int parse_flight(flight_t *flight, request_t *request) {
 	uint64_t n_ends_at;
 
 	memcpy(&flight->hash, request->body, sizeof(flight->hash));
-	memcpy(&n_starts_at, &request->body[sizeof(flight->hash)], sizeof(flight->starts_at));
-	memcpy(&n_ends_at, &request->body[sizeof(flight->hash) + sizeof(flight->starts_at)], sizeof(flight->ends_at));
-	memcpy(&flight->altitude, &request->body[sizeof(flight->hash) + sizeof(flight->starts_at) + sizeof(flight->ends_at)],
-				 sizeof(flight->altitude));
+
+	size_t starts_at_offset = sizeof(flight->hash);
+	memcpy(&n_starts_at, &request->body[starts_at_offset], sizeof(flight->starts_at));
+
+	size_t ends_at_offset = starts_at_offset + sizeof(flight->starts_at);
+	memcpy(&n_ends_at, &request->body[ends_at_offset], sizeof(flight->ends_at));
+
+	size_t altitude_offset = ends_at_offset + sizeof(flight->ends_at);
+	memcpy(&flight->altitude, &request->body[altitude_offset], sizeof(flight->altitude));
+
+	size_t thermal_offset = altitude_offset + sizeof(flight->altitude);
+	memcpy(&flight->thermal, &request->body[thermal_offset], sizeof(flight->thermal));
 
 	flight->starts_at = ntohll(n_starts_at);
 	flight->ends_at = ntohll(n_ends_at);
