@@ -1064,17 +1064,10 @@
 					notification('info', `Flight ${hexHash.substring(0, 8)} is too short`);
 					continue;
 				}
-				const altitude = data.reduce(
-					(accumulator, point) => {
-						const index = Math.floor(point.alt / 1000);
-						if (index >= 0 && index <= 4) {
-							accumulator[index]++;
-						}
-						return accumulator;
-					},
-					[0, 0, 0, 0, 0]
-				);
-				await postFlight(hexHash, binHash, BigInt(data[0].time), BigInt(data[data.length - 1].time), altitude);
+				const startsAt = BigInt(data[0].time);
+				const endsAt = BigInt(data[data.length - 1].time);
+				const altitude = parseAltitude(data);
+				await postFlight(hexHash, binHash, startsAt, endsAt, altitude);
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
@@ -1104,6 +1097,18 @@
 				}
 			});
 			return data;
+		};
+		const parseAltitude = (data) => {
+			return data.reduce(
+				(accumulator, point) => {
+					const index = Math.floor(point.alt / 1000);
+					if (index >= 0 && index <= 4) {
+						accumulator[index]++;
+					}
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
 		};
 		const notifications = document.getElementById('notifications');
 		const kind = (type) => {
