@@ -940,11 +940,12 @@
 			const blob = await response.blob();
 			const buffer = await blob.arrayBuffer();
 			const data = new DataView(buffer);
-			return array(buffer.byteLength / 26).map((ind) => {
-				const startsAt = (BigInt(data.getUint32(ind * 26 + 0)) << 32n) | BigInt(data.getUint32(ind * 26 + 4));
-				const endsAt = (BigInt(data.getUint32(ind * 26 + 8)) << 32n) | BigInt(data.getUint32(ind * 26 + 12));
-				const altitude = [data.getUint16(ind * 26 + 16), data.getUint16(ind * 26 + 18), data.getUint16(ind * 26 + 20), data.getUint16(ind * 26 + 22), data.getUint16(ind * 26 + 24)];
-				return { startsAt, endsAt, altitude };
+			return array(buffer.byteLength / 36).map((ind) => {
+				const startsAt = (BigInt(data.getUint32(ind * 36 + 0)) << 32n) | BigInt(data.getUint32(ind * 36 + 4));
+				const endsAt = (BigInt(data.getUint32(ind * 36 + 8)) << 32n) | BigInt(data.getUint32(ind * 36 + 12));
+				const altitude = [data.getUint16(ind * 36 + 16), data.getUint16(ind * 36 + 18), data.getUint16(ind * 36 + 20), data.getUint16(ind * 36 + 22), data.getUint16(ind * 36 + 24)];
+				const thermal = [data.getUint16(ind * 36 + 26), data.getUint16(ind * 36 + 28), data.getUint16(ind * 36 + 30), data.getUint16(ind * 36 + 32), data.getUint16(ind * 36 + 34)];
+				return { startsAt, endsAt, altitude, thermal };
 			});
 		};
 		const loadYears = async () => {
@@ -1006,8 +1007,8 @@
 			const hex = array.map((byte) => byte.toString(16).padStart(2, '0'));
 			return [hex.join(''), buffer];
 		};
-		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude) => {
-			const buffer = new ArrayBuffer(26);
+		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal) => {
+			const buffer = new ArrayBuffer(36);
 			const view = new DataView(buffer);
 			view.setUint32(0, Number(startsAt >> 32n));
 			view.setUint32(4, Number(startsAt & 0xffffffffn));
@@ -1018,6 +1019,11 @@
 			view.setUint16(20, altitude[2] & 0xffff);
 			view.setUint16(22, altitude[3] & 0xffff);
 			view.setUint16(24, altitude[4] & 0xffff);
+			view.setUint16(26, thermal[0] & 0xffff);
+			view.setUint16(28, thermal[1] & 0xffff);
+			view.setUint16(30, thermal[2] & 0xffff);
+			view.setUint16(32, thermal[3] & 0xffff);
+			view.setUint16(34, thermal[4] & 0xffff);
 			const data = new Blob([binHash, buffer]);
 			try {
 				if (window.localStorage.getItem('develop')) {
@@ -1067,7 +1073,8 @@
 				const startsAt = BigInt(data[0].time);
 				const endsAt = BigInt(data[data.length - 1].time);
 				const altitude = parseAltitude(data);
-				await postFlight(hexHash, binHash, startsAt, endsAt, altitude);
+				const thermal = parseThermal(data);
+				await postFlight(hexHash, binHash, startsAt, endsAt, altitude, thermal);
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
@@ -1101,9 +1108,23 @@
 		const parseAltitude = (data) => {
 			return data.reduce(
 				(accumulator, point) => {
-					const index = Math.floor(point.alt / 1000);
-					if (index >= 0 && index <= 4) {
-						accumulator[index]++;
+					const alt = Math.floor(point.alt / 1000);
+					if (alt >= 0) {
+						accumulator[alt <= 4 ? alt : 4]++;
+					}
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
+		};
+		const parseThermal = (data) => {
+			return data.reduce(
+				(accumulator, point, index) => {
+					if (index + 1 < data.length) {
+						const diff = data[index + 1].alt - point.alt;
+						if (diff >= 0) {
+							accumulator[diff <= 4 ? diff : 4]++;
+						}
 					}
 					return accumulator;
 				},
