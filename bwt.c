@@ -11,7 +11,7 @@
 #include "utils.h"
 #include <stdint.h>
 
-int sign_bwt(char (*buffer)[88], const uint8_t *id, const size_t id_len) {
+int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
 	const time_t iat = time(NULL);
 	const uint64_t n_iat = htonll((uint64_t)iat);
 	const time_t exp = iat + bwt_ttl;
