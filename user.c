@@ -129,7 +129,7 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
 		const uint8_t public = (uint8_t)sqlite3_column_int(stmt, 2);
 		append_body(response, id, id_len);
-		append_body(response, username, username_len);
+		append_body(response, username, username_len + 1);
 		append_body(response, &public, sizeof(public));
 	} else if (result == SQLITE_DONE) {
 		error("user %.8x not found\n", *(uint32_t *)bwt->id);
