@@ -1049,8 +1049,7 @@
 			});
 		};
 		const parseYears = async (response) => {
-			const blob = await response.blob();
-			const buffer = await blob.arrayBuffer();
+			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
 			return array(buffer.byteLength / 2).map((ind) => {
 				const year = data.getUint16(ind * 2 + 0);
@@ -1058,8 +1057,7 @@
 			});
 		};
 		const parseFlights = async (response) => {
-			const blob = await response.blob();
-			const buffer = await blob.arrayBuffer();
+			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
 			return array(buffer.byteLength / 36).map((ind) => {
 				const startsAt = (BigInt(data.getUint32(ind * 36 + 0)) << 32n) | BigInt(data.getUint32(ind * 36 + 4));
