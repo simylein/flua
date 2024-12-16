@@ -11,7 +11,7 @@
 #include "utils.h"
 #include <stdint.h>
 
-int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
+int sign_bwt(char (*buffer)[88], const uint8_t *id, const size_t id_len) {
 	const time_t iat = time(NULL);
 	const uint64_t n_iat = htonll((uint64_t)iat);
 	const time_t exp = iat + bwt_ttl;
@@ -39,7 +39,7 @@ int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
 int verify_bwt(const char *cookie, const size_t cookie_len, bwt_t *bwt) {
 	char *buffer;
 	size_t buffer_len;
-	if (strnfind(cookie, cookie_len, "auth=", "\r\n", &buffer, &buffer_len, 88) == -1) {
+	if (strnfind(cookie, cookie_len, "auth=", "", &buffer, &buffer_len, 88) == -1) {
 		warn("no auth value in cookie header\n");
 		return -1;
 	}
