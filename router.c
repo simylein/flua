@@ -287,7 +287,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				debug("redirecting to location signin\n");
 				response->status = 307;
 				append_header(response, "location:/signin\r\n");
-				append_header(response, "set-cookie:memo=%s\r\n", request->pathname);
+				append_header(response, "set-cookie:memo=%.*s\r\n", (int)request->pathname_len, request->pathname);
 				goto respond;
 			}
 
