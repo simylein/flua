@@ -72,6 +72,27 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		file("signup.html", response);
 	}
 
+	if (match(request, "delete", "/api/me", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
+			response->status = 401;
+			goto respond;
+		}
+
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
+			response->status = 401;
+			goto respond;
+		}
+
+		delete_user(database, &bwt, response);
+	}
+
 	if (match(request, "post", "/api/signin", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;

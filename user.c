@@ -1,4 +1,5 @@
 #include "user.h"
+#include "bwt.h"
 #include "logger.h"
 #include "response.h"
 #include <sqlite3.h>
@@ -104,4 +105,39 @@ int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *us
 cleanup:
 	sqlite3_finalize(stmt);
 	return status;
+}
+
+void delete_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
+	sqlite3_stmt *stmt;
+
+	const char *sql = "delete from user where id = ?";
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("%s\n", sqlite3_errmsg(database));
+		error("failed to prepare statement\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+
+	int result = sqlite3_step(stmt);
+	if (result != SQLITE_DONE) {
+		error("%s\n", sqlite3_errmsg(database));
+		error("failed to execute statement\n");
+		response->status = 500;
+		goto cleanup;
+	}
+
+	if (sqlite3_changes(database) == 0) {
+		error("user %.8x not found\n", *(uint32_t *)bwt->id);
+		response->status = 500;
+		goto cleanup;
+	}
+
+	info("user %.8x deleted himself\n", *(uint32_t *)bwt->id);
+	response->status = 200;
+
+cleanup:
+	sqlite3_finalize(stmt);
 }
