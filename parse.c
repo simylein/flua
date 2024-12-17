@@ -6,56 +6,53 @@
 #include <stdint.h>
 #include <string.h>
 
-int parse_credentials(char (*username)[17], char (*password)[65], request_t *request) {
+int parse_credentials(char **username, uint8_t *username_len, char **password, uint8_t *password_len, request_t *request) {
 	int stage = 0;
-	size_t index = 0;
+	uint8_t index = 0;
 
-	size_t username_length = 0;
-	const size_t username_index = index;
-	while (stage == 0 && username_length < sizeof(*username) - 1 && index < request->body_len) {
+	*username_len = 0;
+	const uint8_t username_index = index;
+	while (stage == 0 && *username_len < 16 && index < request->body_len) {
 		char *byte = &request->body[index];
 		if (*byte == '\0') {
 			stage = 1;
 		} else {
-			username_length++;
+			(*username_len)++;
 		}
 		index++;
 	}
-	memcpy(username, &request->body[username_index], username_length);
-	(*username)[username_length] = '\0';
+	*username = &request->body[username_index];
 	if (stage != 1) {
 		return -1;
 	}
 
-	size_t password_length = 0;
-	const size_t password_index = index;
-	while (stage == 1 && password_length < sizeof(*password) - 1 && index < request->body_len) {
+	*password_len = 0;
+	const uint8_t password_index = index;
+	while (stage == 1 && *password_len < 64 && index < request->body_len) {
 		char *byte = &request->body[index];
 		if (*byte == '\0') {
 			stage = 2;
 		} else {
-			password_length++;
+			(*password_len)++;
 		}
 		index++;
 	}
-	memcpy(password, &request->body[password_index], password_length);
-	(*password)[password_length] = '\0';
+	*password = &request->body[password_index];
 	if (stage != 2) {
 		return -1;
 	}
 
-	trace("username %zu bytes and password %zu bytes\n", username_length, password_length);
+	trace("username %hhu bytes and password %hhu bytes\n", *username_len, *password_len);
 	return 0;
 }
 
-int validate_credentials(char (*username)[17], char (*password)[65]) {
-	size_t username_index = 0;
-	const size_t username_length = strlen(*username);
-	if (username_length < 4) {
+int validate_credentials(char **username, uint8_t *username_len, char **password, uint8_t *password_len) {
+	if (*username_len < 4) {
 		return -1;
 	}
 
-	while (username_index < username_length) {
+	uint8_t username_index = 0;
+	while (username_index < *username_len) {
 		char *byte = &(*username)[username_index];
 		if (*byte < 'a' || *byte > 'z') {
 			return -1;
@@ -63,9 +60,7 @@ int validate_credentials(char (*username)[17], char (*password)[65]) {
 		username_index++;
 	}
 
-	size_t password_index = 0;
-	const size_t password_length = strlen(*password);
-	if (password_length < 4) {
+	if (*password_len < 4) {
 		return -1;
 	}
 
@@ -73,7 +68,8 @@ int validate_credentials(char (*username)[17], char (*password)[65]) {
 	bool upper = false;
 	bool digit = false;
 
-	while (password_index < password_length) {
+	uint8_t password_index = 0;
+	while (password_index < *password_len) {
 		char *byte = &(*password)[password_index];
 		if (*byte >= '0' && *byte <= '9') {
 			digit = true;

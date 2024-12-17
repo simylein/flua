@@ -120,21 +120,23 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char username[17];
-		char password[65];
-		if (parse_credentials(&username, &password, request) == -1) {
+		char *username;
+		uint8_t username_len;
+		char *password;
+		uint8_t password_len;
+		if (parse_credentials(&username, &username_len, &password, &password_len, request) == -1) {
 			debug("failed to parse credentials\n");
 			response->status = 400;
 			goto respond;
 		};
 
-		if (validate_credentials(&username, &password) == -1) {
+		if (validate_credentials(&username, &username_len, &password, &password_len) == -1) {
 			debug("failed to validate credentials\n");
 			response->status = 400;
 			goto respond;
 		}
 
-		create_signin(database, username, password, response);
+		create_signin(database, username, username_len, password, password_len, response);
 	}
 
 	if (match(request, "post", "/api/signup", &method_found, &pathname_found) == 0) {
@@ -143,21 +145,23 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		char username[17];
-		char password[65];
-		if (parse_credentials(&username, &password, request) == -1) {
+		char *username;
+		uint8_t username_len;
+		char *password;
+		uint8_t password_len;
+		if (parse_credentials(&username, &username_len, &password, &password_len, request) == -1) {
 			debug("failed to parse credentials\n");
 			response->status = 400;
 			goto respond;
 		};
 
-		if (validate_credentials(&username, &password) == -1) {
+		if (validate_credentials(&username, &username_len, &password, &password_len) == -1) {
 			debug("failed to validate credentials\n");
 			response->status = 400;
 			goto respond;
 		}
 
-		create_signup(database, username, password, response);
+		create_signup(database, username, username_len, password, password_len, response);
 	}
 
 	if (match(request, "get", "/api/year", &method_found, &pathname_found) == 0) {

@@ -9,7 +9,8 @@
 #include <stdint.h>
 #include <string.h>
 
-void create_signin(sqlite3 *database, char *username, char *password, response_t *response) {
+void create_signin(sqlite3 *database, char *username, uint8_t username_len, char *password, uint8_t password_len,
+									 response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select id from user where username = ? and password = ?";
@@ -22,9 +23,9 @@ void create_signin(sqlite3 *database, char *username, char *password, response_t
 	}
 
 	uint8_t hash[32];
-	sha256(password, strlen(password), &hash);
+	sha256(password, password_len, &hash);
 
-	sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 1, username, username_len, SQLITE_STATIC);
 	sqlite3_bind_blob(stmt, 2, hash, sizeof(hash), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
@@ -55,7 +56,8 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
-void create_signup(sqlite3 *database, char *username, char *password, response_t *response) {
+void create_signup(sqlite3 *database, char *username, uint8_t username_len, char *password, uint8_t password_len,
+									 response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "insert into user (id, username, password, public) values (randomblob(16), ?, ?, 0) returning id";
@@ -68,9 +70,9 @@ void create_signup(sqlite3 *database, char *username, char *password, response_t
 	}
 
 	uint8_t hash[32];
-	sha256(password, strlen(password), &hash);
+	sha256(password, password_len, &hash);
 
-	sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 1, username, username_len, SQLITE_STATIC);
 	sqlite3_bind_blob(stmt, 2, hash, sizeof(hash), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
