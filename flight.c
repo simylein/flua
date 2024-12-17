@@ -80,8 +80,8 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 		if (result == SQLITE_ROW) {
 			const uint64_t starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
 			const uint64_t ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
-			const uint16_t(*altitude)[5] = (uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
-			const uint16_t(*thermal)[5] = (uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
+			const uint16_t(*altitude)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
+			const uint16_t(*thermal)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
 			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(*altitude)) {
 				error("altitude length does not match buffer\n");
 				response->status = 500;
