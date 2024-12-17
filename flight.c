@@ -78,32 +78,30 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			struct flight_t flight;
-			flight.starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
-			flight.ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
-			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(flight.altitude)) {
+			const uint64_t starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
+			const uint64_t ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
+			const uint16_t(*altitude)[5] = (uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
+			const uint16_t(*thermal)[5] = (uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
+			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(*altitude)) {
 				error("altitude length does not match buffer\n");
 				response->status = 500;
 				goto cleanup;
 			}
-			memcpy(&flight.altitude, sqlite3_column_blob(stmt, 2), sizeof(flight.altitude));
-			if ((size_t)sqlite3_column_bytes(stmt, 3) != sizeof(flight.thermal)) {
+			if ((size_t)sqlite3_column_bytes(stmt, 3) != sizeof(*thermal)) {
 				error("thermal length does not match buffer\n");
 				response->status = 500;
 				goto cleanup;
 			}
-			memcpy(&flight.thermal, sqlite3_column_blob(stmt, 3), sizeof(flight.thermal));
-			if (response->body_len + sizeof(flight.starts_at) + sizeof(flight.ends_at) + sizeof(flight.altitude) +
-							sizeof(flight.thermal) >
+			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) + sizeof(*altitude) + sizeof(*thermal) >
 					sizeof(response->body)) {
 				error("body length exceeds buffer\n");
 				response->status = 206;
 				goto partial;
 			}
-			append_body(response, &flight.starts_at, sizeof(flight.starts_at));
-			append_body(response, &flight.ends_at, sizeof(flight.ends_at));
-			append_body(response, &flight.altitude, sizeof(flight.altitude));
-			append_body(response, &flight.thermal, sizeof(flight.thermal));
+			append_body(response, &starts_at, sizeof(starts_at));
+			append_body(response, &ends_at, sizeof(ends_at));
+			append_body(response, altitude, sizeof(*altitude));
+			append_body(response, thermal, sizeof(*thermal));
 			rows++;
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
@@ -139,11 +137,11 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 		goto cleanup;
 	}
 
-	sqlite3_bind_blob(stmt, 1, flight->hash, sizeof(flight->hash), SQLITE_STATIC);
-	sqlite3_bind_int64(stmt, 2, (int64_t)flight->starts_at);
-	sqlite3_bind_int64(stmt, 3, (int64_t)flight->ends_at);
-	sqlite3_bind_blob(stmt, 4, flight->altitude, sizeof(flight->altitude), SQLITE_STATIC);
-	sqlite3_bind_blob(stmt, 5, flight->thermal, sizeof(flight->thermal), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 1, flight->hash, sizeof(*flight->hash), SQLITE_STATIC);
+	sqlite3_bind_int64(stmt, 2, (int64_t)*flight->starts_at);
+	sqlite3_bind_int64(stmt, 3, (int64_t)*flight->ends_at);
+	sqlite3_bind_blob(stmt, 4, flight->altitude, sizeof(*flight->altitude), SQLITE_STATIC);
+	sqlite3_bind_blob(stmt, 5, flight->thermal, sizeof(*flight->thermal), SQLITE_STATIC);
 	sqlite3_bind_blob(stmt, 6, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);

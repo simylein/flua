@@ -4,7 +4,6 @@
 #include "request.h"
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 
 int parse_credentials(char **username, uint8_t *username_len, char **password, uint8_t *password_len, request_t *request) {
 	int stage = 0;
@@ -89,29 +88,26 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 }
 
 int parse_flight(flight_t *flight, request_t *request) {
-	if (request->body_len != 68) {
+	if (request->body_len != sizeof(*flight->hash) + sizeof(*flight->starts_at) + sizeof(*flight->ends_at) +
+															 sizeof(*flight->altitude) + sizeof(*flight->thermal)) {
 		return -1;
 	}
 
-	uint64_t n_starts_at;
-	uint64_t n_ends_at;
+	flight->hash = (uint8_t(*)[32])request->body;
 
-	memcpy(&flight->hash, request->body, sizeof(flight->hash));
+	size_t starts_at_offset = sizeof(*flight->hash);
+	(*flight).starts_at = (uint64_t(*))(&request->body[starts_at_offset]);
+	*(*flight).starts_at = ntohll(*(*flight).starts_at);
 
-	size_t starts_at_offset = sizeof(flight->hash);
-	memcpy(&n_starts_at, &request->body[starts_at_offset], sizeof(flight->starts_at));
+	size_t ends_at_offset = starts_at_offset + sizeof(*flight->starts_at);
+	(*flight).ends_at = (uint64_t(*))(&request->body[ends_at_offset]);
+	*(*flight).ends_at = ntohll(*(*flight).ends_at);
 
-	size_t ends_at_offset = starts_at_offset + sizeof(flight->starts_at);
-	memcpy(&n_ends_at, &request->body[ends_at_offset], sizeof(flight->ends_at));
+	size_t altitude_offset = ends_at_offset + sizeof(*flight->ends_at);
+	(*flight).altitude = (uint16_t(*)[5])(&request->body[altitude_offset]);
 
-	size_t altitude_offset = ends_at_offset + sizeof(flight->ends_at);
-	memcpy(&flight->altitude, &request->body[altitude_offset], sizeof(flight->altitude));
-
-	size_t thermal_offset = altitude_offset + sizeof(flight->altitude);
-	memcpy(&flight->thermal, &request->body[thermal_offset], sizeof(flight->thermal));
-
-	flight->starts_at = ntohll(n_starts_at);
-	flight->ends_at = ntohll(n_ends_at);
+	size_t thermal_offset = altitude_offset + sizeof(*flight->altitude);
+	(*flight).thermal = (uint16_t(*)[5])(&request->body[thermal_offset]);
 
 	return 0;
 }
