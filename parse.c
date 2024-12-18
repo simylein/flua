@@ -113,6 +113,10 @@ int parse_flight(flight_t *flight, request_t *request) {
 }
 
 int validate_flight(flight_t *flight) {
+	if (flight->starts_at == 0 || flight->ends_at == 0) {
+		return -1;
+	}
+
 	if (flight->starts_at > flight->ends_at) {
 		return -1;
 	}
