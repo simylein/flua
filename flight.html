@@ -758,7 +758,7 @@
 				.fill(null)
 				.map((__, ind) => ind);
 		};
-		const units = (amount, title) => {
+		const units = (amount) => {
 			switch (true) {
 				case amount >= 1e4:
 					return `${(amount / 1e3).toFixed(1)}k`;
@@ -767,7 +767,7 @@
 				case amount >= 1e1:
 					return amount.toFixed(0);
 				default:
-					return amount.toFixed(title ? 0 : 1);
+					return amount % 1 === 0 ? amount : amount.toFixed(1);
 			}
 		};
 		const times = (seconds) => {
@@ -781,7 +781,7 @@
 				case seconds >= 60:
 					return `${(seconds / 60).toFixed(1)}m`;
 				default:
-					return `${seconds}s`;
+					return seconds % 1 === 0 ? `${seconds}s` : `${seconds.toFixed(1)}s`;
 			}
 		};
 		const buckets = (items, max) => {
@@ -890,7 +890,7 @@
 		};
 		const paintFlights = (data) => {
 			flightCount.classList.remove('w-10', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
-			flightCount.innerText = units(data.length, true);
+			flightCount.innerText = units(data.length);
 			const windows = buckets(data, flightGraph.children.length);
 			const max = Math.max(...windows.map((window) => window.length));
 			array(flightScale.children.length).forEach((ind) => {
