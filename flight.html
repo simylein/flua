@@ -1244,9 +1244,9 @@
 		const parseAltitude = (data) => {
 			return data.reduce(
 				(accumulator, point) => {
-					const alt = Math.floor(point.altIsa / 1000);
-					if (alt >= 0) {
-						accumulator[alt <= 4 ? alt : 4]++;
+					if (point.altIsa >= 0) {
+						const category = Math.floor(point.altIsa / 1000);
+						accumulator[category <= 4 ? category : 4]++;
 					}
 					return accumulator;
 				},
@@ -1259,7 +1259,8 @@
 					if (index + 1 < data.length) {
 						const diff = data[index + 1].altIsa - point.altIsa;
 						if (diff >= 0) {
-							accumulator[diff <= 4 ? diff : 4]++;
+							const category = Math.floor(diff);
+							accumulator[category <= 4 ? category : 4]++;
 						}
 					}
 					return accumulator;
