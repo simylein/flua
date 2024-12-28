@@ -1245,7 +1245,7 @@
 			return data.reduce(
 				(accumulator, point) => {
 					if (point.altIsa >= 0) {
-						const category = Math.floor(point.altIsa / 1000);
+						const category = Math.floor(point.altGps / 1000);
 						accumulator[category <= 4 ? category : 4]++;
 					}
 					return accumulator;
