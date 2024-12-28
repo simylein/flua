@@ -1060,8 +1060,8 @@
 			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
 			return array(buffer.byteLength / 36).map((ind) => {
-				const startsAt = (BigInt(data.getUint32(ind * 36 + 0)) << 32n) | BigInt(data.getUint32(ind * 36 + 4));
-				const endsAt = (BigInt(data.getUint32(ind * 36 + 8)) << 32n) | BigInt(data.getUint32(ind * 36 + 12));
+				const startsAt = data.getBigUint64(ind * 36 + 0);
+				const endsAt = data.getBigUint64(ind * 36 + 8);
 				const altitude = [data.getUint16(ind * 36 + 16), data.getUint16(ind * 36 + 18), data.getUint16(ind * 36 + 20), data.getUint16(ind * 36 + 22), data.getUint16(ind * 36 + 24)];
 				const thermal = [data.getUint16(ind * 36 + 26), data.getUint16(ind * 36 + 28), data.getUint16(ind * 36 + 30), data.getUint16(ind * 36 + 32), data.getUint16(ind * 36 + 34)];
 				return { startsAt, endsAt, altitude, thermal };
@@ -1132,10 +1132,8 @@
 		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal) => {
 			const buffer = new ArrayBuffer(36);
 			const view = new DataView(buffer);
-			view.setUint32(0, Number(startsAt >> 32n));
-			view.setUint32(4, Number(startsAt & 0xffffffffn));
-			view.setUint32(8, Number(endsAt >> 32n));
-			view.setUint32(12, Number(endsAt & 0xffffffffn));
+			view.setBigUint64(0, startsAt);
+			view.setBigUint64(8, endsAt);
 			view.setUint16(16, altitude[0] & 0xffff);
 			view.setUint16(18, altitude[1] & 0xffff);
 			view.setUint16(20, altitude[2] & 0xffff);
