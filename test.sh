@@ -85,7 +85,7 @@ test "get" "/signup?hello=world" 400 "text/html"
 test "get" "/signin" 200 "text/html"
 test "get" "/signin?hello=world" 400 "text/html"
 
-test "get" "/testing" 307 "" "" "/signin"
+test "get" "/testing" 404
 
 test "get" "/api/me" 401
 
@@ -135,9 +135,9 @@ test "get" "/api/me" 401
 
 test "delete" "/api/me" 401
 
-test "get" "/api/year" 401
+test "get" "/api/year?user=testing" 404
 
-test "get" "/api/flight" 401
+test "get" "/api/flight?user=testing&year=1970" 404
 
 if [ ${passed} -gt 0 ]; then
   info "${bold}${green}${passed} passed${reset}${normal}"
