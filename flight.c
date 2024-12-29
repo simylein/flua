@@ -4,6 +4,7 @@
 #include "format.h"
 #include "logger.h"
 #include "response.h"
+#include "utils.h"
 #include <sqlite3.h>
 #include <stdint.h>
 #include <string.h>
@@ -78,8 +79,8 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 	while (1) {
 		int result = sqlite3_step(stmt);
 		if (result == SQLITE_ROW) {
-			const uint64_t starts_at = htonll((uint64_t)sqlite3_column_int64(stmt, 0));
-			const uint64_t ends_at = htonll((uint64_t)sqlite3_column_int64(stmt, 1));
+			const uint64_t starts_at = (uint64_t)sqlite3_column_int64(stmt, 0);
+			const uint64_t ends_at = (uint64_t)sqlite3_column_int64(stmt, 1);
 			const uint16_t(*altitude)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
 			const uint16_t(*thermal)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
 			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(*altitude)) {
@@ -98,8 +99,14 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 				response->status = 206;
 				goto partial;
 			}
-			append_body(response, &starts_at, sizeof(starts_at));
-			append_body(response, &ends_at, sizeof(ends_at));
+			const uint64_t n_starts_at = htonll(starts_at);
+			const uint64_t n_ends_at = htonll(ends_at);
+			const uint8_t starts_at_bytes = significant_bytes(starts_at);
+			const uint8_t ends_at_bytes = significant_bytes(ends_at);
+			const uint8_t leading_byte = (uint8_t)(starts_at_bytes << 4) | ends_at_bytes;
+			append_body(response, &leading_byte, sizeof(leading_byte));
+			append_body(response, ((uint8_t *)&n_starts_at) + (8 - starts_at_bytes), starts_at_bytes);
+			append_body(response, ((uint8_t *)&n_ends_at) + (8 - ends_at_bytes), ends_at_bytes);
 			append_body(response, altitude, sizeof(*altitude));
 			append_body(response, thermal, sizeof(*thermal));
 			rows++;
