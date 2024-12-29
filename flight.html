@@ -1059,13 +1059,31 @@
 		const parseFlights = async (response) => {
 			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
-			return array(buffer.byteLength / 36).map((ind) => {
-				const startsAt = data.getBigUint64(ind * 36 + 0);
-				const endsAt = data.getBigUint64(ind * 36 + 8);
-				const altitude = [data.getUint16(ind * 36 + 16), data.getUint16(ind * 36 + 18), data.getUint16(ind * 36 + 20), data.getUint16(ind * 36 + 22), data.getUint16(ind * 36 + 24)];
-				const thermal = [data.getUint16(ind * 36 + 26), data.getUint16(ind * 36 + 28), data.getUint16(ind * 36 + 30), data.getUint16(ind * 36 + 32), data.getUint16(ind * 36 + 34)];
-				return { startsAt, endsAt, altitude, thermal };
-			});
+			let byteOffset = 0;
+			let bitOffset = 0;
+			const readBits = (bits) => {
+				let value = 0n;
+				for (let index = 0; index < bits; index++) {
+					const byte = data.getUint8(byteOffset);
+					const bit = (byte >> (7 - bitOffset)) & 1;
+					value = (value << 1n) | BigInt(bit);
+					bitOffset++;
+					if (bitOffset === 8) {
+						byteOffset++;
+						bitOffset = 0;
+					}
+				}
+				return value;
+			};
+			const flights = [];
+			while (byteOffset < buffer.byteLength) {
+				const startsAt = readBits(64);
+				const endsAt = readBits(64);
+				const altitude = [Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16))];
+				const thermal = [Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16))];
+				flights.push({ startsAt, endsAt, altitude, thermal });
+			}
+			return flights;
 		};
 		const loadYears = async () => {
 			window.requestAnimationFrame(() => loadingYears());
