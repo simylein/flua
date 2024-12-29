@@ -1270,7 +1270,7 @@
 				const point = data[index];
 				if (index + 1 < data.length) {
 					courses.push(heading(point, data[index + 1]));
-					if (courses.length > 10) {
+					if (courses.length > 11) {
 						courses.shift();
 					}
 					const change = courses.reduce((accumulator, course, ind) => {
@@ -1278,7 +1278,7 @@
 							accumulator += course - courses[ind + 1];
 						}
 						return accumulator;
-					}, courses[0]);
+					}, 0);
 					const diff = data[index + 1].altIsa - point.altIsa;
 					if (diff >= 0 && Math.abs(change) >= 120) {
 						const category = Math.floor(diff);
