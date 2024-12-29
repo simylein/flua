@@ -1079,10 +1079,25 @@
 			while (byteOffset < buffer.byteLength) {
 				const startsAtBits = Number(readBits(4)) * 8;
 				const endsAtBits = Number(readBits(4)) * 8;
+				const altitudeBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
+				const thermalBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
+				const paddingBits = Number(readBits(4)) * 8;
 				const startsAt = readBits(startsAtBits);
 				const endsAt = readBits(endsAtBits);
-				const altitude = [Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16))];
-				const thermal = [Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16)), Number(readBits(16))];
+				const altitude = [
+					Number(readBits(altitudeBits[0])),
+					Number(readBits(altitudeBits[1])),
+					Number(readBits(altitudeBits[2])),
+					Number(readBits(altitudeBits[3])),
+					Number(readBits(altitudeBits[4])),
+				];
+				const thermal = [
+					Number(readBits(thermalBits[0])),
+					Number(readBits(thermalBits[1])),
+					Number(readBits(thermalBits[2])),
+					Number(readBits(thermalBits[3])),
+					Number(readBits(thermalBits[4])),
+				];
 				flights.push({ startsAt, endsAt, altitude, thermal });
 			}
 			return flights;
