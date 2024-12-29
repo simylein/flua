@@ -104,10 +104,9 @@ char *strncasestrn(const char *buffer, size_t buffer_len, const char *buf, size_
 
 uint8_t significant_bytes(uint64_t value) {
 	uint8_t bytes = 0;
-	for (uint8_t index = 7; index >= 0; --index) {
+	for (uint8_t index = 0; index < 8; index++) {
 		if ((value >> (index * 8)) & 0xff) {
 			bytes = index + 1;
-			break;
 		}
 	}
 	return bytes;
