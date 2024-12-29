@@ -1,5 +1,6 @@
 #include "request.h"
 #include "response.h"
+#include <stdint.h>
 #include <string.h>
 
 void null_init(request_t *request, response_t *response) {
@@ -99,4 +100,15 @@ char *strncasestrn(const char *buffer, size_t buffer_len, const char *buf, size_
 	}
 
 	return NULL;
+}
+
+uint8_t significant_bytes(uint64_t value) {
+	uint8_t bytes = 0;
+	for (uint8_t index = 7; index >= 0; --index) {
+		if ((value >> (index * 8)) & 0xff) {
+			bytes = index + 1;
+			break;
+		}
+	}
+	return bytes;
 }
