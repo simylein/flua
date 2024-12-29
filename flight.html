@@ -1241,14 +1241,17 @@
 			}
 			return data;
 		};
+		const radians = (degrees) => {
+			return (degrees * Math.PI) / 180;
+		};
 		const heading = (startPoint, endPoint) => {
 			const scaleFactor = 1000 * 60;
 			const latDiff = (endPoint.lat - startPoint.lat) / scaleFactor;
 			const lonDiff = (endPoint.lon - startPoint.lon) / scaleFactor;
-			const y = Math.sin((lonDiff * Math.PI) / 180) * Math.cos(((endPoint.lat / scaleFactor) * Math.PI) / 180);
+			const y = Math.sin(radians(lonDiff)) * Math.cos(radians(endPoint.lat / scaleFactor));
 			const x =
-				Math.cos(((startPoint.lat / scaleFactor) * Math.PI) / 180) * Math.sin(((endPoint.lat / scaleFactor) * Math.PI) / 180) -
-				Math.sin(((startPoint.lat / scaleFactor) * Math.PI) / 180) * Math.cos(((endPoint.lat / scaleFactor) * Math.PI) / 180) * Math.cos((lonDiff * Math.PI) / 180);
+				Math.cos(radians(startPoint.lat / scaleFactor)) * Math.sin(radians(endPoint.lat / scaleFactor)) -
+				Math.sin(radians(startPoint.lat / scaleFactor)) * Math.cos(radians(endPoint.lat / scaleFactor)) * Math.cos(radians(lonDiff));
 			const rawHeading = (Math.atan2(y, x) * 180) / Math.PI;
 			return +((rawHeading + 360) % 360).toFixed(0);
 		};
