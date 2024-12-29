@@ -1268,23 +1268,18 @@
 		};
 		const parseThermal = (data) => {
 			const categories = [0, 0, 0, 0, 0];
-			const courses = [];
+			const headingDiffs = [];
 			for (let index = 0; index < data.length; index++) {
 				const point = data[index];
-				if (index + 1 < data.length) {
-					courses.push(heading(point, data[index + 1]));
-					if (courses.length > 11) {
-						courses.shift();
+				if (index + 2 < data.length) {
+					headingDiffs.push(heading(point, data[index + 1]) - heading(data[index + 1], data[index + 2]));
+					if (headingDiffs.length > 10) {
+						headingDiffs.shift();
 					}
-					const change = courses.reduce((accumulator, course, ind) => {
-						if (ind + 1 < courses.length) {
-							accumulator += course - courses[ind + 1];
-						}
-						return accumulator;
-					}, 0);
-					const diff = data[index + 1].altIsa - point.altIsa;
-					if (diff >= 0 && Math.abs(change) >= 120) {
-						const category = Math.floor(diff);
+					const headingDiff = headingDiffs.reduce((accumulator, diff) => accumulator + diff, 0);
+					const altitudeDiff = data[index + 1].altIsa - point.altIsa;
+					if (altitudeDiff >= 0 && Math.abs(headingDiff) >= 120) {
+						const category = Math.floor(altitudeDiff);
 						categories[category <= 4 ? category : 4]++;
 					}
 				}
