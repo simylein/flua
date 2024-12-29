@@ -103,12 +103,29 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			const uint64_t n_ends_at = htonll(ends_at);
 			const uint8_t starts_at_bytes = significant_bytes(starts_at);
 			const uint8_t ends_at_bytes = significant_bytes(ends_at);
-			const uint8_t leading_byte = (uint8_t)(starts_at_bytes << 4) | ends_at_bytes;
-			append_body(response, &leading_byte, sizeof(leading_byte));
+			const uint8_t altitude_bytes[5] = {
+					significant_bytes((*altitude)[0]), significant_bytes((*altitude)[1]), significant_bytes((*altitude)[2]),
+					significant_bytes((*altitude)[3]), significant_bytes((*altitude)[4]),
+			};
+			const uint8_t thermal_bytes[5] = {
+					significant_bytes((*thermal)[0]), significant_bytes((*thermal)[1]), significant_bytes((*thermal)[2]),
+					significant_bytes((*thermal)[3]), significant_bytes((*thermal)[4]),
+			};
+			const uint32_t leading_bytes =
+					(uint32_t)(starts_at_bytes << 28) | (uint32_t)(ends_at_bytes << 24) | (uint32_t)(altitude_bytes[0] << 22) |
+					(uint32_t)(altitude_bytes[1] << 20) | (uint32_t)(altitude_bytes[2] << 18) | (uint32_t)(altitude_bytes[3] << 16) |
+					(uint32_t)(altitude_bytes[4] << 14) | (uint32_t)(thermal_bytes[0] << 12) | (uint32_t)(thermal_bytes[1] << 10) |
+					(uint32_t)(thermal_bytes[2] << 8) | (uint32_t)(thermal_bytes[3] << 6) | (uint32_t)(thermal_bytes[4] << 4);
+			const uint32_t n_leading_bytes = htonl(leading_bytes);
+			append_body(response, &n_leading_bytes, sizeof(n_leading_bytes));
 			append_body(response, ((uint8_t *)&n_starts_at) + (8 - starts_at_bytes), starts_at_bytes);
 			append_body(response, ((uint8_t *)&n_ends_at) + (8 - ends_at_bytes), ends_at_bytes);
-			append_body(response, altitude, sizeof(*altitude));
-			append_body(response, thermal, sizeof(*thermal));
+			for (uint8_t index = 0; index < 5; index++) {
+				append_body(response, ((uint8_t *)&(*altitude)[index]) + (2 - altitude_bytes[index]), altitude_bytes[index]);
+			}
+			for (uint8_t index = 0; index < 5; index++) {
+				append_body(response, ((uint8_t *)&(*thermal)[index]) + (2 - thermal_bytes[index]), thermal_bytes[index]);
+			}
 			rows++;
 		} else if (result == SQLITE_DONE) {
 			response->status = 200;
