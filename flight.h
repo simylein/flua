@@ -9,6 +9,8 @@ typedef struct flight_t {
 	uint64_t *ends_at;
 	uint16_t (*altitude)[5];
 	uint16_t (*thermal)[5];
+	uint16_t (*speed)[5];
+	uint16_t (*glide)[5];
 } flight_t;
 
 void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response);
