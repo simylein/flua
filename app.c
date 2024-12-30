@@ -10,7 +10,7 @@
 #include <unistd.h>
 
 void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr) {
-	char request_buffer[65536];
+	char request_buffer[98304];
 	size_t request_length = 0;
 
 	size_t packets_received = 0;
@@ -86,7 +86,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		route(database, &reqs, &resp);
 	}
 
-	char response_buffer[65536];
+	char response_buffer[98304];
 	size_t response_length = response(response_buffer, &resp);
 
 	struct timespec stop;
