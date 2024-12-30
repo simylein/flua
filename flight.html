@@ -1164,8 +1164,8 @@
 			const hex = array.map((byte) => byte.toString(16).padStart(2, '0'));
 			return [hex.join(''), buffer];
 		};
-		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal) => {
-			const buffer = new ArrayBuffer(68);
+		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal, speed, glide) => {
+			const buffer = new ArrayBuffer(88);
 			const view = new DataView(buffer);
 			const hash = new Uint8Array(binHash);
 			for (let index = 0; index < 32; index++) {
@@ -1178,6 +1178,12 @@
 			}
 			for (let index = 0; index < 5; index++) {
 				view.setUint16(58 + index * 2, thermal[index]);
+			}
+			for (let index = 0; index < 5; index++) {
+				view.setUint16(68 + index * 2, speed[index]);
+			}
+			for (let index = 0; index < 5; index++) {
+				view.setUint16(78 + index * 2, glide[index]);
 			}
 			try {
 				if (window.localStorage.getItem('develop')) {
@@ -1228,7 +1234,9 @@
 				const endsAt = BigInt(data[data.length - 1].time);
 				const altitude = parseAltitude(data);
 				const thermal = parseThermal(data);
-				await postFlight(hexHash, binHash, startsAt, endsAt, altitude, thermal);
+				const speed = parseSpeed(data);
+				const glide = parseGlide(data);
+				await postFlight(hexHash, binHash, startsAt, endsAt, altitude, thermal, speed, glide);
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
@@ -1289,6 +1297,17 @@
 			const rawHeading = (Math.atan2(y, x) * 180) / Math.PI;
 			return +((rawHeading + 360) % 360).toFixed(0);
 		};
+		const distance = (startPoint, endPoint) => {
+			const earthRadius = 6371;
+			const scaleFactor = 1000 * 60;
+			const latDiff = (endPoint.lat - startPoint.lat) / scaleFactor;
+			const lonDiff = (endPoint.lon - startPoint.lon) / scaleFactor;
+			const a =
+				Math.sin(radians(latDiff) / 2) * Math.sin(radians(latDiff) / 2) +
+				Math.cos(startPoint.lat / scaleFactor) * Math.cos(endPoint.lat / scaleFactor) * Math.sin(radians(lonDiff) / 2) * Math.sin(radians(lonDiff) / 2);
+			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			return +(earthRadius * c * 1000).toFixed(1);
+		};
 		const parseAltitude = (data) => {
 			const categories = [0, 0, 0, 0, 0];
 			for (let index = 0; index < data.length; index++) {
@@ -1315,6 +1334,81 @@
 					if (altitudeDiff >= 0 && Math.abs(headingDiff) >= 120) {
 						const category = Math.floor(altitudeDiff);
 						categories[category <= 4 ? category : 4]++;
+					}
+				}
+			}
+			return categories;
+		};
+		const parseSpeed = (data) => {
+			const categories = [0, 0, 0, 0, 0];
+			const distances = [];
+			for (let index = 0; index < data.length; index++) {
+				const point = data[index];
+				if (index + 10 < data.length) {
+					distances.push(distance(point, data[index + 1]));
+					if (distances.length > 10) {
+						distances.shift();
+					}
+					const totalDistance = distances.reduce((accumulator, distance) => accumulator + distance, 0);
+					const speed = (totalDistance / 10) * 3.6;
+					switch (true) {
+						case speed >= 20 && speed < 30:
+							categories[0]++;
+							break;
+						case speed >= 30 && speed < 40:
+							categories[1]++;
+							break;
+						case speed >= 40 && speed < 50:
+							categories[2]++;
+							break;
+						case speed >= 50 && speed < 60:
+							categories[3]++;
+							break;
+						case speed >= 60 && speed < 70:
+							categories[4]++;
+							break;
+					}
+				}
+			}
+			return categories;
+		};
+		const parseGlide = (data) => {
+			const categories = [0, 0, 0, 0, 0];
+			const headingDiffs = [];
+			const distances = [];
+			for (let index = 0; index < data.length; index++) {
+				const point = data[index];
+				if (index + 10 < data.length) {
+					headingDiffs.push(heading(point, data[index + 1]) - heading(data[index + 1], data[index + 2]));
+					if (headingDiffs.length > 10) {
+						headingDiffs.shift();
+					}
+					distances.push(distance(point, data[index + 1]));
+					if (distances.length > 10) {
+						distances.shift();
+					}
+					const headingDiff = headingDiffs.reduce((accumulator, diff) => accumulator + diff, 0);
+					const totalDistance = distances.reduce((accumulator, distance) => accumulator + distance, 0);
+					const altitudeDiff = data[index + 10].altIsa - point.altIsa;
+					if (altitudeDiff <= 0 && Math.abs(headingDiff) <= 60) {
+						const glideRatio = totalDistance / Math.abs(altitudeDiff);
+						switch (true) {
+							case glideRatio >= 4 && glideRatio < 6:
+								categories[0]++;
+								break;
+							case glideRatio >= 6 && glideRatio < 8:
+								categories[1]++;
+								break;
+							case glideRatio >= 8 && glideRatio < 10:
+								categories[2]++;
+								break;
+							case glideRatio >= 10 && glideRatio < 12:
+								categories[3]++;
+								break;
+							case glideRatio >= 12 && glideRatio < 14:
+								categories[4]++;
+								break;
+						}
 					}
 				}
 			}
