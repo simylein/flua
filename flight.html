@@ -1165,21 +1165,20 @@
 			return [hex.join(''), buffer];
 		};
 		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal) => {
-			const buffer = new ArrayBuffer(36);
+			const buffer = new ArrayBuffer(68);
 			const view = new DataView(buffer);
-			view.setBigUint64(0, startsAt);
-			view.setBigUint64(8, endsAt);
-			view.setUint16(16, altitude[0] & 0xffff);
-			view.setUint16(18, altitude[1] & 0xffff);
-			view.setUint16(20, altitude[2] & 0xffff);
-			view.setUint16(22, altitude[3] & 0xffff);
-			view.setUint16(24, altitude[4] & 0xffff);
-			view.setUint16(26, thermal[0] & 0xffff);
-			view.setUint16(28, thermal[1] & 0xffff);
-			view.setUint16(30, thermal[2] & 0xffff);
-			view.setUint16(32, thermal[3] & 0xffff);
-			view.setUint16(34, thermal[4] & 0xffff);
-			const data = new Blob([binHash, buffer]);
+			const hash = new Uint8Array(binHash);
+			for (let index = 0; index < 32; index++) {
+				view.setUint8(index, hash[index]);
+			}
+			view.setBigUint64(32, startsAt);
+			view.setBigUint64(40, endsAt);
+			for (let index = 0; index < 5; index++) {
+				view.setUint16(48 + index * 2, altitude[index]);
+			}
+			for (let index = 0; index < 5; index++) {
+				view.setUint16(58 + index * 2, thermal[index]);
+			}
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -1187,7 +1186,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch('/api/flight', { method: 'post', body: data, headers: { 'content-type': 'application/octet-stream' } });
+				const response = await fetch('/api/flight', { method: 'post', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
 				if (response.status >= 200 && response.status <= 299) {
 					notification('success', `Successfully uploaded flight ${hexHash.substring(0, 8)}`);
 					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(Number(startsAt) * 1000).getFullYear())) {
