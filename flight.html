@@ -180,14 +180,14 @@
 			.bg-red-200 {
 				background-color: #fecaca;
 			}
-			.bg-orange-400\/80 {
-				background-color: #fb923ccc;
-			}
 			.bg-amber-200 {
 				background-color: #fde68a;
 			}
-			.bg-yellow-400\/80 {
-				background-color: #facc15cc;
+			.bg-amber-400\/80 {
+				background-color: #fbbf24cc;
+			}
+			.bg-lime-400\/80 {
+				background-color: #a3e635cc;
 			}
 			.bg-green-200 {
 				background-color: #bbf7d0;
@@ -195,8 +195,14 @@
 			.bg-green-400\/80 {
 				background-color: #4ade80cc;
 			}
+			.bg-emerald-400\/80 {
+				background-color: #34d399cc;
+			}
 			.bg-teal-400\/80 {
 				background-color: #2dd4bfcc;
+			}
+			.bg-cyan-400\/80 {
+				background-color: #22d3eecc;
 			}
 			.bg-sky-400\/80 {
 				background-color: #38bdf8cc;
@@ -215,12 +221,6 @@
 			}
 			.bg-purple-400\/80 {
 				background-color: #c084fccc;
-			}
-			.bg-fuchsia-400\/80 {
-				background-color: #e879f9cc;
-			}
-			.bg-rose-400\/80 {
-				background-color: #fb7185cc;
 			}
 			.border-neutral-300 {
 				border-color: #d4d4d4;
@@ -333,14 +333,14 @@
 				.dark\:bg-red-800 {
 					background-color: #991b1b;
 				}
-				.dark\:bg-orange-600\/80 {
-					background-color: #ea580ccc;
+				.dark\:bg-amber-600\/80 {
+					background-color: #d97706cc;
 				}
 				.dark\:bg-amber-800 {
 					background-color: #92400e;
 				}
-				.dark\:bg-yellow-600\/80 {
-					background-color: #ca8a04cc;
+				.dark\:bg-lime-600\/80 {
+					background-color: #65a30dcc;
 				}
 				.dark\:bg-green-600\/80 {
 					background-color: #16a34acc;
@@ -348,8 +348,14 @@
 				.dark\:bg-green-800 {
 					background-color: #166534;
 				}
+				.dark\:bg-emerald-600\/80 {
+					background-color: #059669cc;
+				}
 				.dark\:bg-teal-600\/80 {
 					background-color: #0d9488cc;
+				}
+				.dark\:bg-cyan-600\/80 {
+					background-color: #0891b2cc;
 				}
 				.dark\:bg-sky-600\/80 {
 					background-color: #0284c7cc;
@@ -368,12 +374,6 @@
 				}
 				.dark\:bg-purple-600\/80 {
 					background-color: #9333eacc;
-				}
-				.dark\:bg-fuchsia-600\/80 {
-					background-color: #c026d3cc;
-				}
-				.dark\:bg-rose-600\/80 {
-					background-color: #e11d48cc;
 				}
 				.dark\:border-neutral-600 {
 					border-color: #525252;
@@ -687,27 +687,27 @@
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="thermal-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<span class="size-2 bg-amber-400/80 dark:bg-amber-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">0ms</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-yellow-400/80 dark:bg-yellow-600/80"></span>
+								<span class="size-2 bg-lime-400/80 dark:bg-lime-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">1ms</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-orange-400/80 dark:bg-orange-600/80"></span>
+								<span class="size-2 bg-emerald-400/80 dark:bg-emerald-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">2ms</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-rose-400/80 dark:bg-rose-600/80"></span>
+								<span class="size-2 bg-cyan-400/80 dark:bg-cyan-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">3ms</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-fuchsia-400/80 dark:bg-fuchsia-600/80"></span>
+								<span class="size-2 bg-blue-400/80 dark:bg-blue-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">4ms</label>
 								<p class="m-0"></p>
 							</div>
@@ -747,11 +747,11 @@
 		const thermalScale = document.getElementById('thermal-scale');
 		const thermalGraph = document.getElementById('thermal-graph');
 		const thermalColors = [
-			['bg-green-400/80', 'dark:bg-green-600/80'],
-			['bg-yellow-400/80', 'dark:bg-yellow-600/80'],
-			['bg-orange-400/80', 'dark:bg-orange-600/80'],
-			['bg-rose-400/80', 'dark:bg-rose-600/80'],
-			['bg-fuchsia-400/80', 'dark:bg-fuchsia-600/80'],
+			['bg-amber-400/80', 'dark:bg-amber-600/80'],
+			['bg-lime-400/80', 'dark:bg-lime-600/80'],
+			['bg-emerald-400/80', 'dark:bg-emerald-600/80'],
+			['bg-cyan-400/80', 'dark:bg-cyan-600/80'],
+			['bg-blue-400/80', 'dark:bg-blue-600/80'],
 		];
 		const array = (length) => {
 			return Array(length)
