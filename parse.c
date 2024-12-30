@@ -89,7 +89,8 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 
 int parse_flight(flight_t *flight, request_t *request) {
 	if (request->body_len != sizeof(*flight->hash) + sizeof(*flight->starts_at) + sizeof(*flight->ends_at) +
-															 sizeof(*flight->altitude) + sizeof(*flight->thermal)) {
+															 sizeof(*flight->altitude) + sizeof(*flight->thermal) + sizeof(*flight->speed) +
+															 sizeof(*flight->glide)) {
 		return -1;
 	}
 
@@ -108,6 +109,12 @@ int parse_flight(flight_t *flight, request_t *request) {
 
 	size_t thermal_offset = altitude_offset + sizeof(*flight->altitude);
 	(*flight).thermal = (uint16_t(*)[5])(&request->body[thermal_offset]);
+
+	size_t speed_offset = thermal_offset + sizeof(*flight->thermal);
+	(*flight).speed = (uint16_t(*)[5])(&request->body[speed_offset]);
+
+	size_t glide_offset = speed_offset + sizeof(*flight->speed);
+	(*flight).glide = (uint16_t(*)[5])(&request->body[glide_offset]);
 
 	return 0;
 }
