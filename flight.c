@@ -61,7 +61,7 @@ cleanup:
 void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t year_len, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select starts_at, ends_at, altitude, thermal from flight "
+	const char *sql = "select starts_at, ends_at, altitude, thermal, speed, glide from flight "
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
 
@@ -83,6 +83,8 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			const uint64_t ends_at = (uint64_t)sqlite3_column_int64(stmt, 1);
 			const uint16_t(*altitude)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
 			const uint16_t(*thermal)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
+			const uint16_t(*speed)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 4);
+			const uint16_t(*glide)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 5);
 			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(*altitude)) {
 				error("altitude length does not match buffer\n");
 				response->status = 500;
@@ -90,6 +92,16 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			}
 			if ((size_t)sqlite3_column_bytes(stmt, 3) != sizeof(*thermal)) {
 				error("thermal length does not match buffer\n");
+				response->status = 500;
+				goto cleanup;
+			}
+			if ((size_t)sqlite3_column_bytes(stmt, 4) != sizeof(*speed)) {
+				error("speed length does not match buffer\n");
+				response->status = 500;
+				goto cleanup;
+			}
+			if ((size_t)sqlite3_column_bytes(stmt, 5) != sizeof(*glide)) {
+				error("glide length does not match buffer\n");
 				response->status = 500;
 				goto cleanup;
 			}
@@ -111,13 +123,25 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 					significant_bytes((*thermal)[0]), significant_bytes((*thermal)[1]), significant_bytes((*thermal)[2]),
 					significant_bytes((*thermal)[3]), significant_bytes((*thermal)[4]),
 			};
-			const uint32_t leading_bytes =
-					(uint32_t)(starts_at_bytes << 28) | (uint32_t)(ends_at_bytes << 24) | (uint32_t)(altitude_bytes[0] << 22) |
-					(uint32_t)(altitude_bytes[1] << 20) | (uint32_t)(altitude_bytes[2] << 18) | (uint32_t)(altitude_bytes[3] << 16) |
-					(uint32_t)(altitude_bytes[4] << 14) | (uint32_t)(thermal_bytes[0] << 12) | (uint32_t)(thermal_bytes[1] << 10) |
-					(uint32_t)(thermal_bytes[2] << 8) | (uint32_t)(thermal_bytes[3] << 6) | (uint32_t)(thermal_bytes[4] << 4);
-			const uint32_t n_leading_bytes = htonl(leading_bytes);
-			append_body(response, &n_leading_bytes, sizeof(n_leading_bytes));
+			const uint8_t speed_bytes[5] = {
+					significant_bytes((*speed)[0]), significant_bytes((*speed)[1]), significant_bytes((*speed)[2]),
+					significant_bytes((*speed)[3]), significant_bytes((*speed)[4]),
+			};
+			const uint8_t glide_bytes[5] = {
+					significant_bytes((*glide)[0]), significant_bytes((*glide)[1]), significant_bytes((*glide)[2]),
+					significant_bytes((*glide)[3]), significant_bytes((*glide)[4]),
+			};
+			const uint64_t leading_bytes =
+					((uint64_t)starts_at_bytes << 60) | ((uint64_t)ends_at_bytes << 56) | ((uint64_t)altitude_bytes[0] << 54) |
+					((uint64_t)altitude_bytes[1] << 52) | ((uint64_t)altitude_bytes[2] << 50) | ((uint64_t)altitude_bytes[3] << 48) |
+					((uint64_t)altitude_bytes[4] << 46) | ((uint64_t)thermal_bytes[0] << 44) | ((uint64_t)thermal_bytes[1] << 42) |
+					((uint64_t)thermal_bytes[2] << 40) | ((uint64_t)thermal_bytes[3] << 38) | ((uint64_t)thermal_bytes[4] << 36) |
+					((uint64_t)speed_bytes[0] << 34) | ((uint64_t)speed_bytes[1] << 32) | ((uint64_t)speed_bytes[2] << 30) |
+					((uint64_t)speed_bytes[3] << 28) | ((uint64_t)speed_bytes[4] << 26) | ((uint64_t)glide_bytes[0] << 24) |
+					((uint64_t)glide_bytes[1] << 22) | ((uint64_t)glide_bytes[2] << 20) | ((uint64_t)glide_bytes[3] << 18) |
+					((uint64_t)glide_bytes[4] << 16);
+			const uint64_t n_leading_bytes = htonll(leading_bytes);
+			append_body(response, &n_leading_bytes, sizeof(leading_bytes) - 2);
 			append_body(response, ((uint8_t *)&n_starts_at) + (8 - starts_at_bytes), starts_at_bytes);
 			append_body(response, ((uint8_t *)&n_ends_at) + (8 - ends_at_bytes), ends_at_bytes);
 			for (uint8_t index = 0; index < 5; index++) {
@@ -125,6 +149,12 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			}
 			for (uint8_t index = 0; index < 5; index++) {
 				append_body(response, ((uint8_t *)&(*thermal)[index]) + (2 - thermal_bytes[index]), thermal_bytes[index]);
+			}
+			for (uint8_t index = 0; index < 5; index++) {
+				append_body(response, ((uint8_t *)&(*speed)[index]) + (2 - speed_bytes[index]), speed_bytes[index]);
+			}
+			for (uint8_t index = 0; index < 5; index++) {
+				append_body(response, ((uint8_t *)&(*glide)[index]) + (2 - glide_bytes[index]), glide_bytes[index]);
 			}
 			rows++;
 		} else if (result == SQLITE_DONE) {
