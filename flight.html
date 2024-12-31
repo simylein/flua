@@ -1154,6 +1154,98 @@
 				error(thermalGraph.children[ind]);
 			});
 		};
+		const loadingSpeed = () => {
+			loading(speedScale, ['h-4'], []);
+			array(speedScale.children.length).forEach((ind) => {
+				speedScale.children[ind].classList.add('hidden');
+				speedScale.children[ind].classList.remove('flex');
+			});
+			array(speedGraph.children.length).forEach((ind) => {
+				loading(speedGraph.children[ind], [], speedColors[ind]);
+			});
+		};
+		const paintSpeed = (data) => {
+			const speeds = data.reduce(
+				(accumulator, flight) => {
+					flight.speed.forEach((speed, ind) => (accumulator[ind] += speed));
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
+			const max = speeds.reduce((accumulator, speed) => accumulator + speed, 0);
+			if (max > 0) {
+				speedScale.classList.remove('h-4');
+			}
+			speedScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			array(speedScale.children.length).forEach((ind) => {
+				if (speeds[ind] > 0) {
+					speedScale.children[ind].classList.add('flex');
+					speedScale.children[ind].classList.remove('hidden');
+				} else {
+					speedScale.children[ind].classList.add('hidden');
+					speedScale.children[ind].classList.remove('flex');
+				}
+				speedScale.children[ind].children[2].innerHTML = times(speeds[ind]);
+			});
+			array(speedGraph.children.length).forEach((ind) => {
+				const percent = max === 0 ? 0 : (speeds[ind] / max) * 100;
+				speedGraph.children[ind].style.width = `${percent}%`;
+				speedGraph.children[ind].classList.add(...speedColors[ind]);
+				speedGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			});
+		};
+		const errorSpeed = () => {
+			error(speedScale);
+			array(speedGraph.children.length).forEach((ind) => {
+				error(speedGraph.children[ind]);
+			});
+		};
+		const loadingGlide = () => {
+			loading(glideScale, ['h-4'], []);
+			array(glideScale.children.length).forEach((ind) => {
+				glideScale.children[ind].classList.add('hidden');
+				glideScale.children[ind].classList.remove('flex');
+			});
+			array(glideGraph.children.length).forEach((ind) => {
+				loading(glideGraph.children[ind], [], glideColors[ind]);
+			});
+		};
+		const paintGlide = (data) => {
+			const glides = data.reduce(
+				(accumulator, flight) => {
+					flight.glide.forEach((glide, ind) => (accumulator[ind] += glide));
+					return accumulator;
+				},
+				[0, 0, 0, 0, 0]
+			);
+			const max = glides.reduce((accumulator, glide) => accumulator + glide, 0);
+			if (max > 0) {
+				glideScale.classList.remove('h-4');
+			}
+			glideScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			array(glideScale.children.length).forEach((ind) => {
+				if (glides[ind] > 0) {
+					glideScale.children[ind].classList.add('flex');
+					glideScale.children[ind].classList.remove('hidden');
+				} else {
+					glideScale.children[ind].classList.add('hidden');
+					glideScale.children[ind].classList.remove('flex');
+				}
+				glideScale.children[ind].children[2].innerHTML = times(glides[ind]);
+			});
+			array(glideGraph.children.length).forEach((ind) => {
+				const percent = max === 0 ? 0 : (glides[ind] / max) * 100;
+				glideGraph.children[ind].style.width = `${percent}%`;
+				glideGraph.children[ind].classList.add(...glideColors[ind]);
+				glideGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			});
+		};
+		const errorGlide = () => {
+			error(glideScale);
+			array(glideGraph.children.length).forEach((ind) => {
+				error(glideGraph.children[ind]);
+			});
+		};
 		const parseYears = async (response) => {
 			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
@@ -1235,6 +1327,8 @@
 			window.requestAnimationFrame(() => loadingAirtime());
 			window.requestAnimationFrame(() => loadingAltitude());
 			window.requestAnimationFrame(() => loadingThermal());
+			window.requestAnimationFrame(() => loadingSpeed());
+			window.requestAnimationFrame(() => loadingGlide());
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -1251,11 +1345,15 @@
 				window.requestAnimationFrame(() => paintAirtime(data));
 				window.requestAnimationFrame(() => paintAltitude(data));
 				window.requestAnimationFrame(() => paintThermal(data));
+				window.requestAnimationFrame(() => paintSpeed(data));
+				window.requestAnimationFrame(() => paintGlide(data));
 			} catch {
 				window.requestAnimationFrame(() => errorFlights());
 				window.requestAnimationFrame(() => errorAirtime());
 				window.requestAnimationFrame(() => errorAltitude());
 				window.requestAnimationFrame(() => errorThermal());
+				window.requestAnimationFrame(() => errorSpeed());
+				window.requestAnimationFrame(() => errorGlide());
 			}
 		};
 		const upload = document.getElementById('upload');
