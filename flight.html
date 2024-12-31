@@ -926,6 +926,16 @@
 				element.style.height = `${height}%`;
 			}
 		};
+		const paint = (element, add, remove, height, width) => {
+			element.classList.add(...add);
+			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', ...remove);
+			if (height !== undefined && height !== null) {
+				element.style.height = `${height}%`;
+			}
+			if (width !== undefined && width !== null) {
+				element.style.width = `${width}%`;
+			}
+		};
 		const error = (element) => {
 			element.classList.add('bg-red-200', 'dark:bg-red-800');
 			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
@@ -995,12 +1005,12 @@
 			});
 		};
 		const paintFlights = (data) => {
-			flightCount.classList.remove('w-10', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+			paint(flightCount, [], ['w-10', 'h-6']);
 			flightCount.innerText = units(data.length);
 			const windows = buckets(data, flightGraph.children.length);
 			const max = Math.max(...windows.map((window) => window.length));
 			array(flightScale.children.length).forEach((ind) => {
-				flightScale.children[ind].classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+				paint(flightScale.children[ind], [], ['h-4']);
 				flightScale.children[ind].innerText = units((max / flightScale.children.length) * (5 - ind));
 			});
 			windows.forEach((window, index) => {
@@ -1008,9 +1018,7 @@
 					flightGraph.children[index].children[ind].style.height = null;
 				});
 				const percent = (window.length / max) * 100;
-				flightGraph.children[index].children[0].style.height = `${percent}%`;
-				flightGraph.children[index].children[0].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
-				flightGraph.children[index].children[0].classList.add('bg-green-400/80', 'dark:bg-green-600/80');
+				paint(flightGraph.children[index].children[0], ['bg-green-400/80', 'dark:bg-green-600/80'], [], percent);
 			});
 		};
 		const errorFlights = () => {
@@ -1032,7 +1040,7 @@
 			});
 		};
 		const paintAirtime = (data) => {
-			airtimeCount.classList.remove('w-10', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
+			paint(airtimeCount, [], ['w-10', 'h-6']);
 			airtimeCount.innerText = times(
 				data.reduce((accumulator, item) => accumulator + seconds(item), 0),
 				0
@@ -1040,7 +1048,7 @@
 			const windows = buckets(data, airtimeGraph.children.length);
 			const max = Math.max(...windows.map((window) => window.reduce((accumulator, item) => accumulator + seconds(item), 0)));
 			array(airtimeScale.children.length).forEach((ind) => {
-				airtimeScale.children[ind].classList.remove('h-4', 'bg-neutral-200', 'dark:bg-neutral-800');
+				paint(airtimeScale.children[ind], [], ['h-4']);
 				airtimeScale.children[ind].innerText = times((max / airtimeScale.children.length) * (5 - ind));
 			});
 			windows.forEach((window, index) => {
@@ -1048,9 +1056,7 @@
 					airtimeGraph.children[index].children[ind].style.height = null;
 				});
 				const percent = (window.reduce((accumulator, item) => accumulator + seconds(item), 0) / max) * 100;
-				airtimeGraph.children[index].children[0].style.height = `${percent}%`;
-				airtimeGraph.children[index].children[0].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
-				airtimeGraph.children[index].children[0].classList.add('bg-blue-400/80', 'dark:bg-blue-600/80');
+				paint(airtimeGraph.children[index].children[0], ['bg-blue-400/80', 'dark:bg-blue-600/80'], [], percent);
 			});
 		};
 		const errorAirtime = () => {
@@ -1084,22 +1090,18 @@
 			if (max > 0) {
 				altitudeScale.classList.remove('h-4');
 			}
-			altitudeScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			paint(altitudeScale, [], []);
 			array(altitudeScale.children.length).forEach((ind) => {
 				if (altitudes[ind] > 0) {
-					altitudeScale.children[ind].classList.add('flex');
-					altitudeScale.children[ind].classList.remove('hidden');
+					paint(altitudeScale.children[ind], ['flex'], ['hidden']);
 				} else {
-					altitudeScale.children[ind].classList.add('hidden');
-					altitudeScale.children[ind].classList.remove('flex');
+					paint(altitudeScale.children[ind], ['hidden'], ['flex']);
 				}
 				altitudeScale.children[ind].children[2].innerHTML = times(altitudes[ind]);
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (altitudes[ind] / max) * 100;
-				altitudeGraph.children[ind].style.width = `${percent}%`;
-				altitudeGraph.children[ind].classList.add(...altitudeColors[ind]);
-				altitudeGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+				paint(altitudeGraph.children[ind], altitudeColors[ind], [], null, percent);
 			});
 		};
 		const errorAltitude = () => {
@@ -1130,22 +1132,18 @@
 			if (max > 0) {
 				thermalScale.classList.remove('h-4');
 			}
-			thermalScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			paint(thermalScale, [], []);
 			array(thermalScale.children.length).forEach((ind) => {
 				if (thermals[ind] > 0) {
-					thermalScale.children[ind].classList.add('flex');
-					thermalScale.children[ind].classList.remove('hidden');
+					paint(thermalScale.children[ind], ['flex'], ['hidden']);
 				} else {
-					thermalScale.children[ind].classList.add('hidden');
-					thermalScale.children[ind].classList.remove('flex');
+					paint(thermalScale.children[ind], ['hidden'], ['flex']);
 				}
 				thermalScale.children[ind].children[2].innerHTML = times(thermals[ind]);
 			});
 			array(thermalGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (thermals[ind] / max) * 100;
-				thermalGraph.children[ind].style.width = `${percent}%`;
-				thermalGraph.children[ind].classList.add(...thermalColors[ind]);
-				thermalGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+				paint(thermalGraph.children[ind], thermalColors[ind], [], null, percent);
 			});
 		};
 		const errorThermal = () => {
@@ -1176,22 +1174,18 @@
 			if (max > 0) {
 				speedScale.classList.remove('h-4');
 			}
-			speedScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			paint(speedScale, [], []);
 			array(speedScale.children.length).forEach((ind) => {
 				if (speeds[ind] > 0) {
-					speedScale.children[ind].classList.add('flex');
-					speedScale.children[ind].classList.remove('hidden');
+					paint(speedScale.children[ind], ['flex'], ['hidden']);
 				} else {
-					speedScale.children[ind].classList.add('hidden');
-					speedScale.children[ind].classList.remove('flex');
+					paint(speedScale.children[ind], ['hidden'], ['flex']);
 				}
 				speedScale.children[ind].children[2].innerHTML = times(speeds[ind]);
 			});
 			array(speedGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (speeds[ind] / max) * 100;
-				speedGraph.children[ind].style.width = `${percent}%`;
-				speedGraph.children[ind].classList.add(...speedColors[ind]);
-				speedGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+				paint(speedGraph.children[ind], speedColors[ind], [], null, percent);
 			});
 		};
 		const errorSpeed = () => {
@@ -1222,22 +1216,18 @@
 			if (max > 0) {
 				glideScale.classList.remove('h-4');
 			}
-			glideScale.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+			paint(glideScale, [], []);
 			array(glideScale.children.length).forEach((ind) => {
 				if (glides[ind] > 0) {
-					glideScale.children[ind].classList.add('flex');
-					glideScale.children[ind].classList.remove('hidden');
+					paint(glideScale.children[ind], ['flex'], ['hidden']);
 				} else {
-					glideScale.children[ind].classList.add('hidden');
-					glideScale.children[ind].classList.remove('flex');
+					paint(glideScale.children[ind], ['hidden'], ['flex']);
 				}
 				glideScale.children[ind].children[2].innerHTML = times(glides[ind]);
 			});
 			array(glideGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (glides[ind] / max) * 100;
-				glideGraph.children[ind].style.width = `${percent}%`;
-				glideGraph.children[ind].classList.add(...glideColors[ind]);
-				glideGraph.children[ind].classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
+				paint(glideGraph.children[ind], glideColors[ind], [], null, percent);
 			});
 		};
 		const errorGlide = () => {
