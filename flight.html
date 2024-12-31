@@ -1081,7 +1081,8 @@
 				const endsAtBits = Number(readBits(4)) * 8;
 				const altitudeBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
 				const thermalBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
-				const paddingBits = Number(readBits(4)) * 8;
+				const speedBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
+				const glideBits = [Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8, Number(readBits(2)) * 8];
 				const startsAt = readBits(startsAtBits);
 				const endsAt = readBits(endsAtBits);
 				const altitude = [
@@ -1098,7 +1099,9 @@
 					Number(readBits(thermalBits[3])),
 					Number(readBits(thermalBits[4])),
 				];
-				flights.push({ startsAt, endsAt, altitude, thermal });
+				const speed = [Number(readBits(speedBits[0])), Number(readBits(speedBits[1])), Number(readBits(speedBits[2])), Number(readBits(speedBits[3])), Number(readBits(speedBits[4]))];
+				const glide = [Number(readBits(glideBits[0])), Number(readBits(glideBits[1])), Number(readBits(glideBits[2])), Number(readBits(glideBits[3])), Number(readBits(glideBits[4]))];
+				flights.push({ startsAt, endsAt, altitude, thermal, speed, glide });
 			}
 			return flights;
 		};
