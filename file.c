@@ -13,6 +13,9 @@ char *type(const char *file_path) {
 		error("file path %s has no extension\n", file_path);
 		return "text/unknown";
 	}
+	if (strcmp(extension, ".txt") == 0) {
+		return "text/plain";
+	}
 	if (strcmp(extension, ".html") == 0) {
 		return "text/html";
 	}
