@@ -63,6 +63,15 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		file("robots.txt", response);
 	}
 
+	if (match(request, "get", "/security.txt", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		file("security.txt", response);
+	}
+
 	if (match(request, "get", "/signin", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
