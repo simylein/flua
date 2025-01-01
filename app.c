@@ -123,12 +123,12 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		ssize_t further_bytes_sent =
 				send(*client_sock, &response_buffer[bytes_sent], sizeof(response_buffer) - (size_t)bytes_sent, 0);
 
-		if (bytes_sent == -1) {
+		if (further_bytes_sent == -1) {
 			error("%s\n", errno_str());
 			error("failed to send further data to client\n");
 			goto cleanup;
 		}
-		if (bytes_sent == 0) {
+		if (further_bytes_sent == 0) {
 			warn("server did not send any further data\n");
 			goto cleanup;
 		}
