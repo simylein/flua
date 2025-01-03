@@ -287,20 +287,20 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		struct flight_t flight;
-		if (parse_flight(&flight, request) == -1) {
+		struct flight_t new_flight;
+		if (parse_flight(&new_flight, request) == -1) {
 			debug("failed to parse flight\n");
 			response->status = 400;
 			goto respond;
 		};
 
-		if (validate_flight(&flight) == -1) {
+		if (validate_flight(&new_flight) == -1) {
 			debug("failed to validate flight\n");
 			response->status = 400;
 			goto respond;
 		};
 
-		create_flight(database, &bwt, &flight, response);
+		create_flight(database, &bwt, &new_flight, response);
 	}
 
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
