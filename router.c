@@ -13,6 +13,20 @@
 #include <stdint.h>
 #include <string.h>
 
+file_t home = {.ptr = NULL, .len = 0};
+file_t robots = {.ptr = NULL, .len = 0};
+file_t security = {.ptr = NULL, .len = 0};
+file_t signin = {.ptr = NULL, .len = 0};
+file_t signup = {.ptr = NULL, .len = 0};
+file_t flight = {.ptr = NULL, .len = 0};
+
+file_t bad_request = {.ptr = NULL, .len = 0};
+file_t unauthorized = {.ptr = NULL, .len = 0};
+file_t forbidden = {.ptr = NULL, .len = 0};
+file_t not_found = {.ptr = NULL, .len = 0};
+file_t method_not_allowed = {.ptr = NULL, .len = 0};
+file_t internal_server_error = {.ptr = NULL, .len = 0};
+
 int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
 	if (request->pathname_len == strlen(pathname) && memcmp(request->pathname, pathname, request->pathname_len) == 0) {
 		*pathname_found = true;
@@ -51,7 +65,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 		}
 
-		file("home.html", response);
+		file("home.html", &home, response);
 	}
 
 	if (match(request, "get", "/robots.txt", &method_found, &pathname_found) == 0) {
@@ -60,7 +74,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("robots.txt", response);
+		file("robots.txt", &robots, response);
 	}
 
 	if (match(request, "get", "/security.txt", &method_found, &pathname_found) == 0) {
@@ -69,7 +83,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("security.txt", response);
+		file("security.txt", &security, response);
 	}
 
 	if (match(request, "get", "/signin", &method_found, &pathname_found) == 0) {
@@ -78,7 +92,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("signin.html", response);
+		file("signin.html", &signin, response);
 	}
 
 	if (match(request, "get", "/signup", &method_found, &pathname_found) == 0) {
@@ -87,7 +101,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("signup.html", response);
+		file("signup.html", &signup, response);
 	}
 
 	if (match(request, "get", "/api/me", &method_found, &pathname_found) == 0) {
@@ -346,7 +360,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 
 		public:
-			file("flight.html", response);
+			file("flight.html", &flight, response);
 		}
 	}
 
@@ -364,21 +378,21 @@ respond:
 	}
 
 	if (response->status == 400) {
-		file("400.html", response);
+		file("400.html", &bad_request, response);
 	}
 	if (response->status == 401) {
-		file("401.html", response);
+		file("401.html", &unauthorized, response);
 	}
 	if (response->status == 403) {
-		file("403.html", response);
+		file("403.html", &forbidden, response);
 	}
 	if (response->status == 404) {
-		file("404.html", response);
+		file("404.html", &not_found, response);
 	}
 	if (response->status == 405) {
-		file("405.html", response);
+		file("405.html", &method_not_allowed, response);
 	}
 	if (response->status == 500) {
-		file("500.html", response);
+		file("500.html", &internal_server_error, response);
 	}
 }
