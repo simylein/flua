@@ -211,28 +211,25 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		if (user.public == true) {
-			goto years;
+		if (user.public == false) {
+			const char *cookie = find_header(request, "cookie:");
+			if (cookie == NULL) {
+				response->status = 401;
+				goto respond;
+			}
+
+			struct bwt_t bwt;
+			if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
+				response->status = 401;
+				goto respond;
+			}
+
+			if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+				response->status = 403;
+				goto respond;
+			}
 		}
 
-		const char *cookie = find_header(request, "cookie:");
-		if (cookie == NULL) {
-			response->status = 401;
-			goto respond;
-		}
-
-		struct bwt_t bwt;
-		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
-			response->status = 401;
-			goto respond;
-		}
-
-		if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
-			response->status = 403;
-			goto respond;
-		}
-
-	years:
 		find_years(database, &user.id, response);
 	}
 
@@ -258,28 +255,25 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		if (user.public == true) {
-			goto flights;
+		if (user.public == false) {
+			const char *cookie = find_header(request, "cookie:");
+			if (cookie == NULL) {
+				response->status = 401;
+				goto respond;
+			}
+
+			struct bwt_t bwt;
+			if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
+				response->status = 401;
+				goto respond;
+			}
+
+			if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+				response->status = 403;
+				goto respond;
+			}
 		}
 
-		const char *cookie = find_header(request, "cookie:");
-		if (cookie == NULL) {
-			response->status = 401;
-			goto respond;
-		}
-
-		struct bwt_t bwt;
-		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
-			response->status = 401;
-			goto respond;
-		}
-
-		if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
-			response->status = 403;
-			goto respond;
-		}
-
-	flights:
 		find_flights(database, &user.id, year, year_len, response);
 	}
 
