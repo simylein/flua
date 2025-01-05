@@ -192,21 +192,21 @@ int configure(int argc, char *argv[]) {
 		const char *flag = argv[ind];
 		if (strcmp(flag, "--help") == 0 || strcmp(flag, "-h") == 0) {
 			info("available command line flags\n");
-			info("--address           -a   ip address to bind                 (%s)\n", address);
-			info("--port              -p   port to listen on                  (%hu)\n", port);
-			info("--backlog           -b   backlog allowed on socket          (%hhu)\n", backlog);
-			info("--workers           -w   amount of threads to spawn         (%hhu)\n", workers);
-			info("--queue-size        -qs  size of clients in queue           (%hhu)\n", queue_size);
-			info("--bwt-ttl           -bt  time to live for bwt expiry        (%u)\n", bwt_ttl);
-			info("--bwt-key           -bk  random bytes for bwt signing       (%s)\n", bwt_key);
-			info("--database-file     -df  path to sqlite database file       (%s)\n", database_file);
-			info("--database-timeout  -dt  milliseconds to wait for lock      (%hu)\n", database_timeout);
-			info("--log-level         -ll  logging verbosity to print         (%s)\n", human_log_level(log_level));
-			info("--log-requests      -lq  logs incoming requests true false  (%s)\n", human_bool(log_requests));
-			info("--log-responses     -ls  logs outgoing response true false  (%s)\n", human_bool(log_responses));
+			info("--address           -a   ip address to bind             (%s)\n", address);
+			info("--port              -p   port to listen on              (%hu)\n", port);
+			info("--backlog           -b   backlog allowed on socket      (%hhu)\n", backlog);
+			info("--workers           -w   amount of threads to spawn     (%hhu)\n", workers);
+			info("--queue-size        -qs  size of clients in queue       (%hhu)\n", queue_size);
+			info("--bwt-ttl           -bt  time to live for bwt expiry    (%u)\n", bwt_ttl);
+			info("--bwt-key           -bk  random bytes for bwt signing   (%s)\n", bwt_key);
+			info("--database-file     -df  path to sqlite database file   (%s)\n", database_file);
+			info("--database-timeout  -dt  milliseconds to wait for lock  (%hu)\n", database_timeout);
+			info("--log-level         -ll  logging verbosity to print     (%s)\n", human_log_level(log_level));
+			info("--log-requests      -lq  log incoming requests          (%s)\n", human_bool(log_requests));
+			info("--log-responses     -ls  log outgoing response          (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.13.10\n");
+			info("flua flights version 0.13.11\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
