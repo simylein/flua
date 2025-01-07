@@ -16,8 +16,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 	const char *sql = "select id from user where username = ? and password = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -43,8 +42,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 		response->status = 401;
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -63,8 +61,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 	const char *sql = "insert into user (id, username, password, public) values (randomblob(16), ?, ?, 0) returning id";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -90,8 +87,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 		response->status = 409;
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
