@@ -193,8 +193,7 @@ FILE *logfile(const char *log_path, int *errors) {
 		trace("opening %s log file\n", log_path);
 		FILE *file = fopen(log_path, "a");
 		if (file == NULL) {
-			error("%s\n", errno_str());
-			error("failed to open %s\n", log_path);
+			error("failed to open %s because %s\n", log_path, errno_str());
 			(*errors)++;
 		}
 		return file;
