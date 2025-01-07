@@ -17,8 +17,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	ssize_t bytes_received = recv(*client_sock, request_buffer, sizeof(request_buffer), 0);
 
 	if (bytes_received == -1) {
-		error("%s\n", errno_str());
-		error("failed to receive data from client\n");
+		error("failed to receive data from client because %s\n", errno_str());
 		goto cleanup;
 	}
 	if (bytes_received == 0) {
@@ -43,7 +42,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	while ((size_t)bytes_received < request_length) {
 		if (request_length > sizeof(request_buffer)) {
-			warn("request of size %zu exceeds buffer\n", request_length);
+			warn("request length %zu exceeds buffer length %zu\n", request_length, sizeof(request_buffer));
 			break;
 		}
 
@@ -51,8 +50,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 				recv(*client_sock, &request_buffer[bytes_received], sizeof(request_buffer) - (size_t)bytes_received, 0);
 
 		if (further_bytes_received == -1) {
-			error("%s\n", errno_str());
-			error("failed to receive further data from client\n");
+			error("failed to receive further data from client because %s\n", errno_str());
 			goto cleanup;
 		}
 		if (further_bytes_received == 0) {
@@ -103,8 +101,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	ssize_t bytes_sent = send(*client_sock, response_buffer, response_length, 0);
 
 	if (bytes_sent == -1) {
-		error("%s\n", errno_str());
-		error("failed to send data to client\n");
+		error("failed to send data to client because %s\n", errno_str());
 		goto cleanup;
 	}
 	if (bytes_sent == 0) {
@@ -116,7 +113,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	while ((size_t)bytes_sent < response_length) {
 		if (response_length > sizeof(response_buffer)) {
-			warn("response of size %zu exceeds buffer\n", response_length);
+			warn("response length %zu exceeds buffer length %zu\n", response_length, sizeof(response_buffer));
 			break;
 		}
 
@@ -124,8 +121,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 				send(*client_sock, &response_buffer[bytes_sent], sizeof(response_buffer) - (size_t)bytes_sent, 0);
 
 		if (further_bytes_sent == -1) {
-			error("%s\n", errno_str());
-			error("failed to send further data to client\n");
+			error("failed to send further data to client because %s\n", errno_str());
 			goto cleanup;
 		}
 		if (further_bytes_sent == 0) {
@@ -142,7 +138,6 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 cleanup:
 	if (close(*client_sock) == -1) {
-		error("%s\n", errno_str());
-		error("failed to close client socket\n");
+		error("failed to close client socket because %s\n", errno_str());
 	}
 }
