@@ -26,14 +26,12 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in server_addr;
 
 	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-		error("%s\n", errno_str());
-		fatal("failed to create socket\n");
+		fatal("failed to create socket because %s\n", errno_str());
 		exit(1);
 	}
 
 	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (int[]){1}, sizeof(int)) == -1) {
-		error("%s\n", errno_str());
-		fatal("failed to set socket options\n");
+		fatal("failed to set socket options because %s\n", errno_str());
 		exit(1);
 	}
 
@@ -42,14 +40,12 @@ int main(int argc, char *argv[]) {
 	server_addr.sin_port = htons(port);
 
 	if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
-		error("%s\n", errno_str());
-		fatal("failed to bind to socket\n");
+		fatal("failed to bind to socket because %s\n", errno_str());
 		exit(1);
 	}
 
 	if (listen(server_sock, backlog) == -1) {
-		error("%s\n", errno_str());
-		fatal("failed to listen on socket\n");
+		fatal("failed to listen on socket because %s\n", errno_str());
 		exit(1);
 	}
 
@@ -57,22 +53,19 @@ int main(int argc, char *argv[]) {
 
 	arg_t *args = malloc(workers * sizeof(arg_t));
 	if (args == NULL) {
-		error("%s\n", errno_str());
-		fatal("failed to allocate for args\n");
+		fatal("failed to allocate %zu bytes for args because %s\n", workers * sizeof(arg_t), errno_str());
 		exit(1);
 	}
 
 	pthread_t *threads = malloc(workers * sizeof(pthread_t));
 	if (threads == NULL) {
-		error("%s\n", errno_str());
-		fatal("failed to allocate for threads\n");
+		fatal("failed to allocate %zu bytes for threads because %s\n", workers * sizeof(pthread_t), errno_str());
 		exit(1);
 	}
 
 	queue.tasks = malloc(queue_size * sizeof(task_t));
 	if (queue.tasks == NULL) {
-		error("%s\n", errno_str());
-		fatal("failed to allocate for tasks\n");
+		fatal("failed to allocate %zu bytes for tasks because %s\n", queue_size * sizeof(task_t), errno_str());
 		exit(1);
 	}
 
@@ -82,15 +75,13 @@ int main(int argc, char *argv[]) {
 
 		int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
 		if (db_error != SQLITE_OK) {
-			error("%s\n", sqlite3_errmsg(args[index].database));
-			fatal("failed to open %s\n", database_file);
+			fatal("failed to open %s because %s\n", database_file, sqlite3_errmsg(args[index].database));
 			exit(1);
 		}
 
 		int exec_error = sqlite3_exec(args[index].database, "pragma foreign_keys = on;", NULL, NULL, NULL);
 		if (exec_error != SQLITE_OK) {
-			error("%s\n", sqlite3_errmsg(args[index].database));
-			fatal("failed to enforce foreign key constraints\n");
+			fatal("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(args[index].database));
 			exit(1);
 		}
 
@@ -99,8 +90,7 @@ int main(int argc, char *argv[]) {
 		int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
 		if (spawn_error != 0) {
 			errno = spawn_error;
-			error("%s\n", errno_str());
-			fatal("failed to spawn worker thread %zu\n", args[index].id);
+			fatal("failed to spawn worker thread %zu because %s\n", args[index].id, errno_str());
 			exit(1);
 		}
 	}
@@ -123,8 +113,7 @@ int main(int argc, char *argv[]) {
 		int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
 
 		if (client_sock == -1) {
-			error("%s\n", errno_str());
-			error("failed to accept client\n");
+			error("failed to accept client because %s\n", errno_str());
 			continue;
 		}
 
