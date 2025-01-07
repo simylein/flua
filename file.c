@@ -23,7 +23,7 @@ char *type(const char *file_path) {
 		return "text/html";
 	}
 	error("unknown content type %s\n", extension);
-	return "text/unknown";
+	return "unknown";
 }
 
 void file(const char *file_path, file_t *file, response_t *response) {
@@ -32,16 +32,14 @@ void file(const char *file_path, file_t *file, response_t *response) {
 
 		int file_fd = open(file_path, O_RDONLY);
 		if (file_fd == -1) {
-			error("%s\n", errno_str());
-			error("failed to open %s\n", file_path);
+			error("failed to open %s because %s\n", file_path, errno_str());
 			response->status = 500;
 			return;
 		}
 
 		struct stat file_stat;
 		if (fstat(file_fd, &file_stat) == -1) {
-			error("%s\n", errno_str());
-			error("failed to stat %s\n", file_path);
+			error("failed to stat %s because %s\n", file_path, errno_str());
 			response->status = 500;
 			goto cleanup;
 		}
@@ -54,16 +52,14 @@ void file(const char *file_path, file_t *file, response_t *response) {
 
 		file->ptr = malloc((size_t)file_stat.st_size);
 		if (file->ptr == NULL) {
-			error("%s\n", errno_str());
-			error("failed to allocate %zu bytes for %s\n", (size_t)file_stat.st_size, file_path);
+			error("failed to allocate %zu bytes for %s because %s\n", (size_t)file_stat.st_size, file_path, errno_str());
 			response->status = 500;
 			goto cleanup;
 		}
 
 		ssize_t bytes_read = read(file_fd, file->ptr, (size_t)file_stat.st_size);
 		if (bytes_read != file_stat.st_size) {
-			error("%s\n", errno_str());
-			error("failed to fully read %s\n", file_path);
+			error("failed to read %zu bytes from %s because %s\n", (size_t)(file_stat.st_size - bytes_read), file_path, errno_str());
 			response->status = 500;
 			goto cleanup;
 		}
