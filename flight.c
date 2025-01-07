@@ -17,8 +17,7 @@ void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response)
 										"order by year desc";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -31,7 +30,7 @@ void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response)
 		if (result == SQLITE_ROW) {
 			const uint16_t year = htons((uint16_t)sqlite3_column_int(stmt, 0));
 			if (response->body_len + sizeof(year) > sizeof(response->body)) {
-				error("body length exceeds buffer\n");
+				error("body length %zu exceeds buffer length %zu\n", response->body_len, sizeof(response->body));
 				response->status = 206;
 				goto partial;
 			}
@@ -41,8 +40,7 @@ void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response)
 			response->status = 200;
 			break;
 		} else {
-			error("%s\n", sqlite3_errmsg(database));
-			error("failed to execute statement\n");
+			error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 			response->status = 500;
 			goto cleanup;
 		}
@@ -66,8 +64,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 										"order by starts_at desc";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -82,32 +79,36 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			const uint64_t starts_at = (uint64_t)sqlite3_column_int64(stmt, 0);
 			const uint64_t ends_at = (uint64_t)sqlite3_column_int64(stmt, 1);
 			const uint16_t(*altitude)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
+			const size_t altitude_len = (size_t)sqlite3_column_bytes(stmt, 2);
 			const uint16_t(*thermal)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 3);
+			const size_t thermal_len = (size_t)sqlite3_column_bytes(stmt, 3);
 			const uint16_t(*speed)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 4);
+			const size_t speed_len = (size_t)sqlite3_column_bytes(stmt, 4);
 			const uint16_t(*glide)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 5);
-			if ((size_t)sqlite3_column_bytes(stmt, 2) != sizeof(*altitude)) {
-				error("altitude length does not match buffer\n");
+			const size_t glide_len = (size_t)sqlite3_column_bytes(stmt, 5);
+			if (altitude_len != sizeof(*altitude)) {
+				error("altitude length %zu does not match buffer length %zu\n", altitude_len, sizeof(*altitude));
 				response->status = 500;
 				goto cleanup;
 			}
-			if ((size_t)sqlite3_column_bytes(stmt, 3) != sizeof(*thermal)) {
-				error("thermal length does not match buffer\n");
+			if (thermal_len != sizeof(*thermal)) {
+				error("thermal length %zu does not match buffer length %zu\n", thermal_len, sizeof(*thermal));
 				response->status = 500;
 				goto cleanup;
 			}
-			if ((size_t)sqlite3_column_bytes(stmt, 4) != sizeof(*speed)) {
-				error("speed length does not match buffer\n");
+			if (speed_len != sizeof(*speed)) {
+				error("speed length %zu does not match buffer length %zu\n", speed_len, sizeof(*speed));
 				response->status = 500;
 				goto cleanup;
 			}
-			if ((size_t)sqlite3_column_bytes(stmt, 5) != sizeof(*glide)) {
-				error("glide length does not match buffer\n");
+			if (glide_len != sizeof(*glide)) {
+				error("glide length %zu does not match buffer length %zu\n", glide_len, sizeof(*glide));
 				response->status = 500;
 				goto cleanup;
 			}
 			if (response->body_len + sizeof(starts_at) + sizeof(ends_at) + sizeof(*altitude) + sizeof(*thermal) >
 					sizeof(response->body)) {
-				error("body length exceeds buffer\n");
+				error("body length %zu exceeds buffer length %zu\n", response->body_len, sizeof(response->body));
 				response->status = 206;
 				goto partial;
 			}
@@ -161,8 +162,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			response->status = 200;
 			break;
 		} else {
-			error("%s\n", sqlite3_errmsg(database));
-			error("failed to execute statement\n");
+			error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 			response->status = 500;
 			goto cleanup;
 		}
@@ -185,8 +185,7 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 										"values (randomblob(16), ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -208,8 +207,7 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 		response->status = 409;
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
