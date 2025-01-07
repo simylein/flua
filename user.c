@@ -13,8 +13,7 @@ int find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {
 	const char *sql = "select id, username, public from user where id = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		status = 500;
 		goto cleanup;
 	}
@@ -29,12 +28,12 @@ int find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
 		const bool public = (bool)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
-			error("id length does not match buffer\n");
+			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
 			goto cleanup;
 		}
 		if (username_len > sizeof(user->username) - 1) {
-			error("username length exceeds buffer\n");
+			error("username length %zu exceeds buffer length %zu\n", username_len, sizeof(user->username) - 1);
 			status = 500;
 			goto cleanup;
 		}
@@ -45,8 +44,7 @@ int find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {
 	} else if (result == SQLITE_DONE) {
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		status = 500;
 		goto cleanup;
 	}
@@ -64,8 +62,7 @@ int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *us
 	const char *sql = "select id, username, public from user where username = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		status = 500;
 		goto cleanup;
 	}
@@ -96,8 +93,7 @@ int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *us
 	} else if (result == SQLITE_DONE) {
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		status = 500;
 		goto cleanup;
 	}
@@ -113,8 +109,7 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	const char *sql = "select id, username, public from user where id = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -136,8 +131,7 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 		response->status = 500;
 		goto cleanup;
 	} else {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -158,8 +152,7 @@ void delete_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	const char *sql = "delete from user where id = ?";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to prepare statement\n");
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
@@ -168,8 +161,7 @@ void delete_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 
 	int result = sqlite3_step(stmt);
 	if (result != SQLITE_DONE) {
-		error("%s\n", sqlite3_errmsg(database));
-		error("failed to execute statement\n");
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
 		response->status = 500;
 		goto cleanup;
 	}
