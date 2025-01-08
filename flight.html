@@ -824,7 +824,8 @@
 		</main>
 	</body>
 	<script>
-		const skeletons = [4, 8, 17, 24, 42, 69, 82, 73, 56, 37, 16, 8];
+		const verticalSkeletons = [4, 8, 17, 24, 42, 69, 82, 73, 56, 37, 16, 8];
+		const horizontalSkeletons = [12, 24, 40, 20, 4];
 		const years = document.getElementById('years');
 		const flightCount = document.getElementById('flight-count');
 		const flightScale = document.getElementById('flight-scale');
@@ -925,7 +926,7 @@
 				index++;
 			}
 		};
-		const loading = (element, add, remove, text, height) => {
+		const loading = (element, add, remove, text, height, width) => {
 			element.classList.add(...add, 'bg-neutral-200', 'dark:bg-neutral-800');
 			element.classList.remove('bg-red-200', 'dark:bg-red-800', ...remove);
 			if (text !== undefined && text !== null) {
@@ -933,6 +934,9 @@
 			}
 			if (height !== undefined && height !== null) {
 				element.style.height = `${height}%`;
+			}
+			if (width !== undefined && width !== null) {
+				element.style.width = `${width}%`;
 			}
 		};
 		const paint = (element, add, remove, height, width) => {
@@ -1010,7 +1014,7 @@
 				loading(flightScale.children[ind], ['h-4'], [], '');
 			});
 			array(flightGraph.children.length).forEach((ind) => {
-				loading(flightGraph.children[ind].children[0], [], ['bg-green-400/80', 'dark:bg-green-600/80'], null, skeletons[ind]);
+				loading(flightGraph.children[ind].children[0], [], ['bg-green-400/80', 'dark:bg-green-600/80'], null, verticalSkeletons[ind]);
 			});
 		};
 		const paintFlights = (data) => {
@@ -1045,7 +1049,7 @@
 				loading(airtimeScale.children[ind], ['h-4'], [], '');
 			});
 			array(airtimeGraph.children.length).forEach((ind) => {
-				loading(airtimeGraph.children[ind].children[0], [], ['bg-blue-400/80', 'dark:bg-blue-600/80'], null, skeletons[ind]);
+				loading(airtimeGraph.children[ind].children[0], [], ['bg-blue-400/80', 'dark:bg-blue-600/80'], null, verticalSkeletons[ind]);
 			});
 		};
 		const paintAirtime = (data) => {
@@ -1084,7 +1088,7 @@
 				altitudeScale.children[ind].classList.remove('flex');
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
-				loading(altitudeGraph.children[ind], [], altitudeColors[ind]);
+				loading(altitudeGraph.children[ind], [], altitudeColors[ind], null, null, horizontalSkeletons[ind]);
 			});
 		};
 		const paintAltitude = (data) => {
@@ -1126,7 +1130,7 @@
 				thermalScale.children[ind].classList.remove('flex');
 			});
 			array(thermalGraph.children.length).forEach((ind) => {
-				loading(thermalGraph.children[ind], [], thermalColors[ind]);
+				loading(thermalGraph.children[ind], [], thermalColors[ind], null, null, horizontalSkeletons[ind]);
 			});
 		};
 		const paintThermal = (data) => {
@@ -1168,7 +1172,7 @@
 				speedScale.children[ind].classList.remove('flex');
 			});
 			array(speedGraph.children.length).forEach((ind) => {
-				loading(speedGraph.children[ind], [], speedColors[ind]);
+				loading(speedGraph.children[ind], [], speedColors[ind], null, null, horizontalSkeletons[ind]);
 			});
 		};
 		const paintSpeed = (data) => {
@@ -1210,7 +1214,7 @@
 				glideScale.children[ind].classList.remove('flex');
 			});
 			array(glideGraph.children.length).forEach((ind) => {
-				loading(glideGraph.children[ind], [], glideColors[ind]);
+				loading(glideGraph.children[ind], [], glideColors[ind], null, null, horizontalSkeletons[ind]);
 			});
 		};
 		const paintGlide = (data) => {
