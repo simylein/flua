@@ -939,9 +939,12 @@
 				element.style.width = `${width}%`;
 			}
 		};
-		const paint = (element, add, remove, height, width) => {
+		const paint = (element, add, remove, text, height, width) => {
 			element.classList.add(...add);
 			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', ...remove);
+			if (text !== undefined && text !== null) {
+				element.innerText = text;
+			}
 			if (height !== undefined && height !== null) {
 				element.style.height = `${height}%`;
 			}
@@ -1018,20 +1021,18 @@
 			});
 		};
 		const paintFlights = (data) => {
-			paint(flightCount, [], ['w-10', 'h-6']);
-			flightCount.innerText = units(data.length);
+			paint(flightCount, [], ['w-10', 'h-6'], units(data.length));
 			const windows = buckets(data, flightGraph.children.length);
 			const max = Math.max(...windows.map((window) => window.length));
 			array(flightScale.children.length).forEach((ind) => {
-				paint(flightScale.children[ind], [], ['h-4']);
-				flightScale.children[ind].innerText = units((max / flightScale.children.length) * (5 - ind));
+				paint(flightScale.children[ind], [], ['h-4'], units((max / flightScale.children.length) * (5 - ind)));
 			});
 			windows.forEach((window, index) => {
 				array(flightGraph.children[index].children.length).forEach((ind) => {
 					flightGraph.children[index].children[ind].style.height = null;
 				});
 				const percent = (window.length / max) * 100;
-				paint(flightGraph.children[index].children[0], ['bg-green-400/80', 'dark:bg-green-600/80'], [], percent);
+				paint(flightGraph.children[index].children[0], ['bg-green-400/80', 'dark:bg-green-600/80'], [], null, percent);
 			});
 		};
 		const errorFlights = () => {
@@ -1053,23 +1054,18 @@
 			});
 		};
 		const paintAirtime = (data) => {
-			paint(airtimeCount, [], ['w-10', 'h-6']);
-			airtimeCount.innerText = times(
-				data.reduce((accumulator, item) => accumulator + seconds(item), 0),
-				0
-			);
+			paint(airtimeCount, [], ['w-10', 'h-6'], times(data.reduce((accumulator, item) => accumulator + seconds(item), 0)));
 			const windows = buckets(data, airtimeGraph.children.length);
 			const max = Math.max(...windows.map((window) => window.reduce((accumulator, item) => accumulator + seconds(item), 0)));
 			array(airtimeScale.children.length).forEach((ind) => {
-				paint(airtimeScale.children[ind], [], ['h-4']);
-				airtimeScale.children[ind].innerText = times((max / airtimeScale.children.length) * (5 - ind));
+				paint(airtimeScale.children[ind], [], ['h-4'], times((max / airtimeScale.children.length) * (5 - ind)));
 			});
 			windows.forEach((window, index) => {
 				array(airtimeGraph.children[index].children.length).forEach((ind) => {
 					airtimeGraph.children[index].children[ind].style.height = null;
 				});
 				const percent = (window.reduce((accumulator, item) => accumulator + seconds(item), 0) / max) * 100;
-				paint(airtimeGraph.children[index].children[0], ['bg-blue-400/80', 'dark:bg-blue-600/80'], [], percent);
+				paint(airtimeGraph.children[index].children[0], ['bg-blue-400/80', 'dark:bg-blue-600/80'], [], null, percent);
 			});
 		};
 		const errorAirtime = () => {
@@ -1114,7 +1110,7 @@
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (altitudes[ind] / max) * 100;
-				paint(altitudeGraph.children[ind], altitudeColors[ind], [], null, percent);
+				paint(altitudeGraph.children[ind], altitudeColors[ind], [], null, null, percent);
 			});
 		};
 		const errorAltitude = () => {
@@ -1156,7 +1152,7 @@
 			});
 			array(thermalGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (thermals[ind] / max) * 100;
-				paint(thermalGraph.children[ind], thermalColors[ind], [], null, percent);
+				paint(thermalGraph.children[ind], thermalColors[ind], [], null, null, percent);
 			});
 		};
 		const errorThermal = () => {
@@ -1198,7 +1194,7 @@
 			});
 			array(speedGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (speeds[ind] / max) * 100;
-				paint(speedGraph.children[ind], speedColors[ind], [], null, percent);
+				paint(speedGraph.children[ind], speedColors[ind], [], null, null, percent);
 			});
 		};
 		const errorSpeed = () => {
@@ -1240,7 +1236,7 @@
 			});
 			array(glideGraph.children.length).forEach((ind) => {
 				const percent = max === 0 ? 0 : (glides[ind] / max) * 100;
-				paint(glideGraph.children[ind], glideColors[ind], [], null, percent);
+				paint(glideGraph.children[ind], glideColors[ind], [], null, null, percent);
 			});
 		};
 		const errorGlide = () => {
