@@ -13,19 +13,19 @@
 #include <stdint.h>
 #include <string.h>
 
-file_t home = {.ptr = NULL, .len = 0};
-file_t robots = {.ptr = NULL, .len = 0};
-file_t security = {.ptr = NULL, .len = 0};
-file_t signin = {.ptr = NULL, .len = 0};
-file_t signup = {.ptr = NULL, .len = 0};
-file_t flight = {.ptr = NULL, .len = 0};
+file_t home = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t robots = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t security = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t signin = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t signup = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t flight = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
-file_t bad_request = {.ptr = NULL, .len = 0};
-file_t unauthorized = {.ptr = NULL, .len = 0};
-file_t forbidden = {.ptr = NULL, .len = 0};
-file_t not_found = {.ptr = NULL, .len = 0};
-file_t method_not_allowed = {.ptr = NULL, .len = 0};
-file_t internal_server_error = {.ptr = NULL, .len = 0};
+file_t bad_request = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t unauthorized = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t forbidden = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t not_found = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t method_not_allowed = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t internal_server_error = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
 int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
 	if (request->pathname_len == strlen(pathname) && memcmp(request->pathname, pathname, request->pathname_len) == 0) {
