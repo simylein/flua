@@ -27,8 +27,15 @@
 			.h-8 {
 				height: 32px;
 			}
+			.h-12 {
+				height: 48px;
+			}
 			.h-full {
 				height: 100%;
+			}
+			.size-2 {
+				width: 8px;
+				height: 8px;
 			}
 			.flex {
 				display: flex;
@@ -44,6 +51,9 @@
 			}
 			.flex-col {
 				flex-direction: column;
+			}
+			.flex-wrap {
+				flex-wrap: wrap;
 			}
 			.flex-col-reverse {
 				flex-direction: column-reverse;
@@ -71,6 +81,9 @@
 			}
 			.mt-4 {
 				margin-top: 16px;
+			}
+			.mr-2 {
+				margin-right: 8px;
 			}
 			.mb-1 {
 				margin-bottom: 4px;
@@ -126,8 +139,20 @@
 			.bg-green-400\/80 {
 				background-color: #4ade80cc;
 			}
+			.bg-teal-400\/80 {
+				background-color: #2dd4bfcc;
+			}
+			.bg-sky-400\/80 {
+				background-color: #38bdf8cc;
+			}
 			.bg-blue-400\/80 {
 				background-color: #60a5facc;
+			}
+			.bg-indigo-400\/80 {
+				background-color: #818cf8cc;
+			}
+			.bg-purple-400\/80 {
+				background-color: #c084fccc;
 			}
 			.border-neutral-300 {
 				border-color: #d4d4d4;
@@ -136,11 +161,17 @@
 				.sm\:block {
 					display: block;
 				}
+				.sm\:inline {
+					display: inline;
+				}
 				.sm\:hidden {
 					display: none;
 				}
 				.sm\:gap-2 {
 					gap: 8px;
+				}
+				.sm\:mr-4 {
+					margin-right: 16px;
 				}
 			}
 			@media (min-width: 768px) {
@@ -159,6 +190,9 @@
 				.md\:m-6 {
 					margin: 24px;
 				}
+				.md\:mr-2 {
+					margin-right: 8px;
+				}
 				.md\:p-3 {
 					padding: 12px;
 				}
@@ -176,11 +210,17 @@
 				.lg\:m-8 {
 					margin: 32px;
 				}
+				.lg\:mr-4 {
+					margin-right: 16px;
+				}
 				.lg\:p-4 {
 					padding: 16px;
 				}
 			}
 			@media (min-width: 1280px) {
+				.xl\:inline {
+					display: inline;
+				}
 				.xl\:gap-3 {
 					gap: 12px;
 				}
@@ -201,8 +241,20 @@
 				.dark\:bg-green-600\/80 {
 					background-color: #16a34acc;
 				}
+				.dark\:bg-teal-600\/80 {
+					background-color: #0d9488cc;
+				}
+				.dark\:bg-sky-600\/80 {
+					background-color: #0284c7cc;
+				}
 				.dark\:bg-blue-600\/80 {
 					background-color: #2563ebcc;
+				}
+				.dark\:bg-indigo-600\/80 {
+					background-color: #4f46e5cc;
+				}
+				.dark\:bg-purple-600\/80 {
+					background-color: #9333eacc;
 				}
 				.dark\:border-neutral-600 {
 					border-color: #525252;
@@ -463,6 +515,61 @@
 							<div>
 								<label class="hidden sm:block text-neutral-600 dark:text-neutral-400">Dec</label>
 								<label class="sm:hidden text-neutral-600 dark:text-neutral-400">D</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row-reverse bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex-1 p-2 md:p-3 lg:p-4">
+					<div class="flex justify-between gap-2 mb-4">
+						<h2 class="m-0 text-lg font-normal">Altitude graph</h2>
+					</div>
+					<div class="flex flex-col gap-2">
+						<p class="m-0 text-base font-normal">The altitude graph lets you see how much time you spent at or above certain altitudes in a given year</p>
+						<p class="m-0 text-base font-normal">It is calculated by the duration of gps altitude data points</p>
+					</div>
+				</div>
+				<span class="box-border border-0 border-b-2 md:border-l-2 border-solid border-neutral-300 dark:border-neutral-600"></span>
+				<div class="flex-1 p-2 md:p-3 lg:p-4">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Altitude</h2>
+					</div>
+					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
+						<div class="flex flex-wrap text-xs">
+							<div class="flex items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">0<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
+								<p class="m-0">15h</p>
+							</div>
+							<div class="flex items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-teal-400/80 dark:bg-teal-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">1<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
+								<p class="m-0">31h</p>
+							</div>
+							<div class="flex items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-sky-400/80 dark:bg-sky-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">2<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
+								<p class="m-0">51h</p>
+							</div>
+							<div class="flex items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-indigo-400/80 dark:bg-indigo-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">3<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
+								<p class="m-0">26h</p>
+							</div>
+							<div class="flex items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
+								<span class="size-2 bg-purple-400/80 dark:bg-purple-600/80"></span>
+								<label class="text-neutral-600 dark:text-neutral-400">4<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
+								<p class="m-0">5.1h</p>
+							</div>
+						</div>
+						<div class="relative flex h-12">
+							<div class="flex w-full h-full">
+								<div style="width: 12%" class="bg-green-400/80 dark:bg-green-600/80"></div>
+								<div style="width: 24%" class="bg-teal-400/80 dark:bg-teal-600/80"></div>
+								<div style="width: 40%" class="bg-sky-400/80 dark:bg-sky-600/80"></div>
+								<div style="width: 20%" class="bg-indigo-400/80 dark:bg-indigo-600/80"></div>
+								<div style="width: 4%" class="bg-purple-400/80 dark:bg-purple-600/80"></div>
 							</div>
 						</div>
 					</div>
