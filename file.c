@@ -28,7 +28,7 @@ char *type(const char *file_path) {
 	return "unknown";
 }
 
-void file(const char *file_path, file_t *file, response_t *response) {
+void file(const char *file_path, file_t *file, void (*transform)(file_t *file), response_t *response) {
 	if (file->fd == -1) {
 		trace("opening file %s\n", file_path);
 
@@ -78,6 +78,9 @@ void file(const char *file_path, file_t *file, response_t *response) {
 
 		file->len = (size_t)file_stat.st_size;
 		file->age = *modified_time(&file_stat);
+		if (transform != NULL) {
+			transform(file);
+		}
 	}
 
 	if (file->ptr != NULL) {

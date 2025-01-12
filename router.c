@@ -19,6 +19,7 @@ file_t security = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t signin = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t signup = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t flight = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t flight_self = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
 file_t bad_request = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t unauthorized = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
@@ -65,7 +66,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 		}
 
-		file("home.html", &home, response);
+		file("home.html", &home, NULL, response);
 	}
 
 	if (match(request, "get", "/robots.txt", &method_found, &pathname_found) == 0) {
@@ -74,7 +75,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("robots.txt", &robots, response);
+		file("robots.txt", &robots, NULL, response);
 	}
 
 	if (match(request, "get", "/security.txt", &method_found, &pathname_found) == 0) {
@@ -83,7 +84,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("security.txt", &security, response);
+		file("security.txt", &security, NULL, response);
 	}
 
 	if (match(request, "get", "/signin", &method_found, &pathname_found) == 0) {
@@ -92,7 +93,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("signin.html", &signin, response);
+		file("signin.html", &signin, NULL, response);
 	}
 
 	if (match(request, "get", "/signup", &method_found, &pathname_found) == 0) {
@@ -101,7 +102,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		file("signup.html", &signup, response);
+		file("signup.html", &signup, NULL, response);
 	}
 
 	if (match(request, "get", "/api/me", &method_found, &pathname_found) == 0) {
@@ -338,6 +339,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				goto respond;
 			}
 
+			bool self = false;
 			if (cookie != NULL) {
 				struct bwt_t bwt;
 				if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
@@ -345,13 +347,18 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 					goto respond;
 				}
 
-				if (user.public == false && memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+				self = memcmp(bwt.id, user.id, sizeof(user.id)) == 0;
+				if (user.public == false && self == false) {
 					response->status = 403;
 					goto respond;
 				}
 			}
 
-			file("flight.html", &flight, response);
+			if (self == true) {
+				file("flight.html", &flight_self, NULL, response);
+			} else {
+				file("flight.html", &flight, NULL, response);
+			}
 		}
 	}
 
@@ -369,21 +376,21 @@ respond:
 	}
 
 	if (response->status == 400) {
-		file("400.html", &bad_request, response);
+		file("400.html", &bad_request, NULL, response);
 	}
 	if (response->status == 401) {
-		file("401.html", &unauthorized, response);
+		file("401.html", &unauthorized, NULL, response);
 	}
 	if (response->status == 403) {
-		file("403.html", &forbidden, response);
+		file("403.html", &forbidden, NULL, response);
 	}
 	if (response->status == 404) {
-		file("404.html", &not_found, response);
+		file("404.html", &not_found, NULL, response);
 	}
 	if (response->status == 405) {
-		file("405.html", &method_not_allowed, response);
+		file("405.html", &method_not_allowed, NULL, response);
 	}
 	if (response->status == 500) {
-		file("500.html", &internal_server_error, response);
+		file("500.html", &internal_server_error, NULL, response);
 	}
 }
