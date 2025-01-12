@@ -3,6 +3,7 @@
 #include "error.h"
 #include "logger.h"
 #include "response.h"
+#include "utils.h"
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -46,7 +47,7 @@ void file(const char *file_path, file_t *file, response_t *response) {
 		return;
 	}
 
-	if (file->ptr == NULL || file->age != (time_t)file_stat.st_mtimespec.tv_sec) {
+	if (file->ptr == NULL || file->age != *modified_time(&file_stat)) {
 		debug("reading file %s\n", file_path);
 
 		if ((size_t)file_stat.st_size > sizeof(response->body)) {
@@ -76,7 +77,7 @@ void file(const char *file_path, file_t *file, response_t *response) {
 		}
 
 		file->len = (size_t)file_stat.st_size;
-		file->age = (time_t)file_stat.st_mtimespec.tv_sec;
+		file->age = *modified_time(&file_stat);
 	}
 
 	if (file->ptr != NULL) {

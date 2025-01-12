@@ -2,6 +2,8 @@
 #include "response.h"
 #include <stdint.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <time.h>
 
 void null_init(request_t *request, response_t *response) {
 	request->method_len = 0;
@@ -100,6 +102,14 @@ char *strncasestrn(const char *buffer, size_t buffer_len, const char *buf, size_
 	}
 
 	return NULL;
+}
+
+time_t *modified_time(struct stat *file_stat) {
+#ifdef __APPLE__
+	return &(*file_stat).st_mtimespec.tv_sec;
+#elif __linux__
+	return &(*file_stat).st_mtim.tv_sec;
+#endif
 }
 
 uint8_t significant_bytes(uint64_t value) {
