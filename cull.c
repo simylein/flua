@@ -9,11 +9,16 @@ uint8_t cull_flight(file_t *file) {
 	size_t write_index = 0;
 
 	bool cut = false;
-	cull_t culls[6] = {
+	cull_t culls[11] = {
+			{.start = "\t\t\t.top-0 {", .end = "}\n"},
+			{.start = "\t\t\t.right-0 {", .end = "}\n"},
+			{.start = "\t\t\t.m-2 {", .end = "}\n"},
 			{.start = "\t\t\t.bg-amber-200 {", .end = "}\n"},
 			{.start = "\t\t\t.bg-green-200 {", .end = "}\n"},
+			{.start = "\t\t\t\t.md\\:m-4 {", .end = "}\n"},
 			{.start = "\t\t\t\t.dark\\:bg-amber-800 {", .end = "}\n"},
 			{.start = "\t\t\t\t.dark\\:bg-green-800 {", .end = "}\n"},
+			{.start = "\t\t\t<div id=\"notifications\"", .end = "</div>\n"},
 			{.start = "\t\t\t\t<button id=\"upload\"", .end = "</button>\n"},
 			{.start = "\t\tconst notifications =", .end = "duration(type));\n\t\t};\n"},
 	};
@@ -30,6 +35,7 @@ uint8_t cull_flight(file_t *file) {
 	while (read_index < file->len) {
 		char *byte = &file->ptr[read_index];
 
+	top:
 		if (cull_index < sizeof(culls) / sizeof(cull_t)) {
 			cull_t *cull = &culls[cull_index];
 			if (cut == false && cull->start_ind == cull->start_len) {
@@ -44,6 +50,7 @@ uint8_t cull_flight(file_t *file) {
 			if (cut == true && cull->end_ind == cull->end_len) {
 				cut = false;
 				cull_index++;
+				goto top;
 			} else if (*byte == cull->end[cull->end_ind]) {
 				cull->end_ind++;
 			} else {
