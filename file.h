@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <time.h>
 
+#pragma once
 typedef struct file_t {
 	int fd;
 	char *ptr;
