@@ -10,4 +10,4 @@ typedef struct file_t {
 	time_t age;
 } file_t;
 
-void file(const char *file_path, file_t *file, void (*transform)(file_t *file), response_t *response);
+void file(const char *file_path, file_t *file, uint8_t (*cull)(file_t *file), response_t *response);

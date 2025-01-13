@@ -1,5 +1,6 @@
 #include "auth.h"
 #include "bwt.h"
+#include "cull.h"
 #include "file.h"
 #include "flight.h"
 #include "logger.h"
@@ -357,7 +358,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			if (self == true) {
 				file("flight.html", &flight_self, NULL, response);
 			} else {
-				file("flight.html", &flight, NULL, response);
+				file("flight.html", &flight, &cull_flight, response);
 			}
 		}
 	}
