@@ -22,7 +22,7 @@ develop: $(objects)
 
 release: $(objects)
 	@echo "linking $(target)..."
-	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -O3
+	@$(cc) $(flags) -o $(target) $(objects) -lsqlite3 -O3 -march=native
 
 %.o: %.c
 	@echo "compiling $<..."
