@@ -327,7 +327,8 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		pathname_found = 1;
-		if (request->method_len == 3 && memcmp(request->method, "get", request->method_len) == 0) {
+		if ((request->method_len == 3 && memcmp(request->method, "get", request->method_len) == 0) ||
+				(request->method_len == 4 && memcmp(request->method, "head", request->method_len) == 0)) {
 			method_found = 1;
 
 			struct user_t user;
