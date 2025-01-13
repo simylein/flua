@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-void null_init(request_t *request, response_t *response) {
+void null_init(request_t *request, response_t *response, char *buffer) {
 	request->method_len = 0;
 	request->pathname_len = 0;
 	request->search_len = 0;
@@ -15,8 +15,9 @@ void null_init(request_t *request, response_t *response) {
 
 	response->status = 0;
 	response->head_len = 0;
-	response->header[0] = '\0';
+	response->header = (char(*)[2048])(&buffer[128]);
 	response->header_len = 0;
+	response->body = (char(*)[96128])(&buffer[128 + 2048]);
 	response->body_len = 0;
 }
 

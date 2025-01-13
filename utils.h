@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-void null_init(request_t *request, response_t *response);
+void null_init(request_t *request, response_t *response, char *buffer);
 
 int strnfind(const char *buffer, const size_t buffer_len, const char *prefix, const char *suffix, char **string,
 						 size_t *string_len, size_t string_max_len);

@@ -11,6 +11,8 @@
 
 void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[98304];
+	char response_buffer[98304];
+
 	size_t request_length = 0;
 
 	size_t packets_received = 0;
@@ -70,7 +72,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	struct request_t reqs;
 	struct response_t resp;
-	null_init(&reqs, &resp);
+	null_init(&reqs, &resp, response_buffer);
 
 	char bytes_buffer[8];
 	human_bytes(&bytes_buffer, (size_t)bytes_received);
@@ -84,7 +86,6 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		route(database, &reqs, &resp);
 	}
 
-	char response_buffer[98304];
 	size_t response_length = response(response_buffer, &reqs, &resp);
 
 	struct timespec stop;

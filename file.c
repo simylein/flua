@@ -50,7 +50,7 @@ void file(const char *file_path, file_t *file, uint8_t (*cull)(file_t *file), re
 	if (file->ptr == NULL || file->age != *modified_time(&file_stat)) {
 		debug("reading file %s\n", file_path);
 
-		if ((size_t)file_stat.st_size > sizeof(response->body)) {
+		if ((size_t)file_stat.st_size > sizeof(*response->body)) {
 			error("file %s size %zu is too large\n", file_path, (size_t)file_stat.st_size);
 			response->status = 500;
 			return;
