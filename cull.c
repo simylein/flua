@@ -9,12 +9,14 @@ uint8_t cull_flight(file_t *file) {
 	size_t write_index = 0;
 
 	bool cut = false;
-	cull_t culls[24] = {
+	cull_t culls[26] = {
 			{.start = "\t\t\t.top-0 {", .end = "}\n"},
 			{.start = "\t\t\t.right-0 {", .end = "}\n"},
 			{.start = "\t\t\t.m-2 {", .end = "}\n"},
 			{.start = "\t\t\t.bg-amber-200 {", .end = "}\n"},
 			{.start = "\t\t\t.bg-green-200 {", .end = "}\n"},
+			{.start = "\t\t\t.active\\:scale-95:active {", .end = "}\n"},
+			{.start = "\t\t\t.z-10 {", .end = "}\n"},
 			{.start = "\t\t\t\t.md\\:m-4 {", .end = "}\n"},
 			{.start = "\t\t\t\t.dark\\:bg-amber-800 {", .end = "}\n"},
 			{.start = "\t\t\t\t.dark\\:bg-green-800 {", .end = "}\n"},
