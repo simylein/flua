@@ -9,7 +9,7 @@ uint8_t cull_flight(file_t *file) {
 	size_t write_index = 0;
 
 	bool cut = false;
-	cull_t culls[11] = {
+	cull_t culls[24] = {
 			{.start = "\t\t\t.top-0 {", .end = "}\n"},
 			{.start = "\t\t\t.right-0 {", .end = "}\n"},
 			{.start = "\t\t\t.m-2 {", .end = "}\n"},
@@ -20,7 +20,20 @@ uint8_t cull_flight(file_t *file) {
 			{.start = "\t\t\t\t.dark\\:bg-green-800 {", .end = "}\n"},
 			{.start = "\t\t\t<div id=\"notifications\"", .end = "</div>\n"},
 			{.start = "\t\t\t\t<button id=\"upload\"", .end = "</button>\n"},
-			{.start = "\t\tconst notifications =", .end = "duration(type));\n\t\t};\n"},
+			{.start = "\t\tconst uploadFlights", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseIgcFile", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst radians", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst heading", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst distance", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseAltitude", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseThermal", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseSpeed", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseGlide", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst notifications", .end = ";\n"},
+			{.start = "\t\tconst kind", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst color", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst duration", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst notification", .end = "\n\t\t};\n"},
 	};
 	uint8_t cull_index = 0;
 
