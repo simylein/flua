@@ -33,6 +33,12 @@ int match(request_t *request, const char *method, const char *pathname, bool *me
 	if (request->pathname_len == strlen(pathname) && memcmp(request->pathname, pathname, request->pathname_len) == 0) {
 		*pathname_found = true;
 
+		if (strcmp(method, "get") == 0 && request->method_len == 4 && memcmp(request->method, "head", request->method_len) == 0) {
+			*method_found = true;
+
+			return 0;
+		}
+
 		if (request->method_len == strlen(method) && memcmp(request->method, method, request->method_len) == 0) {
 			*method_found = true;
 
