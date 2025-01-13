@@ -85,7 +85,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	}
 
 	char response_buffer[98304];
-	size_t response_length = response(response_buffer, &resp);
+	size_t response_length = response(response_buffer, &reqs, &resp);
 
 	struct timespec stop;
 	clock_gettime(CLOCK_MONOTONIC, &stop);

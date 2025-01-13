@@ -1,10 +1,11 @@
 #include "response.h"
+#include "request.h"
 #include "status.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
-size_t response(char *buffer, response_t *res) {
+size_t response(char *buffer, request_t *req, response_t *res) {
 	size_t bytes = 0;
 	bytes += (size_t)sprintf(buffer + bytes, "HTTP/1.1 %d %s\r\n", res->status, status_text(res->status));
 	res->head_len += bytes;
@@ -14,7 +15,7 @@ size_t response(char *buffer, response_t *res) {
 	}
 	memcpy(buffer + bytes, "\r\n", 2);
 	bytes += 2;
-	if (res->body_len > 0) {
+	if (!(req->method_len == 4 && memcmp(req->method, "head", req->method_len) == 0) && res->body_len > 0) {
 		memcpy(buffer + bytes, res->body, res->body_len);
 		bytes += res->body_len;
 	}

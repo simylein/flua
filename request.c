@@ -1,4 +1,5 @@
 #include "request.h"
+#include "response.h"
 #include "utils.h"
 #include <arpa/inet.h>
 #include <string.h>

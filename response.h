@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+typedef struct request_t request_t;
+
 #pragma once
 typedef struct response_t {
 	int status;
@@ -10,7 +12,7 @@ typedef struct response_t {
 	size_t body_len;
 } response_t;
 
-size_t response(char *buffer, response_t *res);
+size_t response(char *buffer, request_t *req, response_t *res);
 
 void append_header(response_t *response, const char *format, ...) __attribute__((format(printf, 2, 3)));
 void append_body(response_t *response, const void *buffer, size_t buffer_len);
