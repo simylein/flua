@@ -213,7 +213,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct user_t user;
-		int status = find_user_by_name(database, name, name_len, &user);
+		uint16_t status = find_user_by_name(database, name, name_len, &user);
 		if (status != 0) {
 			response->status = status;
 			goto respond;
@@ -257,7 +257,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct user_t user;
-		int status = find_user_by_name(database, name, name_len, &user);
+		uint16_t status = find_user_by_name(database, name, name_len, &user);
 		if (status != 0) {
 			response->status = status;
 			goto respond;
@@ -332,7 +332,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			method_found = 1;
 
 			struct user_t user;
-			int status = find_user_by_name(database, &request->pathname[1], request->pathname_len - 1, &user);
+			uint16_t status = find_user_by_name(database, &request->pathname[1], request->pathname_len - 1, &user);
 			if (status != 0) {
 				response->status = status;
 				goto respond;

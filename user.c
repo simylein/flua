@@ -3,12 +3,13 @@
 #include "logger.h"
 #include "response.h"
 #include <sqlite3.h>
+#include <stdint.h>
 #include <string.h>
 
-int find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {
+uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {
 	sqlite3_stmt *stmt;
 
-	int status = 404;
+	uint16_t status = 404;
 
 	const char *sql = "select id, username, public from user where id = ?";
 
@@ -54,10 +55,10 @@ cleanup:
 	return status;
 }
 
-int find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *user) {
+uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_t *user) {
 	sqlite3_stmt *stmt;
 
-	int status = 404;
+	uint16_t status = 404;
 
 	const char *sql = "select id, username, public from user where username = ?";
 
