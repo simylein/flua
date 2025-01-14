@@ -821,6 +821,10 @@
 		</main>
 	</body>
 	<script>
+		let yearRetries = 2;
+		let flightRetries = 2;
+		let yearTimeout = null;
+		let flightTimeout = null;
 		let yearController = null;
 		let flightController = null;
 		const verticalSkeletons = [4, 8, 17, 24, 42, 69, 82, 73, 56, 37, 16, 8];
@@ -1304,6 +1308,10 @@
 			return flights;
 		};
 		const loadYears = async () => {
+			if (yearTimeout) {
+				clearTimeout(yearTimeout);
+				yearTimeout = null;
+			}
 			if (yearController) {
 				yearController.abort();
 			}
@@ -1325,10 +1333,20 @@
 			} catch (err) {
 				if (err?.name !== 'AbortError') {
 					window.requestAnimationFrame(() => errorYears());
+					if (yearRetries > 0) {
+						yearTimeout = setTimeout(() => {
+							yearRetries--;
+							loadYears();
+						}, 2000);
+					}
 				}
 			}
 		};
 		const loadFlights = async () => {
+			if (flightTimeout) {
+				clearTimeout(flightTimeout);
+				flightTimeout = null;
+			}
 			if (flightController) {
 				flightController.abort();
 			}
@@ -1365,6 +1383,12 @@
 					window.requestAnimationFrame(() => errorThermal());
 					window.requestAnimationFrame(() => errorSpeed());
 					window.requestAnimationFrame(() => errorGlide());
+					if (flightRetries > 0) {
+						flightTimeout = setTimeout(() => {
+							flightRetries--;
+							loadFlights();
+						}, 2000);
+					}
 				}
 			}
 		};
