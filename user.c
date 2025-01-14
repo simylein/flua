@@ -78,12 +78,12 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
 		const bool public = (bool)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
-			error("id length does not match buffer\n");
+			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
 			goto cleanup;
 		}
 		if (username_len > sizeof(user->username) - 1) {
-			error("username length exceeds buffer\n");
+			error("username length %zu exceeds buffer length %zu\n", username_len, sizeof(user->username) - 1);
 			status = 500;
 			goto cleanup;
 		}
