@@ -821,6 +821,8 @@
 		</main>
 	</body>
 	<script>
+		let yearController = null;
+		let flightController = null;
 		const verticalSkeletons = [4, 8, 17, 24, 42, 69, 82, 73, 56, 37, 16, 8];
 		const horizontalSkeletons = [12, 24, 40, 20, 4];
 		const years = document.getElementById('years');
@@ -1302,6 +1304,10 @@
 			return flights;
 		};
 		const loadYears = async () => {
+			if (yearController) {
+				yearController.abort();
+			}
+			yearController = new AbortController();
 			window.requestAnimationFrame(() => loadingYears());
 			try {
 				if (window.localStorage.getItem('develop')) {
@@ -1310,17 +1316,23 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch(`/api/year?user=${getUser()}`);
+				const response = await fetch(`/api/year?user=${getUser()}`, { signal: yearController.signal });
 				if (response.status < 200 || response.status > 299) {
 					throw Error(response);
 				}
 				const data = await parseYears(response);
 				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [{ year: null }]));
-			} catch {
-				window.requestAnimationFrame(() => errorYears());
+			} catch (err) {
+				if (err?.name !== 'AbortError') {
+					window.requestAnimationFrame(() => errorYears());
+				}
 			}
 		};
 		const loadFlights = async () => {
+			if (flightController) {
+				flightController.abort();
+			}
+			flightController = new AbortController();
 			window.requestAnimationFrame(() => loadingFlights());
 			window.requestAnimationFrame(() => loadingAirtime());
 			window.requestAnimationFrame(() => loadingAltitude());
@@ -1334,7 +1346,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch(`/api/flight?user=${getUser()}&year=${getYear()}`);
+				const response = await fetch(`/api/flight?user=${getUser()}&year=${getYear()}`, { signal: flightController.signal });
 				if (response.status < 200 || response.status > 299) {
 					throw Error(response);
 				}
@@ -1345,13 +1357,15 @@
 				window.requestAnimationFrame(() => paintThermal(data));
 				window.requestAnimationFrame(() => paintSpeed(data));
 				window.requestAnimationFrame(() => paintGlide(data));
-			} catch {
-				window.requestAnimationFrame(() => errorFlights());
-				window.requestAnimationFrame(() => errorAirtime());
-				window.requestAnimationFrame(() => errorAltitude());
-				window.requestAnimationFrame(() => errorThermal());
-				window.requestAnimationFrame(() => errorSpeed());
-				window.requestAnimationFrame(() => errorGlide());
+			} catch (err) {
+				if (err?.name !== 'AbortError') {
+					window.requestAnimationFrame(() => errorFlights());
+					window.requestAnimationFrame(() => errorAirtime());
+					window.requestAnimationFrame(() => errorAltitude());
+					window.requestAnimationFrame(() => errorThermal());
+					window.requestAnimationFrame(() => errorSpeed());
+					window.requestAnimationFrame(() => errorGlide());
+				}
 			}
 		};
 		const upload = document.getElementById('upload');
