@@ -6,6 +6,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+void scale(arg_t **args, pthread_t **threads, uint8_t *workers, uint8_t new_workers) {
+	arg_t *new_args = realloc(*args, new_workers * sizeof(arg_t));
+	if (new_args == NULL) {
+		error("failed to reallocate %zu bytes for args because %s\n", new_workers * sizeof(arg_t), errno_str());
+		return;
+	}
+	*args = new_args;
+
+	pthread_t *new_threads = realloc(*threads, new_workers * sizeof(pthread_t));
+	if (new_threads == NULL) {
+		error("failed to reallocate %zu bytes for threads because %s\n", new_workers * sizeof(pthread_t), errno_str());
+		return;
+	}
+	*threads = new_threads;
+
+	if (spawn(*args, *threads, *workers) == -1) {
+		return;
+	}
+
+	info("scaled threads from %hu to %hu\n", *workers, new_workers);
+	*workers = new_workers;
+}
+
 int main(int argc, char *argv[]) {
 	int cf_errors = configure(argc, argv);
 	if (cf_errors != 0) {
@@ -50,6 +73,8 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
+	uint8_t workers = least_workers;
+
 	arg_t *args = malloc(workers * sizeof(arg_t));
 	if (args == NULL) {
 		fatal("failed to allocate %zu bytes for args because %s\n", workers * sizeof(arg_t), errno_str());
@@ -84,6 +109,10 @@ int main(int argc, char *argv[]) {
 
 		if (queue.load >= workers) {
 			warn("all worker threads currently busy\n");
+			uint8_t new_workers = workers + 1;
+			if (new_workers <= most_workers) {
+				scale(&args, &threads, &workers, new_workers);
+			}
 		}
 
 		pthread_mutex_unlock(&queue.lock);

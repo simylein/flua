@@ -5,8 +5,9 @@ extern char *address;
 extern uint16_t port;
 
 extern uint8_t backlog;
-extern uint8_t workers;
 extern uint8_t queue_size;
+extern uint8_t least_workers;
+extern uint8_t most_workers;
 
 extern uint32_t bwt_ttl;
 extern char *bwt_key;
