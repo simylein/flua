@@ -45,7 +45,7 @@ int spawn(arg_t *args, pthread_t *threads, size_t index) {
 }
 
 void *thread(void *args) {
-	struct arg_t *arg = (struct arg_t *)args;
+	arg_t *arg = (arg_t *)args;
 
 	while (1) {
 		pthread_mutex_lock(&queue.lock);
