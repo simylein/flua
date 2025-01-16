@@ -51,6 +51,7 @@ int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, 
 }
 
 void *thread(void *args) {
+	bool exit = false;
 	arg_t *arg = (arg_t *)args;
 
 	while (true) {
@@ -77,6 +78,18 @@ void *thread(void *args) {
 		pthread_mutex_lock(&thread_pool.lock);
 		thread_pool.load--;
 		trace("worker thread %hu decreased thread pool load to %hu\n", arg->id, thread_pool.load);
+		if (thread_pool.load <= thread_pool.size / 2 && arg->id >= least_workers && arg->id + 1 == thread_pool.size) {
+			thread_pool.size--;
+			exit = true;
+		}
 		pthread_mutex_unlock(&thread_pool.lock);
+
+		if (exit == true) {
+			trace("killing worker thread %hu\n", arg->id);
+			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
+				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
+			}
+			pthread_exit(0);
+		}
 	}
 }
