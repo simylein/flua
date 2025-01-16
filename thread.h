@@ -35,6 +35,7 @@ typedef struct thread_pool_t {
 	uint8_t size;
 	uint8_t load;
 	pthread_mutex_t lock;
+	pthread_cond_t available;
 } thread_pool_t;
 
 extern struct thread_pool_t thread_pool;

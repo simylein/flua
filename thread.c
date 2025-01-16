@@ -20,6 +20,7 @@ thread_pool_t thread_pool = {
 		.size = 0,
 		.load = 0,
 		.lock = PTHREAD_MUTEX_INITIALIZER,
+		.available = PTHREAD_COND_INITIALIZER,
 };
 
 int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
@@ -82,6 +83,7 @@ void *thread(void *args) {
 			thread_pool.size--;
 			exit = true;
 		}
+		pthread_cond_signal(&thread_pool.available);
 		pthread_mutex_unlock(&thread_pool.lock);
 
 		if (exit == true) {
