@@ -2,12 +2,35 @@
 #include "error.h"
 #include "logger.h"
 #include "thread.h"
+#include <signal.h>
 #include <sqlite3.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
+void stop(int signal) {
+	trace("received signal %d\n", signal);
+
+	pthread_mutex_lock(&thread_pool.lock);
+
+	if (thread_pool.load > 0) {
+		info("waiting for %hu threads...\n", thread_pool.load);
+	}
+	while (thread_pool.load > 0) {
+		trace("waiting for %hu connections to close\n", thread_pool.load);
+		pthread_cond_wait(&thread_pool.available, &thread_pool.lock);
+	}
+
+	pthread_mutex_unlock(&thread_pool.lock);
+
+	info("graceful shutdown complete\n");
+	exit(0);
+}
+
 int main(int argc, char *argv[]) {
+	signal(SIGINT, &stop);
+	signal(SIGTERM, &stop);
+
 	int cf_errors = configure(argc, argv);
 	if (cf_errors != 0) {
 		fatal("config contains %d errors\n", cf_errors);
