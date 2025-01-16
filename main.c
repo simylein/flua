@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 
 		queue.tasks[queue.back].client_sock = client_sock;
 		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
-		queue.back = (queue.back + 1) % (queue_size);
+		queue.back = (uint8_t)((queue.back + 1) % (queue_size));
 		queue.size++;
 		trace("main thread increased queue size to %hu\n", queue.size);
 

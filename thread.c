@@ -61,7 +61,7 @@ void *thread(void *args) {
 		}
 
 		task_t task = queue.tasks[queue.front];
-		queue.front = (queue.front + 1) % (queue_size);
+		queue.front = (uint8_t)((queue.front + 1) % (queue_size));
 		queue.size--;
 		trace("worker thread %hu decreased queue size to %hu\n", arg->id, queue.size);
 		pthread_cond_signal(&queue.available);
