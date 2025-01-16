@@ -2,7 +2,6 @@
 #include "error.h"
 #include "logger.h"
 #include "thread.h"
-#include <errno.h>
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,27 +69,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (size_t index = 0; index < workers; index++) {
-		args[index].id = index;
-		trace("spawning worker thread %zu\n", index);
-
-		int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
-		if (db_error != SQLITE_OK) {
-			fatal("failed to open %s because %s\n", database_file, sqlite3_errmsg(args[index].database));
-			exit(1);
-		}
-
-		int exec_error = sqlite3_exec(args[index].database, "pragma foreign_keys = on;", NULL, NULL, NULL);
-		if (exec_error != SQLITE_OK) {
-			fatal("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(args[index].database));
-			exit(1);
-		}
-
-		sqlite3_busy_timeout(args[index].database, database_timeout);
-
-		int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
-		if (spawn_error != 0) {
-			errno = spawn_error;
-			fatal("failed to spawn worker thread %zu because %s\n", args[index].id, errno_str());
+		if (spawn(args, threads, index) == -1) {
 			exit(1);
 		}
 	}

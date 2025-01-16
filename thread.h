@@ -26,4 +26,6 @@ typedef struct queue_t {
 
 extern struct queue_t queue;
 
+int spawn(arg_t *args, pthread_t *threads, size_t index);
+
 void *thread(void *args);

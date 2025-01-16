@@ -3,6 +3,7 @@
 #include "config.h"
 #include "error.h"
 #include "logger.h"
+#include <errno.h>
 #include <sqlite3.h>
 
 queue_t queue = {
@@ -14,6 +15,34 @@ queue_t queue = {
 		.filled = PTHREAD_COND_INITIALIZER,
 		.available = PTHREAD_COND_INITIALIZER,
 };
+
+int spawn(arg_t *args, pthread_t *threads, size_t index) {
+	args[index].id = index;
+	trace("spawning worker thread %zu\n", index);
+
+	int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
+	if (db_error != SQLITE_OK) {
+		fatal("failed to open %s because %s\n", database_file, sqlite3_errmsg(args[index].database));
+		return -1;
+	}
+
+	int exec_error = sqlite3_exec(args[index].database, "pragma foreign_keys = on;", NULL, NULL, NULL);
+	if (exec_error != SQLITE_OK) {
+		fatal("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(args[index].database));
+		return -1;
+	}
+
+	sqlite3_busy_timeout(args[index].database, database_timeout);
+
+	int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
+	if (spawn_error != 0) {
+		errno = spawn_error;
+		fatal("failed to spawn worker thread %zu because %s\n", args[index].id, errno_str());
+		return -1;
+	}
+
+	return 0;
+}
 
 void *thread(void *args) {
 	struct arg_t *arg = (struct arg_t *)args;
