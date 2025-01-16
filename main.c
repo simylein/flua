@@ -21,7 +21,7 @@ void scale(arg_t **args, pthread_t **threads, uint8_t *workers, uint8_t new_work
 	}
 	*threads = new_threads;
 
-	if (spawn(*args, *threads, *workers) == -1) {
+	if (spawn(*args, *threads, *workers, &error) == -1) {
 		return;
 	}
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (size_t index = 0; index < workers; index++) {
-		if (spawn(args, threads, index) == -1) {
+		if (spawn(args, threads, index, &fatal) == -1) {
 			exit(1);
 		}
 	}
