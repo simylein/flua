@@ -1555,7 +1555,7 @@
 			const categories = [0, 0, 0, 0, 0];
 			for (let index = 0; index < data.length; index++) {
 				const point = data[index];
-				if (point.altIsa >= 0) {
+				if (point.altGps >= 0) {
 					const category = Math.floor(point.altGps / 1000);
 					categories[category <= 4 ? category : 4]++;
 				}
