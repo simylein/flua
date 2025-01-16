@@ -5,40 +5,45 @@
 #include "logger.h"
 #include <errno.h>
 #include <sqlite3.h>
+#include <stdbool.h>
 
 queue_t queue = {
 		.front = 0,
 		.back = 0,
 		.size = 0,
-		.load = 0,
 		.lock = PTHREAD_MUTEX_INITIALIZER,
 		.filled = PTHREAD_COND_INITIALIZER,
 		.available = PTHREAD_COND_INITIALIZER,
 };
 
-int spawn(arg_t *args, pthread_t *threads, size_t index,
-					void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
-	args[index].id = index;
-	trace("spawning worker thread %zu\n", index);
+thread_pool_t thread_pool = {
+		.size = 0,
+		.load = 0,
+		.lock = PTHREAD_MUTEX_INITIALIZER,
+};
 
-	int db_error = sqlite3_open_v2(database_file, &args[index].database, SQLITE_OPEN_READWRITE, NULL);
+int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
+	workers[index].arg.id = index;
+	trace("spawning worker thread %hu\n", index);
+
+	int db_error = sqlite3_open_v2(database_file, &workers[index].arg.database, SQLITE_OPEN_READWRITE, NULL);
 	if (db_error != SQLITE_OK) {
-		logger("failed to open %s because %s\n", database_file, sqlite3_errmsg(args[index].database));
+		logger("failed to open %s because %s\n", database_file, sqlite3_errmsg(workers[index].arg.database));
 		return -1;
 	}
 
-	int exec_error = sqlite3_exec(args[index].database, "pragma foreign_keys = on;", NULL, NULL, NULL);
+	int exec_error = sqlite3_exec(workers[index].arg.database, "pragma foreign_keys = on;", NULL, NULL, NULL);
 	if (exec_error != SQLITE_OK) {
-		logger("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(args[index].database));
+		logger("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(workers[index].arg.database));
 		return -1;
 	}
 
-	sqlite3_busy_timeout(args[index].database, database_timeout);
+	sqlite3_busy_timeout(workers[index].arg.database, database_timeout);
 
-	int spawn_error = pthread_create(&threads[index], NULL, thread, (void *)&args[index]);
+	int spawn_error = pthread_create(&workers[index].thread, NULL, thread, (void *)&workers[index].arg);
 	if (spawn_error != 0) {
 		errno = spawn_error;
-		logger("failed to spawn worker thread %zu because %s\n", args[index].id, errno_str());
+		logger("failed to spawn worker thread %hu because %s\n", workers[index].arg.id, errno_str());
 		return -1;
 	}
 
@@ -48,7 +53,7 @@ int spawn(arg_t *args, pthread_t *threads, size_t index,
 void *thread(void *args) {
 	arg_t *arg = (arg_t *)args;
 
-	while (1) {
+	while (true) {
 		pthread_mutex_lock(&queue.lock);
 
 		while (queue.size == 0) {
@@ -58,18 +63,20 @@ void *thread(void *args) {
 		task_t task = queue.tasks[queue.front];
 		queue.front = (queue.front + 1) % (queue_size);
 		queue.size--;
-		trace("worker thread %zu decreased queue size to %zu\n", arg->id, queue.size);
-		queue.load++;
-		trace("worker thread %zu increased queue load to %zu\n", arg->id, queue.load);
-
+		trace("worker thread %hu decreased queue size to %hu\n", arg->id, queue.size);
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
 
+		pthread_mutex_lock(&thread_pool.lock);
+		thread_pool.load++;
+		trace("worker thread %hu increased thread pool load to %hu\n", arg->id, thread_pool.load);
+		pthread_mutex_unlock(&thread_pool.lock);
+
 		handle(arg->database, &task.client_sock, &task.client_addr);
 
-		pthread_mutex_lock(&queue.lock);
-		queue.load--;
-		trace("worker thread %zu decreased queue load to %zu\n", arg->id, queue.load);
-		pthread_mutex_unlock(&queue.lock);
+		pthread_mutex_lock(&thread_pool.lock);
+		thread_pool.load--;
+		trace("worker thread %hu decreased thread pool load to %hu\n", arg->id, thread_pool.load);
+		pthread_mutex_unlock(&thread_pool.lock);
 	}
 }

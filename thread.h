@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 typedef struct arg_t {
-	size_t id;
+	uint8_t id;
 	sqlite3 *database;
 } arg_t;
 
@@ -15,10 +15,9 @@ typedef struct task_t {
 
 typedef struct queue_t {
 	task_t *tasks;
-	size_t front;
-	size_t back;
-	size_t size;
-	size_t load;
+	uint8_t front;
+	uint8_t back;
+	uint8_t size;
 	pthread_mutex_t lock;
 	pthread_cond_t filled;
 	pthread_cond_t available;
@@ -26,7 +25,20 @@ typedef struct queue_t {
 
 extern struct queue_t queue;
 
-int spawn(arg_t *args, pthread_t *threads, size_t index,
-					void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2))));
+typedef struct worker_t {
+	arg_t arg;
+	pthread_t thread;
+} worker_t;
+
+typedef struct thread_pool_t {
+	worker_t *workers;
+	uint8_t size;
+	uint8_t load;
+	pthread_mutex_t lock;
+} thread_pool_t;
+
+extern struct thread_pool_t thread_pool;
+
+int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2))));
 
 void *thread(void *args);

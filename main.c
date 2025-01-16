@@ -3,31 +3,9 @@
 #include "logger.h"
 #include "thread.h"
 #include <sqlite3.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-
-void scale(arg_t **args, pthread_t **threads, uint8_t *workers, uint8_t new_workers) {
-	arg_t *new_args = realloc(*args, new_workers * sizeof(arg_t));
-	if (new_args == NULL) {
-		error("failed to reallocate %zu bytes for args because %s\n", new_workers * sizeof(arg_t), errno_str());
-		return;
-	}
-	*args = new_args;
-
-	pthread_t *new_threads = realloc(*threads, new_workers * sizeof(pthread_t));
-	if (new_threads == NULL) {
-		error("failed to reallocate %zu bytes for threads because %s\n", new_workers * sizeof(pthread_t), errno_str());
-		return;
-	}
-	*threads = new_threads;
-
-	if (spawn(*args, *threads, *workers, &error) == -1) {
-		return;
-	}
-
-	info("scaled threads from %hu to %hu\n", *workers, new_workers);
-	*workers = new_workers;
-}
 
 int main(int argc, char *argv[]) {
 	int cf_errors = configure(argc, argv);
@@ -73,17 +51,9 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
-	uint8_t workers = least_workers;
-
-	arg_t *args = malloc(workers * sizeof(arg_t));
-	if (args == NULL) {
-		fatal("failed to allocate %zu bytes for args because %s\n", workers * sizeof(arg_t), errno_str());
-		exit(1);
-	}
-
-	pthread_t *threads = malloc(workers * sizeof(pthread_t));
-	if (threads == NULL) {
-		fatal("failed to allocate %zu bytes for threads because %s\n", workers * sizeof(pthread_t), errno_str());
+	thread_pool.workers = malloc(most_workers * sizeof(worker_t));
+	if (thread_pool.workers == NULL) {
+		fatal("failed to allocate %zu bytes for workers because %s\n", most_workers * sizeof(worker_t), errno_str());
 		exit(1);
 	}
 
@@ -93,13 +63,14 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	for (size_t index = 0; index < workers; index++) {
-		if (spawn(args, threads, index, &fatal) == -1) {
+	for (uint8_t index = 0; index < least_workers; index++) {
+		if (spawn(thread_pool.workers, thread_pool.size, &fatal) == -1) {
 			exit(1);
 		}
+		thread_pool.size++;
 	}
 
-	while (1) {
+	while (true) {
 		pthread_mutex_lock(&queue.lock);
 
 		while (queue.size >= queue_size) {
@@ -107,15 +78,20 @@ int main(int argc, char *argv[]) {
 			pthread_cond_wait(&queue.available, &queue.lock);
 		}
 
-		if (queue.load >= workers) {
+		pthread_mutex_unlock(&queue.lock);
+
+		pthread_mutex_lock(&thread_pool.lock);
+
+		if (thread_pool.load >= thread_pool.size) {
 			warn("all worker threads currently busy\n");
-			uint8_t new_workers = workers + 1;
-			if (new_workers <= most_workers) {
-				scale(&args, &threads, &workers, new_workers);
+			uint8_t new_size = thread_pool.size + 1;
+			if (new_size <= most_workers && spawn(thread_pool.workers, thread_pool.size, &error) == 0) {
+				info("scaled threads from %hu to %hu\n", thread_pool.size, new_size);
+				thread_pool.size = new_size;
 			}
 		}
 
-		pthread_mutex_unlock(&queue.lock);
+		pthread_mutex_unlock(&thread_pool.lock);
 
 		struct sockaddr_in client_addr;
 		int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &(socklen_t){sizeof(client_addr)});
@@ -131,7 +107,7 @@ int main(int argc, char *argv[]) {
 		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
 		queue.back = (queue.back + 1) % (queue_size);
 		queue.size++;
-		trace("main thread increased queue size to %zu\n", queue.size);
+		trace("main thread increased queue size to %hu\n", queue.size);
 
 		pthread_cond_signal(&queue.filled);
 		pthread_mutex_unlock(&queue.lock);
