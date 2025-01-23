@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 	int server_sock;
 	struct sockaddr_in server_addr;
 
-	if ((server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+	if ((server_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
 		fatal("failed to create socket because %s\n", errno_str());
 		exit(1);
 	}
