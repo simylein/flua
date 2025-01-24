@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (setsockopt(server_sock, SOL_SOCKET, SO_REUSEADDR, (int[]){1}, sizeof(int)) == -1) {
-		fatal("failed to set socket options because %s\n", errno_str());
+		fatal("failed to set socket reuse address because %s\n", errno_str());
 		exit(1);
 	}
 
