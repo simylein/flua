@@ -1,3 +1,4 @@
+#include "config.h"
 #include "error.h"
 #include "format.h"
 #include "logger.h"
@@ -7,11 +8,24 @@
 #include "utils.h"
 #include <sqlite3.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[98304];
 	char response_buffer[98304];
+
+	if (setsockopt(*client_sock, SOL_SOCKET, SO_RCVTIMEO, &(struct timeval){.tv_sec = receive_timeout, .tv_usec = 0},
+								 sizeof(struct timeval)) == -1) {
+		error("failed to set socket receive timeout because %s\n", errno_str());
+		goto cleanup;
+	}
+
+	if (setsockopt(*client_sock, SOL_SOCKET, SO_SNDTIMEO, &(struct timeval){.tv_sec = send_timeout, .tv_usec = 0},
+								 sizeof(struct timeval)) == -1) {
+		error("failed to set socket send timeout because %s\n", errno_str());
+		goto cleanup;
+	}
 
 	size_t request_length = 0;
 
