@@ -80,6 +80,9 @@ void *thread(void *args) {
 		thread_pool.load--;
 		trace("worker thread %hu decreased thread pool load to %hu\n", arg->id, thread_pool.load);
 		if (thread_pool.load <= thread_pool.size / 2 && arg->id >= least_workers && arg->id + 1 == thread_pool.size) {
+			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
+				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
+			}
 			thread_pool.size--;
 			exit = true;
 		}
@@ -88,9 +91,6 @@ void *thread(void *args) {
 
 		if (exit == true) {
 			trace("killing worker thread %hu\n", arg->id);
-			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
-				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
-			}
 			pthread_exit(0);
 		}
 	}
