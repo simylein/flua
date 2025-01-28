@@ -48,6 +48,13 @@ int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, 
 		return -1;
 	}
 
+	int detach_error = pthread_detach(workers[index].thread);
+	if (detach_error != 0) {
+		errno = detach_error;
+		logger("failed to detach worker thread %hu because %s\n", workers[index].arg.id, errno_str());
+		return -1;
+	}
+
 	return 0;
 }
 
