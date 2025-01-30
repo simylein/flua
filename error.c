@@ -1,5 +1,4 @@
 #include <errno.h>
-#include <sqlite3.h>
 
 char *errno_str(void) {
 	switch (errno) {
