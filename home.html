@@ -137,11 +137,17 @@
 			.font-semibold {
 				font-weight: 600;
 			}
+			.no-underline {
+				text-decoration-line: none;
+			}
 			.text-black {
 				color: #000000;
 			}
 			.text-neutral-600 {
 				color: #525252;
+			}
+			.text-blue-600 {
+				color: #2563eb;
 			}
 			.bg-white {
 				background-color: #ffffff;
@@ -262,6 +268,9 @@
 				}
 				.dark\:text-neutral-400 {
 					color: #a3a3a3;
+				}
+				.dark\:text-blue-400 {
+					color: #60a5fa;
 				}
 				.dark\:bg-black {
 					background-color: #000000;
@@ -797,6 +806,24 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+			</section>
+			<section class="w-full max-w-screen-2xl flex flex-col gap-2 md:gap-3 lg:gap-4">
+				<div class="flex flex-col items-center p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<h1 class="m-0 text-2xl font-semibold">Actions</h1>
+				</div>
+				<div class="flex flex-col md:flex-row bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex-1 p-2 md:p-3 lg:p-4">
+						<p class="m-0 text-base font-normal">Would you like to try it out? <a class="text-base font-normal no-underline text-blue-600 dark:text-blue-400" href="/signup">signup</a></p>
+					</div>
+					<span class="box-border border-0 border-b-2 md:border-l-2 border-solid border-neutral-300 dark:border-neutral-600"></span>
+					<div class="flex-1 p-2 md:p-3 lg:p-4">
+						<p class="m-0 text-base font-normal">In need of a demonstration? <a class="text-base font-normal no-underline text-blue-600 dark:text-blue-400" href="/demo">demo</a></p>
+					</div>
+					<span class="box-border border-0 border-b-2 md:border-l-2 border-solid border-neutral-300 dark:border-neutral-600"> </span>
+					<div class="flex-1 p-2 md:p-3 lg:p-4">
+						<p class="m-0 text-base font-normal">Searching for the signin link? <a class="text-base font-normal no-underline text-blue-600 dark:text-blue-400" href="/signin">signin</a></p>
 					</div>
 				</div>
 			</section>
