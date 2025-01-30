@@ -15,8 +15,8 @@ typedef struct task_t {
 
 typedef struct queue_t {
 	task_t *tasks;
-	uint8_t front;
-	uint8_t back;
+	uint8_t head;
+	uint8_t tail;
 	uint8_t size;
 	pthread_mutex_t lock;
 	pthread_cond_t filled;

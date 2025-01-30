@@ -8,8 +8,8 @@
 #include <stdbool.h>
 
 queue_t queue = {
-		.front = 0,
-		.back = 0,
+		.head = 0,
+		.tail = 0,
 		.size = 0,
 		.lock = PTHREAD_MUTEX_INITIALIZER,
 		.filled = PTHREAD_COND_INITIALIZER,
@@ -69,8 +69,8 @@ void *thread(void *args) {
 			pthread_cond_wait(&queue.filled, &queue.lock);
 		}
 
-		task_t task = queue.tasks[queue.front];
-		queue.front = (uint8_t)((queue.front + 1) % (queue_size));
+		task_t task = queue.tasks[queue.head];
+		queue.head = (uint8_t)((queue.head + 1) % (queue_size));
 		queue.size--;
 		trace("worker thread %hu decreased queue size to %hu\n", arg->id, queue.size);
 		pthread_cond_signal(&queue.available);

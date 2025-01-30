@@ -126,9 +126,9 @@ int main(int argc, char *argv[]) {
 
 		pthread_mutex_lock(&queue.lock);
 
-		queue.tasks[queue.back].client_sock = client_sock;
-		memcpy(&queue.tasks[queue.back].client_addr, &client_addr, sizeof(client_addr));
-		queue.back = (uint8_t)((queue.back + 1) % (queue_size));
+		queue.tasks[queue.tail].client_sock = client_sock;
+		memcpy(&queue.tasks[queue.tail].client_addr, &client_addr, sizeof(client_addr));
+		queue.tail = (uint8_t)((queue.tail + 1) % (queue_size));
 		queue.size++;
 		trace("main thread increased queue size to %hu\n", queue.size);
 
