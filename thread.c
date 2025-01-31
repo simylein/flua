@@ -25,7 +25,7 @@ thread_pool_t thread_pool = {
 
 int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
 	workers[index].arg.id = index;
-	trace("spawning worker thread %hu\n", index);
+	trace("spawning worker thread %hhu\n", index);
 
 	int db_error = sqlite3_open_v2(database_file, &workers[index].arg.database, SQLITE_OPEN_READWRITE, NULL);
 	if (db_error != SQLITE_OK) {
@@ -44,14 +44,14 @@ int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, 
 	int spawn_error = pthread_create(&workers[index].thread, NULL, thread, (void *)&workers[index].arg);
 	if (spawn_error != 0) {
 		errno = spawn_error;
-		logger("failed to spawn worker thread %hu because %s\n", workers[index].arg.id, errno_str());
+		logger("failed to spawn worker thread %hhu because %s\n", workers[index].arg.id, errno_str());
 		return -1;
 	}
 
 	int detach_error = pthread_detach(workers[index].thread);
 	if (detach_error != 0) {
 		errno = detach_error;
-		logger("failed to detach worker thread %hu because %s\n", workers[index].arg.id, errno_str());
+		logger("failed to detach worker thread %hhu because %s\n", workers[index].arg.id, errno_str());
 		return -1;
 	}
 
@@ -72,20 +72,20 @@ void *thread(void *args) {
 		task_t task = queue.tasks[queue.head];
 		queue.head = (uint8_t)((queue.head + 1) % (queue_size));
 		queue.size--;
-		trace("worker thread %hu decreased queue size to %hu\n", arg->id, queue.size);
+		trace("worker thread %hhu decreased queue size to %hhu\n", arg->id, queue.size);
 		pthread_cond_signal(&queue.available);
 		pthread_mutex_unlock(&queue.lock);
 
 		pthread_mutex_lock(&thread_pool.lock);
 		thread_pool.load++;
-		trace("worker thread %hu increased thread pool load to %hu\n", arg->id, thread_pool.load);
+		trace("worker thread %hhu increased thread pool load to %hhu\n", arg->id, thread_pool.load);
 		pthread_mutex_unlock(&thread_pool.lock);
 
 		handle(arg->database, &task.client_sock, &task.client_addr);
 
 		pthread_mutex_lock(&thread_pool.lock);
 		thread_pool.load--;
-		trace("worker thread %hu decreased thread pool load to %hu\n", arg->id, thread_pool.load);
+		trace("worker thread %hhu decreased thread pool load to %hhu\n", arg->id, thread_pool.load);
 		if (thread_pool.load <= thread_pool.size / 2 && arg->id >= least_workers && arg->id + 1 == thread_pool.size) {
 			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
 				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
@@ -97,7 +97,7 @@ void *thread(void *args) {
 		pthread_mutex_unlock(&thread_pool.lock);
 
 		if (exit == true) {
-			trace("killing worker thread %hu\n", arg->id);
+			trace("killing worker thread %hhu\n", arg->id);
 			pthread_exit(0);
 		}
 	}
