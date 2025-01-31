@@ -1,10 +1,9 @@
 #include "request.h"
 #include "response.h"
 #include "utils.h"
-#include <arpa/inet.h>
 #include <string.h>
 
-void request(char *buffer, ssize_t length, request_t *req, response_t *res) {
+void request(char *buffer, size_t length, request_t *req, response_t *res) {
 	int stage = 0;
 	size_t index = 0;
 

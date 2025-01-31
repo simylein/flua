@@ -6,6 +6,7 @@
 #include "response.h"
 #include "router.h"
 #include "utils.h"
+#include <arpa/inet.h>
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <time.h>
@@ -91,8 +92,8 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	char bytes_buffer[8];
 	human_bytes(&bytes_buffer, (size_t)bytes_received);
 
-	request(request_buffer, bytes_received, &reqs, &resp);
-	trace("method %zub pathname %zub search %zub header %zub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
+	request(request_buffer, (size_t)bytes_received, &reqs, &resp);
+	trace("method %hhub pathname %hhub search %hub header %hub body %zub\n", reqs.method_len, reqs.pathname_len, reqs.search_len,
 				reqs.header_len, reqs.body_len);
 	req("%.*s %.*s %s\n", (int)reqs.method_len, reqs.method, (int)reqs.pathname_len, reqs.pathname, bytes_buffer);
 
