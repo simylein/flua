@@ -113,7 +113,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	trace("head %zub header %zub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 
 	size_t packets_sent = 0;
-	ssize_t bytes_sent = send(*client_sock, response_buffer, response_length, 0);
+	ssize_t bytes_sent = send(*client_sock, response_buffer, response_length, MSG_NOSIGNAL);
 
 	if (bytes_sent == -1) {
 		error("failed to send data to client because %s\n", errno_str());
@@ -133,7 +133,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		}
 
 		ssize_t further_bytes_sent =
-				send(*client_sock, &response_buffer[bytes_sent], sizeof(response_buffer) - (size_t)bytes_sent, 0);
+				send(*client_sock, &response_buffer[bytes_sent], sizeof(response_buffer) - (size_t)bytes_sent, MSG_NOSIGNAL);
 
 		if (further_bytes_sent == -1) {
 			error("failed to send further data to client because %s\n", errno_str());
