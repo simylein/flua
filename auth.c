@@ -36,7 +36,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 			response->status = 500;
 			goto cleanup;
 		}
-		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%d;SameSite=Strict;HttpOnly;\r\n", bwt, bwt_ttl);
+		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%u;SameSite=Strict;HttpOnly;\r\n", bwt, bwt_ttl);
 	} else if (result == SQLITE_DONE) {
 		warn("invalid password for %s\n", username);
 		response->status = 401;
