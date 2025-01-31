@@ -90,7 +90,9 @@ void *thread(void *args) {
 			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
 				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
 			}
-			thread_pool.size--;
+			uint8_t new_size = thread_pool.size - 1;
+			info("scaled threads from %hhu to %hhu\n", thread_pool.size, new_size);
+			thread_pool.size = new_size;
 			exit = true;
 		}
 		pthread_cond_signal(&thread_pool.available);
