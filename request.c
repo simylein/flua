@@ -8,7 +8,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 	size_t index = 0;
 
 	const size_t method_index = index;
-	while (stage == 0 && req->method_len < 8 && index < (size_t)length) {
+	while (stage == 0 && req->method_len < 8 && index < length) {
 		char *byte = &buffer[index];
 		if (*byte >= 'A' && *byte <= 'Z') {
 			*byte += 32;
@@ -30,7 +30,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 	}
 
 	const size_t pathname_index = index;
-	while (stage == 1 && req->pathname_len < 128 && index < (size_t)length) {
+	while (stage == 1 && req->pathname_len < 128 && index < length) {
 		char *byte = &buffer[index];
 		if (*byte == '?') {
 			stage = 2;
@@ -51,7 +51,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 	}
 
 	const size_t search_index = index;
-	while (stage == 2 && req->search_len < 256 && index < (size_t)length) {
+	while (stage == 2 && req->search_len < 256 && index < length) {
 		char *byte = &buffer[index];
 		if (*byte == ' ') {
 			stage = 3;
@@ -70,7 +70,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 	}
 
 	const size_t protocol_index = index;
-	while ((stage == 3 || stage == 4) && req->protocol_len < 16 && index < (size_t)length) {
+	while ((stage == 3 || stage == 4) && req->protocol_len < 16 && index < length) {
 		char *byte = &buffer[index];
 		if (*byte >= 'A' && *byte <= 'Z') {
 			*byte += 32;
@@ -99,7 +99,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 
 	int header_key = 1;
 	const size_t header_index = index;
-	while ((stage >= 5 && stage <= 8) && req->header_len < 2048 && index < (size_t)length) {
+	while ((stage >= 5 && stage <= 8) && req->header_len < 2048 && index < length) {
 		char *byte = &buffer[index];
 		if (header_key && *byte >= 'A' && *byte <= 'Z') {
 			*byte += 32;
@@ -129,7 +129,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 		return;
 	}
 
-	req->body_len = (size_t)length - index;
+	req->body_len = length - index;
 	req->body = &buffer[index];
 }
 

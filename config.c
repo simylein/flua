@@ -47,7 +47,7 @@ int parse_uint8(const char *arg, const char *name, const uint8_t min, const uint
 	}
 
 	if (new_value < min || new_value > max) {
-		error("%s must be between %u and %u\n", name, min, max);
+		error("%s must be between %hhu and %hhu\n", name, min, max);
 		return 1;
 	}
 
@@ -69,7 +69,7 @@ int parse_uint16(const char *arg, const char *name, const uint16_t min, const ui
 	}
 
 	if (new_value < min || new_value > max) {
-		error("%s must be between %u and %u\n", name, min, max);
+		error("%s must be between %hu and %hu\n", name, min, max);
 		return 1;
 	}
 
@@ -206,14 +206,14 @@ int configure(int argc, char *argv[]) {
 			info("--bwt-key           -bk  random bytes for bwt signing    (%s)\n", bwt_key);
 			info("--database-file     -df  path to sqlite database file    (%s)\n", database_file);
 			info("--database-timeout  -dt  milliseconds to wait for lock   (%hu)\n", database_timeout);
-			info("--receive-timeout   -rt  seconds to wait for receiving   (%hu)\n", receive_timeout);
-			info("--send-timeout      -st  seconds to wait for sending     (%hu)\n", send_timeout);
+			info("--receive-timeout   -rt  seconds to wait for receiving   (%hhu)\n", receive_timeout);
+			info("--send-timeout      -st  seconds to wait for sending     (%hhu)\n", send_timeout);
 			info("--log-level         -ll  logging verbosity to print      (%s)\n", human_log_level(log_level));
 			info("--log-requests      -lq  log incoming requests           (%s)\n", human_bool(log_requests));
 			info("--log-responses     -ls  log outgoing response           (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.16.7\n");
+			info("flua flights version 0.16.8\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
