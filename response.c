@@ -6,7 +6,7 @@
 #include <string.h>
 
 size_t response(char *buffer, request_t *req, response_t *res) {
-	res->head_len += (size_t)sprintf(buffer, "HTTP/1.1 %hu %s\r\n", res->status, status_text(res->status));
+	res->head_len += (uint8_t)sprintf(*res->head, "HTTP/1.1 %hu %s\r\n", res->status, status_text(res->status));
 	if (res->header_len > 0) {
 		memcpy(buffer + res->head_len, res->header, res->header_len);
 	}
@@ -21,7 +21,7 @@ size_t response(char *buffer, request_t *req, response_t *res) {
 void append_header(response_t *response, const char *format, ...) {
 	va_list args;
 	va_start(args, format);
-	response->header_len += (size_t)vsprintf(*response->header + response->header_len, format, args);
+	response->header_len += (uint16_t)vsprintf(*response->header + response->header_len, format, args);
 	va_end(args);
 }
 

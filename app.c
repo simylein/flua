@@ -111,7 +111,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	human_bytes(&bytes_buffer, response_length);
 
 	res("%d %s %s\n", resp.status, duration_buffer, bytes_buffer);
-	trace("head %zub header %zub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
+	trace("head %hhub header %hub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 
 	size_t packets_sent = 0;
 	ssize_t bytes_sent = send(*client_sock, response_buffer, response_length, MSG_NOSIGNAL);

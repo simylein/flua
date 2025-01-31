@@ -6,9 +6,10 @@ typedef struct request_t request_t;
 #pragma once
 typedef struct response_t {
 	uint16_t status;
-	size_t head_len;
+	char (*head)[128];
+	uint8_t head_len;
 	char (*header)[2048];
-	size_t header_len;
+	uint16_t header_len;
 	char (*body)[96128];
 	size_t body_len;
 } response_t;
