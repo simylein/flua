@@ -81,7 +81,7 @@ void file(const char *file_path, file_t *file, uint8_t (*cull)(file_t *file), re
 		if (cull != NULL) {
 			uint8_t frags = cull(file);
 			if (frags != 0) {
-				warn("cull failed to remove %hu fragments\n", frags);
+				warn("cull failed to remove %hhu fragments\n", frags);
 			}
 		}
 	}
