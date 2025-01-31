@@ -1,5 +1,7 @@
 ## flua flights
 
+the source code of https://flua.dev
+
 a simple web application which presents flight and airtime statistics
 
 ### compile the source code
