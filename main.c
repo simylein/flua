@@ -8,16 +8,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-void stop(int signal) {
-	trace("received signal %d\n", signal);
+void stop(int sig) {
+	signal(sig, SIG_DFL);
+
+	trace("received signal %d\n", sig);
 
 	pthread_mutex_lock(&thread_pool.lock);
 
 	if (thread_pool.load > 0) {
-		info("waiting for %hu threads...\n", thread_pool.load);
+		info("waiting for %hhu threads...\n", thread_pool.load);
 	}
 	while (thread_pool.load > 0) {
-		trace("waiting for %hu connections to close\n", thread_pool.load);
+		trace("waiting for %hhu connections to close\n", thread_pool.load);
 		pthread_cond_wait(&thread_pool.available, &thread_pool.lock);
 	}
 
