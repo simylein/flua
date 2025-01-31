@@ -76,15 +76,15 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
-	thread_pool.workers = malloc(most_workers * sizeof(worker_t));
+	thread_pool.workers = malloc(most_workers * sizeof(*thread_pool.workers));
 	if (thread_pool.workers == NULL) {
-		fatal("failed to allocate %zu bytes for workers because %s\n", most_workers * sizeof(worker_t), errno_str());
+		fatal("failed to allocate %zu bytes for workers because %s\n", most_workers * sizeof(*thread_pool.workers), errno_str());
 		exit(1);
 	}
 
-	queue.tasks = malloc(queue_size * sizeof(task_t));
+	queue.tasks = malloc(queue_size * sizeof(*queue.tasks));
 	if (queue.tasks == NULL) {
-		fatal("failed to allocate %zu bytes for tasks because %s\n", queue_size * sizeof(task_t), errno_str());
+		fatal("failed to allocate %zu bytes for tasks because %s\n", queue_size * sizeof(*queue.tasks), errno_str());
 		exit(1);
 	}
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 			warn("all worker threads currently busy\n");
 			uint8_t new_size = thread_pool.size + 1;
 			if (new_size <= most_workers && spawn(thread_pool.workers, thread_pool.size, &error) == 0) {
-				info("scaled threads from %hu to %hu\n", thread_pool.size, new_size);
+				info("scaled threads from %hhu to %hhu\n", thread_pool.size, new_size);
 				thread_pool.size = new_size;
 			}
 		}
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
 		memcpy(&queue.tasks[queue.tail].client_addr, &client_addr, sizeof(client_addr));
 		queue.tail = (uint8_t)((queue.tail + 1) % (queue_size));
 		queue.size++;
-		trace("main thread increased queue size to %hu\n", queue.size);
+		trace("main thread increased queue size to %hhu\n", queue.size);
 
 		pthread_cond_signal(&queue.filled);
 		pthread_mutex_unlock(&queue.lock);
