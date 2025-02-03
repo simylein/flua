@@ -821,8 +821,8 @@
 		</main>
 	</body>
 	<script>
-		let yearRetries = 2;
-		let flightRetries = 2;
+		let yearRetries = 0;
+		let flightRetries = 0;
 		let yearTimeout = null;
 		let flightTimeout = null;
 		let yearController = null;
@@ -1333,11 +1333,11 @@
 			} catch (err) {
 				if (err?.name !== 'AbortError') {
 					window.requestAnimationFrame(() => errorYears());
-					if (yearRetries > 0) {
+					if (yearRetries < 4) {
 						yearTimeout = setTimeout(() => {
-							yearRetries--;
+							yearRetries++;
 							loadYears();
-						}, 2000);
+						}, 2 ** yearRetries * 1000);
 					}
 				}
 			}
@@ -1383,11 +1383,11 @@
 					window.requestAnimationFrame(() => errorThermal());
 					window.requestAnimationFrame(() => errorSpeed());
 					window.requestAnimationFrame(() => errorGlide());
-					if (flightRetries > 0) {
+					if (flightRetries < 4) {
 						flightTimeout = setTimeout(() => {
-							flightRetries--;
+							flightRetries++;
 							loadFlights();
-						}, 2000);
+						}, 2 ** flightRetries * 1000);
 					}
 				}
 			}
