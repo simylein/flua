@@ -94,27 +94,29 @@ int parse_flight(flight_t *flight, request_t *request) {
 		return -1;
 	}
 
-	flight->hash = (uint8_t(*)[32])request->body;
+	uint8_t offset = 0;
 
-	size_t starts_at_offset = sizeof(*flight->hash);
-	(*flight).starts_at = (uint64_t(*))(&request->body[starts_at_offset]);
+	flight->hash = (uint8_t(*)[32])(&request->body[offset]);
+
+	offset += sizeof(*flight->hash);
+	(*flight).starts_at = (uint64_t(*))(&request->body[offset]);
 	*(*flight).starts_at = ntohll(*(*flight).starts_at);
 
-	size_t ends_at_offset = starts_at_offset + sizeof(*flight->starts_at);
-	(*flight).ends_at = (uint64_t(*))(&request->body[ends_at_offset]);
+	offset += sizeof(*flight->starts_at);
+	(*flight).ends_at = (uint64_t(*))(&request->body[offset]);
 	*(*flight).ends_at = ntohll(*(*flight).ends_at);
 
-	size_t altitude_bins_offset = ends_at_offset + sizeof(*flight->ends_at);
-	(*flight).altitude_bins = (uint16_t(*)[5])(&request->body[altitude_bins_offset]);
+	offset += sizeof(*flight->ends_at);
+	(*flight).altitude_bins = (uint16_t(*)[5])(&request->body[offset]);
 
-	size_t thermal_bins_offset = altitude_bins_offset + sizeof(*flight->altitude_bins);
-	(*flight).thermal_bins = (uint16_t(*)[5])(&request->body[thermal_bins_offset]);
+	offset += sizeof(*flight->altitude_bins);
+	(*flight).thermal_bins = (uint16_t(*)[5])(&request->body[offset]);
 
-	size_t speed_bins_offset = thermal_bins_offset + sizeof(*flight->thermal_bins);
-	(*flight).speed_bins = (uint16_t(*)[5])(&request->body[speed_bins_offset]);
+	offset += sizeof(*flight->thermal_bins);
+	(*flight).speed_bins = (uint16_t(*)[5])(&request->body[offset]);
 
-	size_t glide_bins_offset = speed_bins_offset + sizeof(*flight->speed_bins);
-	(*flight).glide_bins = (uint16_t(*)[5])(&request->body[glide_bins_offset]);
+	offset += sizeof(*flight->speed_bins);
+	(*flight).glide_bins = (uint16_t(*)[5])(&request->body[offset]);
 
 	return 0;
 }
