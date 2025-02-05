@@ -1405,29 +1405,36 @@
 			const buffer = await crypto.subtle.digest('sha-256', data);
 			const array = Array.from(new Uint8Array(buffer));
 			const hex = array.map((byte) => byte.toString(16).padStart(2, '0'));
-			return [hex.join(''), buffer];
+			return { hex: hex.join(''), bin: buffer };
 		};
-		const postFlight = async (hexHash, binHash, startsAt, endsAt, altitude, thermal, speed, glide) => {
-			const buffer = new ArrayBuffer(88);
+		const postFlight = async (hash, flight) => {
+			const buffer = new ArrayBuffer(102);
 			const view = new DataView(buffer);
-			const hash = new Uint8Array(binHash);
+			const array = new Uint8Array(hash.bin);
 			for (let index = 0; index < 32; index++) {
-				view.setUint8(index, hash[index]);
+				view.setUint8(index, array[index]);
 			}
-			view.setBigUint64(32, startsAt);
-			view.setBigUint64(40, endsAt);
+			view.setBigUint64(32, flight.startsAt);
+			view.setBigUint64(40, flight.endsAt);
 			for (let index = 0; index < 5; index++) {
-				view.setUint16(48 + index * 2, altitude[index]);
+				view.setUint16(48 + index * 2, flight.altitudeBins[index]);
 			}
+			view.setUint16(58, flight.altitudeMin);
+			view.setUint16(60, flight.altitudeMax);
 			for (let index = 0; index < 5; index++) {
-				view.setUint16(58 + index * 2, thermal[index]);
+				view.setUint16(62 + index * 2, flight.thermalBins[index]);
 			}
+			view.setUint8(72, Math.abs(flight.maxClimb * 10));
+			view.setUint8(73, Math.abs(flight.maxSink * 10));
 			for (let index = 0; index < 5; index++) {
-				view.setUint16(68 + index * 2, speed[index]);
+				view.setUint16(74 + index * 2, flight.speedBins[index]);
 			}
+			view.setUint16(84, flight.speedAvg * 100);
+			view.setUint16(86, flight.speedMax * 100);
 			for (let index = 0; index < 5; index++) {
-				view.setUint16(78 + index * 2, glide[index]);
+				view.setUint16(88 + index * 2, flight.glideBins[index]);
 			}
+			view.setUint32(98, flight.distanceFlown);
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -1437,11 +1444,11 @@
 				}
 				const response = await fetch('/api/flight', { method: 'post', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
 				if (response.status >= 200 && response.status <= 299) {
-					notification('success', `Successfully uploaded flight ${hexHash.substring(0, 8)}`);
-					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(Number(startsAt) * 1000).getFullYear())) {
+					notification('success', `Successfully uploaded flight ${hash.hex.substring(0, 8)}`);
+					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(Number(flight.startsAt) * 1000).getFullYear())) {
 						loadYears();
 					}
-					if (getYear() === new Date(Number(startsAt) * 1000).getFullYear()) {
+					if (getYear() === new Date(Number(flight.startsAt) * 1000).getFullYear()) {
 						loadFlights();
 					}
 					return;
@@ -1467,19 +1474,18 @@
 			const files = Array.from(event.target.files);
 			for (const file of files) {
 				const content = await readFile(file);
-				const [hexHash, binHash] = await hashFile(content);
+				const hash = await hashFile(content);
 				const data = parseIgcFile(content);
 				if (data.length < 64) {
-					notification('info', `Flight ${hexHash.substring(0, 8)} is too short`);
+					notification('info', `Flight ${hash.hex.substring(0, 8)} is too short`);
 					continue;
 				}
-				const startsAt = BigInt(data[0].time);
-				const endsAt = BigInt(data[data.length - 1].time);
-				const altitude = parseAltitude(data);
-				const thermal = parseThermal(data);
-				const speed = parseSpeed(data);
-				const glide = parseGlide(data);
-				await postFlight(hexHash, binHash, startsAt, endsAt, altitude, thermal, speed, glide);
+				if (data.length > 65536) {
+					notification('info', `Flight ${hash.hex.substring(0, 8)} is too long`);
+					continue;
+				}
+				const flight = parseFlight(data);
+				await postFlight(hash, flight);
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
@@ -1551,111 +1557,107 @@
 			const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 			return +(earthRadius * c * 1000).toFixed(1);
 		};
-		const parseAltitude = (data) => {
-			const categories = [0, 0, 0, 0, 0];
+		const parseFlight = (data) => {
+			const flight = {
+				startsAt: null,
+				endsAt: null,
+				altitudeBins: [0, 0, 0, 0, 0],
+				altitudeMin: null,
+				altitudeMax: null,
+				thermalBins: [0, 0, 0, 0, 0],
+				maxClimb: null,
+				maxSink: null,
+				speedBins: [0, 0, 0, 0, 0],
+				speedAvg: null,
+				speedMax: null,
+				glideBins: [0, 0, 0, 0, 0],
+				distanceFlown: 0,
+			};
+			flight.startsAt = BigInt(data[0].time);
+			flight.endsAt = BigInt(data[data.length - 1].time);
+			const track = { headings: [], distances: [] };
 			for (let index = 0; index < data.length; index++) {
-				const point = data[index];
-				if (point.altGps >= 0) {
-					const category = Math.floor(point.altGps / 1000);
-					categories[category <= 4 ? category : 4]++;
+				if (data[index].altGps >= 0) {
+					const category = Math.floor(data[index].altGps / 1000);
+					flight.altitudeBins[category <= 4 ? category : 4]++;
 				}
-			}
-			return categories;
-		};
-		const parseThermal = (data) => {
-			const categories = [0, 0, 0, 0, 0];
-			const headingDiffs = [];
-			for (let index = 0; index < data.length; index++) {
-				const point = data[index];
+				if (flight.altitudeMin === null || flight.altitudeMin > data[index].altGps) {
+					flight.altitudeMin = data[index].altGps;
+				}
+				if (flight.altitudeMax === null || flight.altitudeMax < data[index].altGps) {
+					flight.altitudeMax = data[index].altGps;
+				}
 				if (index + 2 < data.length) {
-					headingDiffs.push(heading(point, data[index + 1]) - heading(data[index + 1], data[index + 2]));
-					if (headingDiffs.length > 10) {
-						headingDiffs.shift();
+					track.headings.push(heading(data[index], data[index + 1]) - heading(data[index + 1], data[index + 2]));
+					if (track.headings.length > 10) {
+						track.headings.shift();
 					}
-					const headingDiff = headingDiffs.reduce((accumulator, diff) => accumulator + diff, 0);
-					const altitudeDiff = data[index + 1].altIsa - point.altIsa;
-					if (altitudeDiff >= 0 && Math.abs(headingDiff) >= 120) {
+					flight.distanceFlown += distance(data[index], data[index + 1]);
+					track.distances.push(distance(data[index], data[index + 1]));
+					if (track.distances.length > 10) {
+						track.distances.shift();
+					}
+				}
+				if (index >= 10) {
+					const trackHeadingDiff = track.headings.reduce((accumulator, diff) => accumulator + diff, 0);
+					const altitudeDiff = data[index].altIsa - data[index - 1].altIsa;
+					const trackAltitudeDiff = data[index].altIsa - data[index - 10].altIsa;
+					const trackDistance = track.distances.reduce((accumulator, distance) => accumulator + distance, 0);
+					const trackSpeed = (trackDistance / track.distances.length) * 3.6;
+					if (altitudeDiff >= 0 && Math.abs(trackHeadingDiff) >= 120) {
 						const category = Math.floor(altitudeDiff);
-						categories[category <= 4 ? category : 4]++;
+						flight.thermalBins[category <= 4 ? category : 4]++;
 					}
-				}
-			}
-			return categories;
-		};
-		const parseSpeed = (data) => {
-			const categories = [0, 0, 0, 0, 0];
-			const distances = [];
-			for (let index = 0; index < data.length; index++) {
-				const point = data[index];
-				if (index + 10 < data.length) {
-					distances.push(distance(point, data[index + 1]));
-					if (distances.length > 10) {
-						distances.shift();
+					if (trackAltitudeDiff >= 0 && (flight.maxClimb === null || flight.maxClimb < trackAltitudeDiff / 10)) {
+						flight.maxClimb = trackAltitudeDiff / 10;
 					}
-					const totalDistance = distances.reduce((accumulator, distance) => accumulator + distance, 0);
-					const speed = (totalDistance / 10) * 3.6;
+					if (trackAltitudeDiff <= 0 && (flight.maxSink === null || flight.maxSink > trackAltitudeDiff / 10)) {
+						flight.maxSink = trackAltitudeDiff / 10;
+					}
 					switch (true) {
-						case speed >= 20 && speed < 30:
-							categories[0]++;
+						case trackSpeed >= 20 && trackSpeed < 30:
+							flight.speedBins[0]++;
 							break;
-						case speed >= 30 && speed < 40:
-							categories[1]++;
+						case trackSpeed >= 30 && trackSpeed < 40:
+							flight.speedBins[1]++;
 							break;
-						case speed >= 40 && speed < 50:
-							categories[2]++;
+						case trackSpeed >= 40 && trackSpeed < 50:
+							flight.speedBins[2]++;
 							break;
-						case speed >= 50 && speed < 60:
-							categories[3]++;
+						case trackSpeed >= 50 && trackSpeed < 60:
+							flight.speedBins[3]++;
 							break;
-						case speed >= 60 && speed < 70:
-							categories[4]++;
+						case trackSpeed >= 60 && trackSpeed < 70:
+							flight.speedBins[4]++;
 							break;
 					}
-				}
-			}
-			return categories;
-		};
-		const parseGlide = (data) => {
-			const categories = [0, 0, 0, 0, 0];
-			const headingDiffs = [];
-			const distances = [];
-			for (let index = 0; index < data.length; index++) {
-				const point = data[index];
-				if (index + 10 < data.length) {
-					headingDiffs.push(heading(point, data[index + 1]) - heading(data[index + 1], data[index + 2]));
-					if (headingDiffs.length > 10) {
-						headingDiffs.shift();
+					if (flight.speedMax === null || flight.speedMax < trackSpeed) {
+						flight.speedMax = trackSpeed;
 					}
-					distances.push(distance(point, data[index + 1]));
-					if (distances.length > 10) {
-						distances.shift();
-					}
-					const headingDiff = headingDiffs.reduce((accumulator, diff) => accumulator + diff, 0);
-					const totalDistance = distances.reduce((accumulator, distance) => accumulator + distance, 0);
-					const altitudeDiff = data[index + 10].altIsa - point.altIsa;
-					if (altitudeDiff <= 0 && Math.abs(headingDiff) <= 60) {
-						const glideRatio = totalDistance / Math.abs(altitudeDiff);
+					if (trackAltitudeDiff <= 0 && Math.abs(trackHeadingDiff) <= 60) {
+						const glideRatio = trackDistance / Math.abs(trackAltitudeDiff);
 						switch (true) {
 							case glideRatio >= 4 && glideRatio < 6:
-								categories[0]++;
+								flight.glideBins[0]++;
 								break;
 							case glideRatio >= 6 && glideRatio < 8:
-								categories[1]++;
+								flight.glideBins[1]++;
 								break;
 							case glideRatio >= 8 && glideRatio < 10:
-								categories[2]++;
+								flight.glideBins[2]++;
 								break;
 							case glideRatio >= 10 && glideRatio < 12:
-								categories[3]++;
+								flight.glideBins[3]++;
 								break;
 							case glideRatio >= 12 && glideRatio < 14:
-								categories[4]++;
+								flight.glideBins[4]++;
 								break;
 						}
 					}
 				}
 			}
-			return categories;
+			flight.speedAvg = (flight.distanceFlown / (Number(flight.endsAt) - Number(flight.startsAt))) * 3.6;
+			return flight;
 		};
 		const notifications = document.getElementById('notifications');
 		const kind = (type) => {
