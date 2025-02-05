@@ -87,6 +87,7 @@ void *thread(void *args) {
 		thread_pool.load--;
 		trace("worker thread %hhu decreased thread pool load to %hhu\n", arg->id, thread_pool.load);
 		if (thread_pool.load <= thread_pool.size / 2 && arg->id >= least_workers && arg->id + 1 == thread_pool.size) {
+			debug("half worker threads currently idle\n");
 			if (sqlite3_close_v2(arg->database) != SQLITE_OK) {
 				error("failed to close %s because %s\n", database_file, sqlite3_errmsg(arg->database));
 			}

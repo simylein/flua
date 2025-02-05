@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 		pthread_mutex_lock(&thread_pool.lock);
 
 		if (thread_pool.load >= thread_pool.size) {
-			warn("all worker threads currently busy\n");
+			debug("all worker threads currently busy\n");
 			uint8_t new_size = thread_pool.size + 1;
 			if (new_size <= most_workers && spawn(thread_pool.workers, thread_pool.size, &error) == 0) {
 				info("scaled threads from %hhu to %hhu\n", thread_pool.size, new_size);
