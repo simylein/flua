@@ -89,34 +89,62 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 
 int parse_flight(flight_t *flight, request_t *request) {
 	if (request->body_len != sizeof(*flight->hash) + sizeof(*flight->starts_at) + sizeof(*flight->ends_at) +
-															 sizeof(*flight->altitude_bins) + sizeof(*flight->thermal_bins) + sizeof(*flight->speed_bins) +
-															 sizeof(*flight->glide_bins)) {
+															 sizeof(*flight->altitude_bins) + sizeof(*flight->altitude_min) + sizeof(*flight->altitude_max) +
+															 sizeof(*flight->thermal_bins) + sizeof(*flight->max_climb) + sizeof(*flight->max_sink) +
+															 sizeof(*flight->speed_bins) + sizeof(*flight->speed_avg) + sizeof(*flight->speed_max) +
+															 sizeof(*flight->glide_bins) + sizeof(*flight->distance_flown)) {
 		return -1;
 	}
 
 	uint8_t offset = 0;
 
 	flight->hash = (uint8_t(*)[32])(&request->body[offset]);
-
 	offset += sizeof(*flight->hash);
+
 	(*flight).starts_at = (uint64_t(*))(&request->body[offset]);
 	*(*flight).starts_at = ntohll(*(*flight).starts_at);
-
 	offset += sizeof(*flight->starts_at);
+
 	(*flight).ends_at = (uint64_t(*))(&request->body[offset]);
 	*(*flight).ends_at = ntohll(*(*flight).ends_at);
-
 	offset += sizeof(*flight->ends_at);
+
 	(*flight).altitude_bins = (uint16_t(*)[5])(&request->body[offset]);
-
 	offset += sizeof(*flight->altitude_bins);
+
+	(*flight).altitude_min = (uint16_t *)(&request->body[offset]);
+	*(*flight).altitude_min = ntohs(*(*flight).altitude_min);
+	offset += sizeof(*flight->altitude_min);
+
+	(*flight).altitude_max = (uint16_t *)(&request->body[offset]);
+	*(*flight).altitude_max = ntohs(*(*flight).altitude_max);
+	offset += sizeof(*flight->altitude_max);
+
 	(*flight).thermal_bins = (uint16_t(*)[5])(&request->body[offset]);
-
 	offset += sizeof(*flight->thermal_bins);
-	(*flight).speed_bins = (uint16_t(*)[5])(&request->body[offset]);
 
+	(*flight).max_climb = (uint8_t *)(&request->body[offset]);
+	offset += sizeof(*flight->max_climb);
+
+	(*flight).max_sink = (uint8_t *)(&request->body[offset]);
+	offset += sizeof(*flight->max_sink);
+
+	(*flight).speed_bins = (uint16_t(*)[5])(&request->body[offset]);
 	offset += sizeof(*flight->speed_bins);
+
+	(*flight).speed_avg = (uint16_t *)(&request->body[offset]);
+	*(*flight).speed_avg = ntohs(*(*flight).speed_avg);
+	offset += sizeof(*flight->speed_avg);
+
+	(*flight).speed_max = (uint16_t *)(&request->body[offset]);
+	*(*flight).speed_max = ntohs(*(*flight).speed_max);
+	offset += sizeof(*flight->speed_max);
+
 	(*flight).glide_bins = (uint16_t(*)[5])(&request->body[offset]);
+	offset += sizeof(*flight->glide_bins);
+
+	(*flight).distance_flown = (uint32_t *)(&request->body[offset]);
+	*(*flight).distance_flown = ntohl(*(*flight).distance_flown);
 
 	return 0;
 }

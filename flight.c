@@ -186,9 +186,14 @@ cleanup:
 void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql =
-			"insert into flight (id, hash, starts_at, ends_at, altitude_bins, thermal_bins, speed_bins, glide_bins, user_id) "
-			"values (randomblob(16), ?, ?, ?, ?, ?, ?, ?, ?)";
+	const char *sql = "insert into flight (id, hash, "
+										"starts_at, ends_at, "
+										"altitude_bins, altitude_min, altitude_max, "
+										"thermal_bins, max_climb, max_sink, "
+										"speed_bins, speed_avg, speed_max, "
+										"glide_bins, distance_flown, "
+										"user_id) "
+										"values (randomblob(16), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -200,10 +205,17 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 	sqlite3_bind_int64(stmt, 2, (int64_t)*flight->starts_at);
 	sqlite3_bind_int64(stmt, 3, (int64_t)*flight->ends_at);
 	sqlite3_bind_blob(stmt, 4, flight->altitude_bins, sizeof(*flight->altitude_bins), SQLITE_STATIC);
-	sqlite3_bind_blob(stmt, 5, flight->thermal_bins, sizeof(*flight->thermal_bins), SQLITE_STATIC);
-	sqlite3_bind_blob(stmt, 6, flight->speed_bins, sizeof(*flight->speed_bins), SQLITE_STATIC);
-	sqlite3_bind_blob(stmt, 7, flight->glide_bins, sizeof(*flight->glide_bins), SQLITE_STATIC);
-	sqlite3_bind_blob(stmt, 8, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 5, (int16_t)*flight->altitude_min);
+	sqlite3_bind_int(stmt, 6, (int16_t)*flight->altitude_max);
+	sqlite3_bind_blob(stmt, 7, flight->thermal_bins, sizeof(*flight->thermal_bins), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 8, (int8_t)*flight->max_climb);
+	sqlite3_bind_int(stmt, 9, (int8_t)*flight->max_sink);
+	sqlite3_bind_blob(stmt, 10, flight->speed_bins, sizeof(*flight->speed_bins), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 11, (int16_t)*flight->speed_avg);
+	sqlite3_bind_int(stmt, 12, (int16_t)*flight->speed_max);
+	sqlite3_bind_blob(stmt, 13, flight->glide_bins, sizeof(*flight->glide_bins), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 14, (int32_t)*flight->distance_flown);
+	sqlite3_bind_blob(stmt, 15, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_DONE) {
