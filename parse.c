@@ -89,8 +89,8 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 
 int parse_flight(flight_t *flight, request_t *request) {
 	if (request->body_len != sizeof(*flight->hash) + sizeof(*flight->starts_at) + sizeof(*flight->ends_at) +
-															 sizeof(*flight->altitude) + sizeof(*flight->thermal) + sizeof(*flight->speed) +
-															 sizeof(*flight->glide)) {
+															 sizeof(*flight->altitude_bins) + sizeof(*flight->thermal_bins) + sizeof(*flight->speed_bins) +
+															 sizeof(*flight->glide_bins)) {
 		return -1;
 	}
 
@@ -104,17 +104,17 @@ int parse_flight(flight_t *flight, request_t *request) {
 	(*flight).ends_at = (uint64_t(*))(&request->body[ends_at_offset]);
 	*(*flight).ends_at = ntohll(*(*flight).ends_at);
 
-	size_t altitude_offset = ends_at_offset + sizeof(*flight->ends_at);
-	(*flight).altitude = (uint16_t(*)[5])(&request->body[altitude_offset]);
+	size_t altitude_bins_offset = ends_at_offset + sizeof(*flight->ends_at);
+	(*flight).altitude_bins = (uint16_t(*)[5])(&request->body[altitude_bins_offset]);
 
-	size_t thermal_offset = altitude_offset + sizeof(*flight->altitude);
-	(*flight).thermal = (uint16_t(*)[5])(&request->body[thermal_offset]);
+	size_t thermal_bins_offset = altitude_bins_offset + sizeof(*flight->altitude_bins);
+	(*flight).thermal_bins = (uint16_t(*)[5])(&request->body[thermal_bins_offset]);
 
-	size_t speed_offset = thermal_offset + sizeof(*flight->thermal);
-	(*flight).speed = (uint16_t(*)[5])(&request->body[speed_offset]);
+	size_t speed_bins_offset = thermal_bins_offset + sizeof(*flight->thermal_bins);
+	(*flight).speed_bins = (uint16_t(*)[5])(&request->body[speed_bins_offset]);
 
-	size_t glide_offset = speed_offset + sizeof(*flight->speed);
-	(*flight).glide = (uint16_t(*)[5])(&request->body[glide_offset]);
+	size_t glide_bins_offset = speed_bins_offset + sizeof(*flight->speed_bins);
+	(*flight).glide_bins = (uint16_t(*)[5])(&request->body[glide_bins_offset]);
 
 	return 0;
 }
