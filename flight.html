@@ -1093,7 +1093,7 @@
 		const paintAltitude = (data) => {
 			const altitudes = data.reduce(
 				(accumulator, flight) => {
-					flight.altitude.forEach((altitude, ind) => (accumulator[ind] += altitude));
+					flight.altitudeBins.forEach((altitude, ind) => (accumulator[ind] += altitude));
 					return accumulator;
 				},
 				[0, 0, 0, 0, 0]
@@ -1135,7 +1135,7 @@
 		const paintThermal = (data) => {
 			const thermals = data.reduce(
 				(accumulator, flight) => {
-					flight.thermal.forEach((thermal, ind) => (accumulator[ind] += thermal));
+					flight.thermalBins.forEach((thermal, ind) => (accumulator[ind] += thermal));
 					return accumulator;
 				},
 				[0, 0, 0, 0, 0]
@@ -1177,7 +1177,7 @@
 		const paintSpeed = (data) => {
 			const speeds = data.reduce(
 				(accumulator, flight) => {
-					flight.speed.forEach((speed, ind) => (accumulator[ind] += speed));
+					flight.speedBins.forEach((speed, ind) => (accumulator[ind] += speed));
 					return accumulator;
 				},
 				[0, 0, 0, 0, 0]
@@ -1219,7 +1219,7 @@
 		const paintGlide = (data) => {
 			const glides = data.reduce(
 				(accumulator, flight) => {
-					flight.glide.forEach((glide, ind) => (accumulator[ind] += glide));
+					flight.glideBins.forEach((glide, ind) => (accumulator[ind] += glide));
 					return accumulator;
 				},
 				[0, 0, 0, 0, 0]
@@ -1293,17 +1293,32 @@
 			while (byteOffset < buffer.byteLength) {
 				const startsAtBits = readBits(4) * 8;
 				const endsAtBits = readBits(4) * 8;
-				const altitudeBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
-				const thermalBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
-				const speedBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
-				const glideBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
+				const altitudeBinsBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
+				const altitudeMinBits = readBits(2) * 8;
+				const altitudeMaxBits = readBits(2) * 8;
+				const thermalBinsBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
+				const maxClimbBits = 8;
+				const maxSinkBits = 8;
+				const speedBinsBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
+				const speedAvgBits = 16;
+				const speedMaxBits = 16;
+				const glideBinsBits = [readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8, readBits(2) * 8];
+				const distanceFlownBits = readBits(3) * 8;
+				const paddingBits = readBits(1);
 				const startsAt = readBigBits(startsAtBits);
 				const endsAt = readBigBits(endsAtBits);
-				const altitude = [readBits(altitudeBits[0]), readBits(altitudeBits[1]), readBits(altitudeBits[2]), readBits(altitudeBits[3]), readBits(altitudeBits[4])];
-				const thermal = [readBits(thermalBits[0]), readBits(thermalBits[1]), readBits(thermalBits[2]), readBits(thermalBits[3]), readBits(thermalBits[4])];
-				const speed = [readBits(speedBits[0]), readBits(speedBits[1]), readBits(speedBits[2]), readBits(speedBits[3]), readBits(speedBits[4])];
-				const glide = [readBits(glideBits[0]), readBits(glideBits[1]), readBits(glideBits[2]), readBits(glideBits[3]), readBits(glideBits[4])];
-				flights.push({ startsAt, endsAt, altitude, thermal, speed, glide });
+				const altitudeBins = [readBits(altitudeBinsBits[0]), readBits(altitudeBinsBits[1]), readBits(altitudeBinsBits[2]), readBits(altitudeBinsBits[3]), readBits(altitudeBinsBits[4])];
+				const altitudeMin = readBits(altitudeMinBits);
+				const altitudeMax = readBits(altitudeMaxBits);
+				const thermalBins = [readBits(thermalBinsBits[0]), readBits(thermalBinsBits[1]), readBits(thermalBinsBits[2]), readBits(thermalBinsBits[3]), readBits(thermalBinsBits[4])];
+				const maxClimb = readBits(maxClimbBits);
+				const maxSink = readBits(maxSinkBits);
+				const speedBins = [readBits(speedBinsBits[0]), readBits(speedBinsBits[1]), readBits(speedBinsBits[2]), readBits(speedBinsBits[3]), readBits(speedBinsBits[4])];
+				const speedAvg = readBits(speedAvgBits);
+				const speedMax = readBits(speedMaxBits);
+				const glideBins = [readBits(glideBinsBits[0]), readBits(glideBinsBits[1]), readBits(glideBinsBits[2]), readBits(glideBinsBits[3]), readBits(glideBinsBits[4])];
+				const distanceFlown = readBits(distanceFlownBits);
+				flights.push({ startsAt, endsAt, altitudeBins, altitudeMin, altitudeMax, thermalBins, maxClimb, maxSink, speedBins, speedAvg, speedMax, glideBins, distanceFlown });
 			}
 			return flights;
 		};
