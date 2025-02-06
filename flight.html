@@ -1410,9 +1410,9 @@
 		const postFlight = async (hash, flight) => {
 			const buffer = new ArrayBuffer(102);
 			const view = new DataView(buffer);
-			const array = new Uint8Array(hash.bin);
+			const arr = new Uint8Array(hash.bin);
 			for (let index = 0; index < 32; index++) {
-				view.setUint8(index, array[index]);
+				view.setUint8(index, arr[index]);
 			}
 			view.setBigUint64(32, flight.startsAt);
 			view.setBigUint64(40, flight.endsAt);
