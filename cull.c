@@ -9,7 +9,7 @@ uint8_t cull_flight(file_t *file) {
 	size_t write_index = 0;
 
 	bool cut = false;
-	cull_t culls[30] = {
+	cull_t culls[27] = {
 			{.start = "\t\t\t.top-0 {", .end = "}\n"},
 			{.start = "\t\t\t.right-0 {", .end = "}\n"},
 			{.start = "\t\t\t.m-2 {", .end = "}\n"},
@@ -31,10 +31,7 @@ uint8_t cull_flight(file_t *file) {
 			{.start = "\t\tconst radians", .end = "\n\t\t};\n"},
 			{.start = "\t\tconst heading", .end = "\n\t\t};\n"},
 			{.start = "\t\tconst distance", .end = "\n\t\t};\n"},
-			{.start = "\t\tconst parseAltitude", .end = "\n\t\t};\n"},
-			{.start = "\t\tconst parseThermal", .end = "\n\t\t};\n"},
-			{.start = "\t\tconst parseSpeed", .end = "\n\t\t};\n"},
-			{.start = "\t\tconst parseGlide", .end = "\n\t\t};\n"},
+			{.start = "\t\tconst parseFlight", .end = "\n\t\t};\n"},
 			{.start = "\t\tconst notifications", .end = ";\n"},
 			{.start = "\t\tconst kind", .end = "\n\t\t};\n"},
 			{.start = "\t\tconst color", .end = "\n\t\t};\n"},
