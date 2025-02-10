@@ -30,6 +30,15 @@
 			.w-10 {
 				width: 40px;
 			}
+			.w-12 {
+				width: 48px;
+			}
+			.w-16 {
+				width: 64px;
+			}
+			.w-20 {
+				width: 80px;
+			}
 			.w-full {
 				width: 100%;
 			}
@@ -50,6 +59,9 @@
 			}
 			.h-12 {
 				height: 48px;
+			}
+			.h-38 {
+				height: 152px;
 			}
 			.h-full {
 				height: 100%;
@@ -127,6 +139,12 @@
 			.p-4 {
 				padding: 16px;
 			}
+			.pr-1 {
+				padding-right: 4px;
+			}
+			.pb-1 {
+				padding-bottom: 4px;
+			}
 			.border-0 {
 				border-width: 0px;
 			}
@@ -139,8 +157,14 @@
 			.border-none {
 				border-style: none;
 			}
+			.border-spacing-0 {
+				border-spacing: 0px;
+			}
 			.overflow-x-scroll {
 				overflow-x: scroll;
+			}
+			.overflow-y-scroll {
+				overflow-y: scroll;
 			}
 			.scrollbar-none {
 				scrollbar-width: none;
@@ -149,12 +173,22 @@
 				font-size: 12px;
 				line-height: 16px;
 			}
+			.text-sm {
+				font-size: 14px;
+				line-height: 20px;
+			}
 			.text-base {
 				font-size: 16px;
 				line-height: 24px;
 			}
+			.text-start {
+				text-align: start;
+			}
 			.text-end {
 				text-align: end;
+			}
+			.text-nowrap {
+				text-wrap: nowrap;
 			}
 			.font-normal {
 				font-weight: 400;
@@ -288,6 +322,9 @@
 				.md\:p-3 {
 					padding: 12px;
 				}
+				.md\:pr-1\.5 {
+					padding-right: 6px;
+				}
 			}
 			@media (min-width: 1024px) {
 				.lg\:gap-2 {
@@ -310,6 +347,9 @@
 				}
 				.lg\:p-4 {
 					padding: 16px;
+				}
+				.lg\:pr-2 {
+					padding-right: 8px;
 				}
 			}
 			@media (min-width: 1280px) {
@@ -818,6 +858,129 @@
 					</div>
 				</div>
 			</div>
+			<div class="w-full max-w-screen-2xl">
+				<div class="p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
+					<div class="flex justify-between gap-2 mb-1">
+						<h2 class="m-0 text-base font-normal">Logbook</h2>
+					</div>
+					<div class="h-38 overflow-x-scroll overflow-y-scroll scrollbar-none">
+						<table class="w-full border-spacing-0">
+							<thead class="text-nowrap">
+								<tr>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Date</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Takeoff</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Landing</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Min altitude</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Max altitude</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Max climb</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Max sink</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Avg speed</th>
+									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Max speed</th>
+									<th class="p-0 pb-1 text-start text-sm font-normal">Distance flown</th>
+								</tr>
+							</thead>
+							<tbody id="logbook-body" class="text-nowrap">
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+								<tr>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
+									<td class="p-0 text-xs font-normal"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 		</main>
 	</body>
 	<script>
@@ -872,6 +1035,7 @@
 			['bg-cyan-400/80', 'dark:bg-cyan-600/80'],
 			['bg-blue-400/80', 'dark:bg-blue-600/80'],
 		];
+		const logbookBody = document.getElementById('logbook-body');
 		const array = (length) => {
 			return Array(length)
 				.fill(null)
@@ -993,7 +1157,7 @@
 		const paintYears = (data) => {
 			resize(years, data.length);
 			array(years.children.length).forEach((ind) => {
-				if (data[ind].year) {
+				if (data[ind]) {
 					years.children[ind].classList.remove('cursor-default');
 					years.children[ind].classList.add('cursor-pointer');
 					years.children[ind].children[0].classList.remove('w-9', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
@@ -1248,6 +1412,47 @@
 				error(glideGraph.children[ind]);
 			});
 		};
+		const loadingLogbook = () => {
+			resize(logbookBody, 8);
+			array(logbookBody.children.length).forEach((ind) => {
+				loading(logbookBody.children[ind].children[0], ['w-9', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[1], ['w-9', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[2], ['w-9', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[3], ['w-10', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[4], ['w-10', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[5], ['w-12', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[6], ['w-12', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[7], ['w-16', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[8], ['w-16', 'h-4'], [], '');
+				loading(logbookBody.children[ind].children[9], ['w-20', 'h-4'], [], '');
+			});
+		};
+		const paintLogbook = (data) => {
+			resize(logbookBody, data.length);
+			array(logbookBody.children.length).forEach((ind) => {
+				if (data[ind]) {
+					const startsAt = new Date(Number(data[ind].startsAt) * 1000);
+					const endsAt = new Date(Number(data[ind].endsAt) * 1000);
+					paint(logbookBody.children[ind].children[0], [], ['w-9', 'h-4'], `${startsAt.getDate().toString().padStart(2, '0')}.${(startsAt.getMonth() + 1).toString().padStart(2, '0')}`);
+					paint(logbookBody.children[ind].children[1], [], ['w-9', 'h-4'], `${startsAt.getHours().toString().padStart(2, '0')}:${startsAt.getMinutes().toString().padStart(2, '0')}`);
+					paint(logbookBody.children[ind].children[2], [], ['w-9', 'h-4'], `${endsAt.getHours().toString().padStart(2, '0')}:${endsAt.getMinutes().toString().padStart(2, '0')}`);
+					paint(logbookBody.children[ind].children[3], [], ['w-10', 'h-4'], `${data[ind].altitudeMin}m`);
+					paint(logbookBody.children[ind].children[4], [], ['w-10', 'h-4'], `${data[ind].altitudeMax}m`);
+					paint(logbookBody.children[ind].children[5], [], ['w-12', 'h-4'], `${(data[ind].maxClimb / 10).toFixed(1)}m/s`);
+					paint(logbookBody.children[ind].children[6], [], ['w-12', 'h-4'], `${(data[ind].maxSink / 10).toFixed(1)}m/s`);
+					paint(logbookBody.children[ind].children[7], [], ['w-16', 'h-4'], `${(data[ind].speedAvg / 100).toFixed(2)}km/h`);
+					paint(logbookBody.children[ind].children[8], [], ['w-16', 'h-4'], `${(data[ind].speedMax / 100).toFixed(2)}km/h`);
+					paint(logbookBody.children[ind].children[9], [], ['w-20', 'h-4'], `${(data[ind].distanceFlown / 1000).toFixed(2)}km`);
+				}
+			});
+		};
+		const errorLogbook = () => {
+			array(logbookBody.children.length).forEach((ind) => {
+				array(logbookBody.children[ind].children.length).forEach((i) => {
+					error(logbookBody.children[ind].children[i]);
+				});
+			});
+		};
 		const parseYears = async (response) => {
 			const buffer = await response.arrayBuffer();
 			const data = new DataView(buffer);
@@ -1344,7 +1549,7 @@
 					throw Error(response);
 				}
 				const data = await parseYears(response);
-				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [{ year: null }]));
+				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [null]));
 			} catch (err) {
 				if (err?.name !== 'AbortError') {
 					window.requestAnimationFrame(() => errorYears());
@@ -1372,6 +1577,7 @@
 			window.requestAnimationFrame(() => loadingThermal());
 			window.requestAnimationFrame(() => loadingSpeed());
 			window.requestAnimationFrame(() => loadingGlide());
+			window.requestAnimationFrame(() => loadingLogbook());
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -1390,6 +1596,7 @@
 				window.requestAnimationFrame(() => paintThermal(data));
 				window.requestAnimationFrame(() => paintSpeed(data));
 				window.requestAnimationFrame(() => paintGlide(data));
+				window.requestAnimationFrame(() => paintLogbook(data.length > 0 ? data : [null]));
 			} catch (err) {
 				if (err?.name !== 'AbortError') {
 					window.requestAnimationFrame(() => errorFlights());
@@ -1398,6 +1605,7 @@
 					window.requestAnimationFrame(() => errorThermal());
 					window.requestAnimationFrame(() => errorSpeed());
 					window.requestAnimationFrame(() => errorGlide());
+					window.requestAnimationFrame(() => errorLogbook());
 					if (flightRetries < 4) {
 						flightTimeout = setTimeout(() => {
 							flightRetries++;
