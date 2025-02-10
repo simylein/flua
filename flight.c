@@ -129,6 +129,8 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 			const uint64_t n_ends_at = htonll(ends_at);
 			const uint16_t n_altitude_min = htons(altitude_min);
 			const uint16_t n_altitude_max = htons(altitude_max);
+			const uint16_t n_speed_avg = htons(speed_avg);
+			const uint16_t n_speed_max = htons(speed_max);
 			const uint32_t n_distance_flown = htonl(distance_flown);
 			const uint8_t starts_at_bytes = significant_bytes(starts_at);
 			const uint8_t ends_at_bytes = significant_bytes(ends_at);
@@ -185,8 +187,8 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 				append_body(response, ((uint8_t *)&(*speed_bins)[index]) + (sizeof(*speed_bins[0]) - speed_bins_bytes[index]),
 										speed_bins_bytes[index]);
 			}
-			append_body(response, &speed_avg, sizeof(speed_avg));
-			append_body(response, &speed_max, sizeof(speed_max));
+			append_body(response, &n_speed_avg, sizeof(n_speed_avg));
+			append_body(response, &n_speed_max, sizeof(n_speed_max));
 			for (uint8_t index = 0; index < 5; index++) {
 				append_body(response, ((uint8_t *)&(*glide_bins)[index]) + (sizeof(*glide_bins[0]) - glide_bins_bytes[index]),
 										glide_bins_bytes[index]);
