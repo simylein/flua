@@ -9,8 +9,7 @@ uint8_t cull_flight(file_t *file) {
 	size_t write_index = 0;
 
 	bool cut = false;
-	cull_t culls[27] = {
-			{.start = "\t\t\t.top-0 {", .end = "}\n"},
+	cull_t culls[26] = {
 			{.start = "\t\t\t.right-0 {", .end = "}\n"},
 			{.start = "\t\t\t.m-2 {", .end = "}\n"},
 			{.start = "\t\t\t.bg-amber-200 {", .end = "}\n"},
