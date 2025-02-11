@@ -18,6 +18,9 @@
 			.absolute {
 				position: absolute;
 			}
+			.sticky {
+				position: sticky;
+			}
 			.top-0 {
 				top: 0px;
 			}
@@ -863,9 +866,9 @@
 					<div class="flex justify-between gap-2 mb-1">
 						<h2 class="m-0 text-base font-normal">Logbook</h2>
 					</div>
-					<div class="h-38 overflow-x-scroll overflow-y-scroll scrollbar-none">
+					<div class="h-38 overflow-y-scroll scrollbar-none">
 						<table class="w-full border-spacing-0">
-							<thead class="text-nowrap">
+							<thead class="sticky top-0 text-nowrap bg-neutral-100 dark:bg-neutral-900">
 								<tr>
 									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Date</th>
 									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Takeoff</th>
@@ -879,7 +882,7 @@
 									<th class="p-0 pb-1 text-start text-sm font-normal">Distance flown</th>
 								</tr>
 							</thead>
-							<tbody id="logbook-body" class="text-nowrap">
+							<tbody id="logbook-body" class="overflow-x-scroll text-nowrap">
 								<tr>
 									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
 									<td class="p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal"></td>
