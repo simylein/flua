@@ -16,7 +16,7 @@ uint32_t bwt_ttl = 2764800;
 const char *bwt_key = "f2l2u5a4";
 
 const char *database_file = "flua.sqlite";
-uint16_t database_timeout = 512;
+uint16_t database_timeout = 500;
 
 uint8_t receive_timeout = 60;
 uint8_t send_timeout = 60;
@@ -213,7 +213,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  log outgoing response           (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.17.3\n");
+			info("flua flights version 0.17.4\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -245,7 +245,7 @@ int configure(int argc, char *argv[]) {
 			errors += parse_str(arg, "database file", 4, 64, &database_file);
 		} else if (strcmp(flag, "--database-timeout") == 0 || strcmp(flag, "-dt") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
-			errors += parse_uint16(arg, "database timeout", 0, 8192, &database_timeout);
+			errors += parse_uint16(arg, "database timeout", 0, 8000, &database_timeout);
 		} else if (strcmp(flag, "--receive-timeout") == 0 || strcmp(flag, "-rt") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_uint8(arg, "receive timeout", 0, 240, &receive_timeout);
