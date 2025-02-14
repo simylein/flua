@@ -1,6 +1,7 @@
 #include "request.h"
 #include "response.h"
 #include "utils.h"
+#include <stdbool.h>
 #include <string.h>
 
 void request(char *buffer, size_t length, request_t *req, response_t *res) {
@@ -78,7 +79,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 		if (*byte == '\r') {
 			stage = 4;
 		} else if (*byte == '\n') {
-			stage = 5;
+			stage = 7;
 		} else if (*byte <= '\037') {
 			res->status = 400;
 			return;
@@ -97,18 +98,18 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 		return;
 	}
 
-	int header_key = 1;
+	bool header_key = true;
 	const size_t header_index = index;
 	while ((stage >= 5 && stage <= 8) && req->header_len < 2048 && index < length) {
 		char *byte = &buffer[index];
-		if (header_key && *byte >= 'A' && *byte <= 'Z') {
+		if (header_key == true && *byte >= 'A' && *byte <= 'Z') {
 			*byte += 32;
 		}
 		if (*byte == ':') {
-			header_key = 0;
+			header_key = false;
 		}
 		if (*byte == '\r' || *byte == '\n') {
-			header_key = 1;
+			header_key = true;
 			stage += 1;
 		} else if (*byte <= '\037') {
 			res->status = 400;
