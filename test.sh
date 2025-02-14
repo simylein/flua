@@ -110,18 +110,18 @@ test "get" "/api/flight" 400
 test "get" "/api/flight?user=testing&year=1970" 200 "application/octet-stream" "0"
 
 test "post" "/api/flight" 400
-export body="EzoXuI6E3Fkg86HQXu6KZNnNaS1xRNiV\0\0\0\0\0\0\1\2\0\0\0\0\0\0\1\6\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8"
+export body="EzoXuI6E3Fkg86HQXu6KZNnNaS1xRNiV\0\0\0\0\0\2\2\0\0\0\0\0\0\2\4\0\0\1\2\3\4\4\3\2\1\0\1\0\2\0\0\1\2\3\4\4\3\2\1\0\16\32\0\1\2\3\4\4\3\2\1\0\16\0\24\0\0\1\2\3\4\4\3\2\1\0\0\0\32\32"
 test "post" "/api/flight" 201
 unset body
 
 test "post" "/api/flight" 400
-export body="EzoXuI6E3Fkg86HQXu6KZNnNaS1xRNiV\0\0\0\0\0\0\1\2\0\0\0\0\0\0\1\6\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8\0\1\2\3\4\5\6\7\8"
+export body="EzoXuI6E3Fkg86HQXu6KZNnNaS1xRNiV\0\0\0\0\0\2\2\0\0\0\0\0\0\2\4\0\0\1\2\3\4\4\3\2\1\0\1\0\2\0\0\1\2\3\4\4\3\2\1\0\16\32\0\1\2\3\4\4\3\2\1\0\16\0\24\0\0\1\2\3\4\4\3\2\1\0\0\0\32\32"
 test "post" "/api/flight" 409
 unset body
 
 test "get" "/api/year?user=testing" 200 "application/octet-stream" "2"
 
-test "get" "/api/flight?user=testing&year=1970" 200 "application/octet-stream" "50"
+test "get" "/api/flight?user=testing&year=1970" 200 "application/octet-stream" "61"
 
 test "get" "/testing" 200 "text/html"
 test "get" "/testing?year=1970" 200 "text/html"
