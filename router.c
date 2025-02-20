@@ -27,6 +27,7 @@ file_t unauthorized = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t forbidden = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t not_found = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t method_not_allowed = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t uri_too_long = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t internal_server_error = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
 int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
@@ -401,6 +402,9 @@ respond:
 	}
 	if (response->status == 405) {
 		file("405.html", &method_not_allowed, NULL, response);
+	}
+	if (response->status == 414) {
+		file("414.html", &uri_too_long, NULL, response);
 	}
 	if (response->status == 500) {
 		file("500.html", &internal_server_error, NULL, response);
