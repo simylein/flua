@@ -30,6 +30,7 @@ file_t method_not_allowed = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t uri_too_long = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t request_header_fields_too_large = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t internal_server_error = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t http_version_not_supported = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
 int match(request_t *request, const char *method, const char *pathname, bool *method_found, bool *pathname_found) {
 	if (request->pathname_len == strlen(pathname) && memcmp(request->pathname, pathname, request->pathname_len) == 0) {
@@ -412,5 +413,8 @@ respond:
 	}
 	if (response->status == 500) {
 		file("500.html", &internal_server_error, NULL, response);
+	}
+	if (response->status == 505) {
+		file("505.html", &http_version_not_supported, NULL, response);
 	}
 }
