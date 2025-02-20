@@ -53,6 +53,10 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 	bool method_found = false;
 	bool pathname_found = false;
 
+	if (response->status != 0) {
+		goto respond;
+	}
+
 	if (match(request, "get", "/", &method_found, &pathname_found) == 0) {
 		if (request->search_len != 0) {
 			response->status = 400;
@@ -372,10 +376,10 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 
 respond:
 
-	if (pathname_found == false && method_found == false) {
+	if (response->status == 0 && pathname_found == false && method_found == false) {
 		response->status = 404;
 	}
-	if (pathname_found == true && method_found == false) {
+	if (response->status == 0 && pathname_found == true && method_found == false) {
 		response->status = 405;
 	}
 

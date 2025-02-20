@@ -97,9 +97,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 				reqs.header_len, reqs.body_len);
 	req("%.*s %.*s %s\n", (int)reqs.method_len, reqs.method, (int)reqs.pathname_len, reqs.pathname, bytes_buffer);
 
-	if (resp.status == 0) {
-		route(database, &reqs, &resp);
-	}
+	route(database, &reqs, &resp);
 
 	size_t response_length = response(response_buffer, &reqs, &resp);
 
