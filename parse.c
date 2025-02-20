@@ -4,6 +4,7 @@
 #include "request.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 int parse_credentials(char **username, uint8_t *username_len, char **password, uint8_t *password_len, request_t *request) {
 	int stage = 0;
@@ -57,6 +58,10 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 			return -1;
 		}
 		username_index++;
+	}
+
+	if (*username_len == 6 && (memcmp(*username, "signin", 6) == 0 || memcmp(*username, "signup", 6) == 0)) {
+		return -1;
 	}
 
 	if (*password_len < 4) {
