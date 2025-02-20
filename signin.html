@@ -399,6 +399,7 @@
 					if (value.length < 4) return 'username is too short';
 					if (value.length > 16) return 'username is too long';
 					if (!value.match(/^[a-z]+$/)) return 'username must be lowercase letters';
+					if (value === 'signin' || value === 'signup') return 'username is illegal';
 				},
 				password: (value) => {
 					if (!value) return 'password is required';
