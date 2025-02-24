@@ -20,6 +20,8 @@ uint16_t database_timeout = 500;
 
 uint8_t receive_timeout = 60;
 uint8_t send_timeout = 60;
+uint8_t receive_packets = 16;
+uint8_t send_packets = 16;
 
 uint8_t log_level = 4;
 bool log_requests = true;
@@ -208,12 +210,14 @@ int configure(int argc, char *argv[]) {
 			info("--database-timeout  -dt  milliseconds to wait for lock   (%hu)\n", database_timeout);
 			info("--receive-timeout   -rt  seconds to wait for receiving   (%hhu)\n", receive_timeout);
 			info("--send-timeout      -st  seconds to wait for sending     (%hhu)\n", send_timeout);
+			info("--receive-packets   -rp  most packets allowed to receive (%hhu)\n", receive_packets);
+			info("--send-packets      -sp  most packets allowed to send    (%hhu)\n", send_packets);
 			info("--log-level         -ll  logging verbosity to print      (%s)\n", human_log_level(log_level));
 			info("--log-requests      -lq  log incoming requests           (%s)\n", human_bool(log_requests));
 			info("--log-responses     -ls  log outgoing response           (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.17.11\n");
+			info("flua flights version 0.17.12\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -252,6 +256,12 @@ int configure(int argc, char *argv[]) {
 		} else if (strcmp(flag, "--send-timeout") == 0 || strcmp(flag, "-st") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_uint8(arg, "send timeout", 0, 240, &send_timeout);
+		} else if (strcmp(flag, "--receive-packets") == 0 || strcmp(flag, "-rp") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_uint8(arg, "receive packets", 1, 128, &receive_packets);
+		} else if (strcmp(flag, "--send-packets") == 0 || strcmp(flag, "-sp") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_uint8(arg, "send packets", 1, 128, &send_packets);
 		} else if (strcmp(flag, "--log-level") == 0 || strcmp(flag, "-ll") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_log_level(arg, "log level", &log_level);

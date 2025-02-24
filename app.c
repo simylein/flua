@@ -30,7 +30,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	size_t request_length = 0;
 
-	size_t packets_received = 0;
+	uint8_t packets_received = 0;
 	ssize_t bytes_received = recv(*client_sock, request_buffer, sizeof(request_buffer), 0);
 
 	if (bytes_received == -1) {
@@ -58,6 +58,11 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	}
 
 	while ((size_t)bytes_received < request_length) {
+		if (packets_received + 1 > receive_packets) {
+			warn("packets received %hhu exceeds allowed packets %hhu\n", packets_received, receive_packets);
+			break;
+		}
+
 		if (request_length > sizeof(request_buffer)) {
 			warn("request length %zu exceeds buffer length %zu\n", request_length, sizeof(request_buffer));
 			break;
@@ -79,7 +84,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		packets_received++;
 	}
 
-	trace("received %zd bytes in %zu packets from %s:%d\n", bytes_received, packets_received, inet_ntoa(client_addr->sin_addr),
+	trace("received %zd bytes in %hhu packets from %s:%d\n", bytes_received, packets_received, inet_ntoa(client_addr->sin_addr),
 				ntohs(client_addr->sin_port));
 
 	struct timespec start;
@@ -111,7 +116,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	res("%d %s %s\n", resp.status, duration_buffer, bytes_buffer);
 	trace("head %hhub header %hub body %zub\n", resp.head_len, resp.header_len, resp.body_len);
 
-	size_t packets_sent = 0;
+	uint8_t packets_sent = 0;
 	ssize_t bytes_sent = send(*client_sock, response_buffer, response_length, MSG_NOSIGNAL);
 
 	if (bytes_sent == -1) {
@@ -126,6 +131,11 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 	packets_sent++;
 
 	while ((size_t)bytes_sent < response_length) {
+		if (packets_sent + 1 > send_packets) {
+			warn("packets sent %hhu exceeds allowed packets %hhu\n\n", packets_sent, send_packets);
+			break;
+		}
+
 		if (response_length > sizeof(response_buffer)) {
 			warn("response length %zu exceeds buffer length %zu\n", response_length, sizeof(response_buffer));
 			break;
@@ -147,7 +157,7 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 		packets_sent++;
 	}
 
-	trace("sent %zd bytes in %zu packets to %s:%d\n", bytes_sent, packets_sent, inet_ntoa(client_addr->sin_addr),
+	trace("sent %zd bytes in %hhu packets to %s:%d\n", bytes_sent, packets_sent, inet_ntoa(client_addr->sin_addr),
 				ntohs(client_addr->sin_port));
 
 cleanup:
