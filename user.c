@@ -12,6 +12,7 @@ uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user
 	uint16_t status = 404;
 
 	const char *sql = "select id, username, public from user where id = ?";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -61,6 +62,7 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 	uint16_t status = 404;
 
 	const char *sql = "select id, username, public from user where username = ?";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -108,6 +110,7 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select id, username, public from user where id = ?";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -151,6 +154,7 @@ void delete_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	sqlite3_stmt *stmt;
 
 	const char *sql = "delete from user where id = ?";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));

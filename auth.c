@@ -14,6 +14,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 	sqlite3_stmt *stmt;
 
 	const char *sql = "select id from user where username = ? and password = ?";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -59,6 +60,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 	sqlite3_stmt *stmt;
 
 	const char *sql = "insert into user (id, username, password, public) values (randomblob(16), ?, ?, 0) returning id";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));

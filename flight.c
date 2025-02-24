@@ -15,6 +15,7 @@ void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response)
 	const char *sql = "select distinct strftime('%Y', datetime(starts_at, 'unixepoch')) as year from flight "
 										"where user_id = ? "
 										"order by year desc";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -68,6 +69,7 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 										"from flight "
 										"where user_id = ? and strftime('%Y', datetime(starts_at, 'unixepoch')) = ? "
 										"order by starts_at desc";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
@@ -228,6 +230,7 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 										"glide_bins, distance_flown, "
 										"user_id) "
 										"values (randomblob(16), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
 		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
