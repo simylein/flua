@@ -272,3 +272,31 @@ void create_flight(sqlite3 *database, bwt_t *bwt, flight_t *flight, response_t *
 cleanup:
 	sqlite3_finalize(stmt);
 }
+
+void delete_flights(sqlite3 *database, bwt_t *bwt, response_t *response) {
+	sqlite3_stmt *stmt;
+
+	const char *sql = "delete from flight where user_id = ?";
+	debug("%s\n", sql);
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_blob(stmt, 1, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+
+	int result = sqlite3_step(stmt);
+	if (result != SQLITE_DONE) {
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
+		response->status = 500;
+		goto cleanup;
+	}
+
+	info("purged %d flights\n", sqlite3_changes(database));
+	response->status = 200;
+
+cleanup:
+	sqlite3_finalize(stmt);
+}

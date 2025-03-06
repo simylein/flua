@@ -326,6 +326,27 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		create_flight(database, &bwt, &new_flight, response);
 	}
 
+	if (match(request, "delete", "/api/flight", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
+			response->status = 401;
+			goto respond;
+		}
+
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
+			response->status = 401;
+			goto respond;
+		}
+
+		delete_flights(database, &bwt, response);
+	}
+
 	if (pathname_found == 0 && request->pathname_len >= 5 && request->pathname_len <= 17) {
 		for (size_t index = 0; index < request->pathname_len; index++) {
 			if (index != 0 && request->pathname[index] != '-' && (request->pathname[index] < 'a' || request->pathname[index] > 'z')) {
