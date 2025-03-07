@@ -156,7 +156,7 @@ void sha256_hmac(const uint8_t *key, const size_t key_len, const void *data, con
 	uint8_t hash[32];
 
 	if (key_len > sizeof(key_block)) {
-		sha256(key, key_len, (uint8_t(*)[32])key_block);
+		sha256(key, key_len, (uint8_t (*)[32])key_block);
 	} else {
 		memcpy(key_block, key, key_len);
 	}

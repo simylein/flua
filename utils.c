@@ -14,11 +14,11 @@ void null_init(request_t *request, response_t *response, char *buffer) {
 	request->body_len = 0;
 
 	response->status = 0;
-	response->head = (char(*)[128])buffer;
+	response->head = (char (*)[128])buffer;
 	response->head_len = 0;
-	response->header = (char(*)[2048])(&buffer[128]);
+	response->header = (char (*)[2048])(&buffer[128]);
 	response->header_len = 0;
-	response->body = (char(*)[96128])(&buffer[128 + 2048]);
+	response->body = (char (*)[96128])(&buffer[128 + 2048]);
 	response->body_len = 0;
 }
 

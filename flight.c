@@ -86,19 +86,19 @@ void find_flights(sqlite3 *database, uint8_t (*user_id)[16], char *year, size_t 
 		if (result == SQLITE_ROW) {
 			const uint64_t starts_at = (uint64_t)sqlite3_column_int64(stmt, 0);
 			const uint64_t ends_at = (uint64_t)sqlite3_column_int64(stmt, 1);
-			const uint16_t(*altitude_bins)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 2);
+			const uint16_t (*altitude_bins)[5] = (const uint16_t (*)[5])sqlite3_column_blob(stmt, 2);
 			const size_t altitude_bins_len = (size_t)sqlite3_column_bytes(stmt, 2);
 			const uint16_t altitude_min = (uint16_t)sqlite3_column_int(stmt, 3);
 			const uint16_t altitude_max = (uint16_t)sqlite3_column_int(stmt, 4);
-			const uint16_t(*thermal_bins)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 5);
+			const uint16_t (*thermal_bins)[5] = (const uint16_t (*)[5])sqlite3_column_blob(stmt, 5);
 			const size_t thermal_bins_len = (size_t)sqlite3_column_bytes(stmt, 5);
 			const uint8_t max_climb = (uint8_t)sqlite3_column_int(stmt, 6);
 			const uint8_t max_sink = (uint8_t)sqlite3_column_int(stmt, 7);
-			const uint16_t(*speed_bins)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 8);
+			const uint16_t (*speed_bins)[5] = (const uint16_t (*)[5])sqlite3_column_blob(stmt, 8);
 			const size_t speed_bins_len = (size_t)sqlite3_column_bytes(stmt, 8);
 			const uint16_t speed_avg = (uint16_t)sqlite3_column_int(stmt, 9);
 			const uint16_t speed_max = (uint16_t)sqlite3_column_int(stmt, 10);
-			const uint16_t(*glide_bins)[5] = (const uint16_t(*)[5])sqlite3_column_blob(stmt, 11);
+			const uint16_t (*glide_bins)[5] = (const uint16_t (*)[5])sqlite3_column_blob(stmt, 11);
 			const size_t glide_bins_len = (size_t)sqlite3_column_bytes(stmt, 11);
 			const uint32_t distance_flown = (uint32_t)sqlite3_column_int(stmt, 12);
 			if (altitude_bins_len != sizeof(*altitude_bins)) {
