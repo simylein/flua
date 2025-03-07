@@ -141,7 +141,7 @@ int parse_log_level(const char *arg, const char *name, uint8_t *value) {
 		return 1;
 	}
 
-	if (strcmp(arg, "panic") == 0) {
+	if (strcmp(arg, "fatal") == 0) {
 		*value = 1;
 	} else if (strcmp(arg, "error") == 0) {
 		*value = 2;
@@ -154,7 +154,7 @@ int parse_log_level(const char *arg, const char *name, uint8_t *value) {
 	} else if (strcmp(arg, "trace") == 0) {
 		*value = 6;
 	} else {
-		error("%s must be one of trace debug info warn error panic\n", name);
+		error("%s must be one of trace debug info warn error fatal\n", name);
 		return 1;
 	}
 
@@ -175,7 +175,7 @@ const char *human_bool(int val) {
 const char *human_log_level(int level) {
 	switch (level) {
 	case 1:
-		return "panic";
+		return "fatal";
 	case 2:
 		return "error";
 	case 3:
@@ -217,7 +217,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  log outgoing response           (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.17.14\n");
+			info("flua flights version 0.17.15\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
