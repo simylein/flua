@@ -60,7 +60,9 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 		username_index++;
 	}
 
-	if (*username_len == 6 && (memcmp(*username, "signin", 6) == 0 || memcmp(*username, "signup", 6) == 0)) {
+	if ((*username_len == 4 && memcmp(*username, "demo", 4) == 0) ||
+			(*username_len == 6 && (memcmp(*username, "signin", 6) == 0 || memcmp(*username, "signup", 6) == 0)) ||
+			(*username_len == 8 && memcmp(*username, "settings", 8) == 0)) {
 		return -1;
 	}
 
