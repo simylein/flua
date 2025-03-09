@@ -21,6 +21,7 @@ file_t signin = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t signup = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t flight = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t flight_self = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
+file_t settings = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 
 file_t bad_request = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
 file_t unauthorized = {.fd = -1, .ptr = NULL, .len = 0, .age = 0};
@@ -117,6 +118,30 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		file("signup.html", &signup, NULL, response);
+	}
+
+	if (match(request, "get", "/settings", &method_found, &pathname_found) == 0) {
+		if (request->search_len != 0) {
+			response->status = 400;
+			goto respond;
+		}
+
+		const char *cookie = find_header(request, "cookie:");
+		if (cookie == NULL) {
+			debug("redirecting to location signin\n");
+			response->status = 307;
+			append_header(response, "location:/signin\r\n");
+			append_header(response, "set-cookie:memo=%.*s\r\n", (int)request->pathname_len, request->pathname);
+			goto respond;
+		}
+
+		struct bwt_t bwt;
+		if (verify_bwt(cookie, request->header_len - (size_t)(cookie - (const char *)request->header), &bwt) == -1) {
+			response->status = 401;
+			goto respond;
+		}
+
+		file("settings.html", &settings, NULL, response);
 	}
 
 	if (match(request, "get", "/api/me", &method_found, &pathname_found) == 0) {
