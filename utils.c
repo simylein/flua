@@ -111,6 +111,8 @@ time_t *modified_time(struct stat *file_stat) {
 	return &(*file_stat).st_mtimespec.tv_sec;
 #elif __linux__
 	return &(*file_stat).st_mtim.tv_sec;
+#else
+#error "unsupported platform"
 #endif
 }
 
