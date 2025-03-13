@@ -11,7 +11,7 @@ int user_init(sqlite3 *database) {
 										"(id blob not null primary key, "
 										"username text not null unique, "
 										"password blob not null, "
-										"public int not null)";
+										"visibility int not null)";
 	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
