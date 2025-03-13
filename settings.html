@@ -94,8 +94,14 @@
 			.font-medium {
 				font-weight: 500;
 			}
+			.no-underline {
+				text-decoration-line: none;
+			}
 			.text-black {
 				color: #000000;
+			}
+			.text-blue-600 {
+				color: #2563eb;
 			}
 			.bg-white {
 				background-color: #ffffff;
@@ -164,6 +170,9 @@
 				.dark\:text-white {
 					color: #ffffff;
 				}
+				.dark\:text-blue-400 {
+					color: #60a5fa;
+				}
 				.dark\:bg-black {
 					background-color: #000000;
 				}
@@ -198,6 +207,7 @@
 		<main class="flex flex-col items-center m-4 md:m-6 lg:m-8">
 			<div id="notifications" class="top-0 right-0 fixed m-2 md:m-4"></div>
 			<div class="w-full max-w-screen-md flex flex-col gap-2 md:gap-3 lg:gap-4">
+				<a href="/" class="no-underline text-base font-normal text-blue-600 dark:text-blue-400">home</a>
 				<div class="flex flex-col items-start gap-1">
 					<h2 class="m-0 text-base font-normal">Danger zone</h2>
 					<div class="flex flex-col sm:flex-row gap-1">
