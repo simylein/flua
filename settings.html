@@ -445,7 +445,7 @@
 			};
 			let stage = 0;
 			const me = { id: '', username: '' };
-			while (byteOffset < buffer.byteLength) {
+			while (stage < 3 && byteOffset < buffer.byteLength) {
 				if (stage === 0) {
 					const byte = readBits(8);
 					me.id += byte.toString(16);
@@ -530,6 +530,21 @@
 			close();
 		};
 		const patchMe = async (me) => {
+			const buffer = new ArrayBuffer(1);
+			const view = new DataView(buffer);
+			let visibility = null;
+			switch (true) {
+				case me.visibility === 'private':
+					visibility = 0;
+					break;
+				case me.visibility === 'friends':
+					visibility = 1;
+					break;
+				case me.visibility === 'public':
+					visibility = 2;
+					break;
+			}
+			view.setUint8(0, visibility);
 			try {
 				if (window.localStorage.getItem('develop')) {
 					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
@@ -537,7 +552,7 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch('/api/me', { method: 'patch' });
+				const response = await fetch('/api/me', { method: 'patch', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
 				if (response.status >= 200 && response.status <= 299) {
 					notification('success', 'Successfully deleted your profile');
 					loadMe();
