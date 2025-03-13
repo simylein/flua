@@ -109,6 +109,9 @@
 			.bg-neutral-100 {
 				background-color: #f5f5f5;
 			}
+			.bg-neutral-200 {
+				background-color: #e5e5e5;
+			}
 			.bg-neutral-300 {
 				background-color: #d4d4d4;
 			}
@@ -126,6 +129,15 @@
 			}
 			.bg-green-200 {
 				background-color: #bbf7d0;
+			}
+			.bg-green-300 {
+				background-color: #86efac;
+			}
+			.bg-teal-300 {
+				background-color: #5eead4;
+			}
+			.bg-sky-300 {
+				background-color: #7dd3fc;
 			}
 			.bg-blue-200 {
 				background-color: #bfdbfe;
@@ -179,6 +191,9 @@
 				.dark\:bg-neutral-700 {
 					background-color: #404040;
 				}
+				.dark\:bg-neutral-800 {
+					background-color: #262626;
+				}
 				.dark\:bg-neutral-900 {
 					background-color: #171717;
 				}
@@ -194,8 +209,17 @@
 				.dark\:bg-amber-800 {
 					background-color: #92400e;
 				}
+				.dark\:bg-green-700 {
+					background-color: #15803d;
+				}
 				.dark\:bg-green-800 {
 					background-color: #166534;
+				}
+				.dark\:bg-teal-700 {
+					background-color: #0f766e;
+				}
+				.dark\:bg-sky-700 {
+					background-color: #0369a1;
 				}
 				.dark\:bg-blue-800 {
 					background-color: #1e40af;
@@ -203,12 +227,20 @@
 			}
 		</style>
 	</head>
-	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black">
+	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="loadMe();">
 		<main class="flex flex-col items-center m-4 md:m-6 lg:m-8">
 			<div id="notifications" class="top-0 right-0 fixed m-2 md:m-4"></div>
 			<div class="w-full max-w-screen-md flex flex-col gap-2 md:gap-3 lg:gap-4">
 				<div class="flex flex-col items-start gap-1">
 					<a href="/" class="no-underline text-base font-normal text-blue-600 dark:text-blue-400">home</a>
+				</div>
+				<div class="flex flex-col items-start gap-1">
+					<h2 class="m-0 text-base font-normal">Profile visibility</h2>
+					<div id="profile-visibility" class="p-1 bg-neutral-100 dark:bg-neutral-900">
+						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Private</button>
+						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Friends</button>
+						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Public</button>
+					</div>
 				</div>
 				<div class="flex flex-col items-start gap-1">
 					<h2 class="m-0 text-base font-normal">Danger zone</h2>
@@ -222,20 +254,78 @@
 					</div>
 				</div>
 			</div>
+			<dialog id="private-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex flex-col gap-2">
+					<h1 class="m-0 text-xl font-medium">Make profile visibility private?</h1>
+					<p class="m-0 text-base font-normal">A private profile can only be viewed by yourself.</p>
+					<div class="flex flex-row-reverse justify-start gap-2">
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-green-300 dark:bg-green-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="handleSubmit(privateDialog.children[0].children[2].children[0], privateDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'private' }), closePrivateDialog)"
+						>
+							Private
+						</button>
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="closePrivateDialog()"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</dialog>
+			<dialog id="friends-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex flex-col gap-2">
+					<h1 class="m-0 text-xl font-medium">Make profile visibility friends?</h1>
+					<p class="m-0 text-base font-normal">A friends profile can only be viewed by friends.</p>
+					<div class="flex flex-row-reverse justify-start gap-2">
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-teal-300 dark:bg-teal-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="handleSubmit(friendsDialog.children[0].children[2].children[0], friendsDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'friends' }), closeFriendsDialog)"
+						>
+							Friends
+						</button>
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="closeFriendsDialog()"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</dialog>
+			<dialog id="public-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex flex-col gap-2">
+					<h1 class="m-0 text-xl font-medium">Make profile visibility public?</h1>
+					<p class="m-0 text-base font-normal">A public profile can be viewed by anyone.</p>
+					<div class="flex flex-row-reverse justify-start gap-2">
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-sky-300 dark:bg-sky-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="handleSubmit(publicDialog.children[0].children[2].children[0], publicDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'public' }), closePublicDialog)"
+						>
+							Public
+						</button>
+						<button
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="closePublicDialog()"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</dialog>
 			<dialog id="purge-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Purge flights?</h1>
 					<p class="m-0 text-base font-normal">Purging your flights will delete your flights from the database.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							id="purge-dialog-confirm"
 							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-amber-300 dark:bg-amber-700 active:scale-95 focus:outline-none cursor-pointer"
-							onclick="handleSubmit(purgeDialogConfirm, purgeDialogCancel, deleteFlights, closePurgeDialog)"
+							onclick="handleSubmit(purgeDialog.children[0].children[2].children[0], purgeDialog.children[0].children[2].children[1], deleteFlights, closePurgeDialog)"
 						>
 							Purge
 						</button>
 						<button
-							id="purge-dialog-cancel"
 							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
 							onclick="closePurgeDialog()"
 						>
@@ -250,14 +340,12 @@
 					<p class="m-0 text-base font-normal">Deleting your profile will delete your flights alongside your user from the database.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							id="delete-dialog-confirm"
 							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-red-300 dark:bg-red-700 active:scale-95 focus:outline-none cursor-pointer"
-							onclick="handleSubmit(deleteDialogConfirm, deleteDialogCancel, deleteMe, closeProfileDialog)"
+							onclick="handleSubmit(deleteDialog.children[0].children[2].children[0], deleteDialog.children[0].children[2].children[1], deleteMe, closeProfileDialog)"
 						>
 							Delete
 						</button>
 						<button
-							id="delete-dialog-cancel"
 							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
 							onclick="closeProfileDialog()"
 						>
@@ -269,23 +357,158 @@
 		</main>
 	</body>
 	<script>
+		let meRetries = 0;
+		let meTimeout = null;
+		let meController = null;
+		const profileVisibility = document.getElementById('profile-visibility');
+		const visibilityColors = [
+			['bg-green-300', 'dark:bg-green-700'],
+			['bg-teal-300', 'dark:bg-teal-700'],
+			['bg-sky-300', 'dark:bg-sky-700'],
+		];
+		const privateDialog = document.getElementById('private-dialog');
+		const friendsDialog = document.getElementById('friends-dialog');
+		const publicDialog = document.getElementById('public-dialog');
 		const purgeDialog = document.getElementById('purge-dialog');
-		const purgeDialogCancel = document.getElementById('purge-dialog-cancel');
-		const purgeDialogConfirm = document.getElementById('purge-dialog-confirm');
 		const deleteDialog = document.getElementById('delete-dialog');
-		const deleteDialogCancel = document.getElementById('delete-dialog-cancel');
-		const deleteDialogConfirm = document.getElementById('delete-dialog-confirm');
-		const openPurgeDialog = () => {
-			purgeDialog.showModal();
+		const array = (length) => {
+			return Array(length)
+				.fill(null)
+				.map((__, ind) => ind);
 		};
-		const closePurgeDialog = () => {
-			purgeDialog.close();
+		const loading = (element, add, remove) => {
+			element.disabled = true;
+			element.classList.add(...add, 'bg-neutral-200', 'dark:bg-neutral-800');
+			element.classList.remove('bg-red-200', 'dark:bg-red-800', 'active:scale-95', 'cursor-pointer', ...remove);
 		};
-		const openProfileDialog = () => {
-			deleteDialog.showModal();
+		const paint = (element, add, remove, disable, onclick) => {
+			element.disabled = false;
+			element.classList.add('active:scale-95', 'cursor-pointer', ...add);
+			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', ...remove);
+			if (disable) {
+				element.disabled = true;
+				element.classList.remove('active:scale-95', 'cursor-pointer');
+			}
+			if (onclick !== undefined) {
+				element.onclick = onclick;
+			}
 		};
-		const closeProfileDialog = () => {
-			deleteDialog.close();
+		const error = (element) => {
+			element.disabled = true;
+			element.classList.add('bg-red-200', 'dark:bg-red-800');
+			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', 'active:scale-95', 'cursor-pointer');
+		};
+		const loadingSettings = () => {
+			array(profileVisibility.children.length).forEach((ind) => {
+				loading(profileVisibility.children[ind], [], visibilityColors[ind]);
+			});
+		};
+		const paintSettings = (data) => {
+			paint(profileVisibility.children[0], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openPrivateDialog);
+			paint(profileVisibility.children[1], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openFriendsDialog);
+			paint(profileVisibility.children[2], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openPublicDialog);
+			switch (true) {
+				case data.visibility === 'private':
+					paint(profileVisibility.children[0], visibilityColors[0], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					break;
+				case data.visibility === 'friends':
+					paint(profileVisibility.children[1], visibilityColors[1], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					break;
+				case data.visibility === 'public':
+					paint(profileVisibility.children[2], visibilityColors[2], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					break;
+			}
+		};
+		const errorSettings = () => {
+			array(profileVisibility.children.length).forEach((ind) => {
+				error(profileVisibility.children[ind]);
+			});
+		};
+		const parseMe = async (response) => {
+			const buffer = await response.arrayBuffer();
+			const data = new DataView(buffer);
+			let byteOffset = 0;
+			let bitOffset = 0;
+			const readBits = (bits) => {
+				let value = 0;
+				for (let index = 0; index < bits; index++) {
+					const byte = data.getUint8(byteOffset);
+					const bit = (byte >> (7 - bitOffset)) & 1;
+					value = (value << 1) | bit;
+					bitOffset++;
+					if (bitOffset === 8) {
+						byteOffset++;
+						bitOffset = 0;
+					}
+				}
+				return value;
+			};
+			let stage = 0;
+			const me = { id: '', username: '' };
+			while (byteOffset < buffer.byteLength) {
+				if (stage === 0) {
+					const byte = readBits(8);
+					me.id += byte.toString(16);
+					if (byteOffset === 16) {
+						stage = 1;
+					}
+				}
+				if (stage === 1) {
+					const byte = readBits(8);
+					if (byte !== 0) {
+						me.username += String.fromCharCode(byte);
+					} else {
+						stage = 2;
+					}
+				}
+				if (stage === 2) {
+					const byte = readBits(8);
+					if (byte === 0) {
+						me.visibility = 'private';
+					} else if (byte === 1) {
+						me.visibility = 'friends';
+					} else if (byte === 2) {
+						me.visibility = 'public';
+					}
+					stage = 3;
+				}
+			}
+			return me;
+		};
+		const loadMe = async () => {
+			if (meTimeout) {
+				clearTimeout(meTimeout);
+				meTimeout = null;
+			}
+			if (meController) {
+				meController.abort();
+			}
+			meController = new AbortController();
+			window.requestAnimationFrame(() => loadingSettings());
+			try {
+				if (window.localStorage.getItem('develop')) {
+					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
+					if (Math.random() < 0.1) {
+						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
+					}
+				}
+				const response = await fetch(`/api/me`, { signal: meController.signal });
+				if (response.status < 200 || response.status > 299) {
+					throw Error(response);
+				}
+				const data = await parseMe(response);
+				window.requestAnimationFrame(() => paintSettings(data));
+			} catch (err) {
+				if (err?.name !== 'AbortError') {
+					window.requestAnimationFrame(() => errorSettings());
+					if (meRetries < 4) {
+						meTimeout = setTimeout(() => {
+							meRetries++;
+							loadMe();
+						}, 2 ** meRetries * 1000);
+					}
+				}
+			}
 		};
 		const handleSubmit = async (confirm, cancel, submit, close) => {
 			const store = confirm.innerText;
@@ -305,6 +528,32 @@
 			cancel.classList.add('active:scale-95', 'cursor-pointer');
 			cancel.classList.remove('cursor-progress');
 			close();
+		};
+		const patchMe = async (me) => {
+			try {
+				if (window.localStorage.getItem('develop')) {
+					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
+					if (Math.random() < 0.1) {
+						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
+					}
+				}
+				const response = await fetch('/api/me', { method: 'patch' });
+				if (response.status >= 200 && response.status <= 299) {
+					notification('success', 'Successfully deleted your profile');
+					loadMe();
+					return;
+				}
+				throw response;
+			} catch (err) {
+				if (err instanceof TypeError) {
+					return notification('info', 'Seems like you might be offline');
+				}
+				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
+				if (err.status < 500) {
+					return notification('warning', message);
+				}
+				return notification('error', message);
+			}
 		};
 		const deleteFlights = async () => {
 			try {
@@ -357,6 +606,36 @@
 				}
 				return notification('error', message);
 			}
+		};
+		const openPrivateDialog = () => {
+			privateDialog.showModal();
+		};
+		const closePrivateDialog = () => {
+			privateDialog.close();
+		};
+		const openFriendsDialog = () => {
+			friendsDialog.showModal();
+		};
+		const closeFriendsDialog = () => {
+			friendsDialog.close();
+		};
+		const openPublicDialog = () => {
+			publicDialog.showModal();
+		};
+		const closePublicDialog = () => {
+			publicDialog.close();
+		};
+		const openPurgeDialog = () => {
+			purgeDialog.showModal();
+		};
+		const closePurgeDialog = () => {
+			purgeDialog.close();
+		};
+		const openProfileDialog = () => {
+			deleteDialog.showModal();
+		};
+		const closeProfileDialog = () => {
+			deleteDialog.close();
 		};
 		const notifications = document.getElementById('notifications');
 		const kind = (type) => {
