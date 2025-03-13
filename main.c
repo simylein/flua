@@ -1,5 +1,6 @@
 #include "config.h"
 #include "error.h"
+#include "init.h"
 #include "logger.h"
 #include "thread.h"
 #include <signal.h>
@@ -32,6 +33,26 @@ void stop(int sig) {
 int main(int argc, char *argv[]) {
 	signal(SIGINT, &stop);
 	signal(SIGTERM, &stop);
+
+	if (argc >= 2 && (strcmp(argv[1], "--init") == 0 || strcmp(argv[1], "-i") == 0)) {
+		sqlite3 *database;
+		if (sqlite3_open_v2(database_file, &database, SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+			fatal("failed to open %s because %s\n", database_file, sqlite3_errmsg(database));
+			exit(1);
+		}
+
+		if (init(database) != 0) {
+			fatal("failed to initialise database\n");
+			exit(1);
+		}
+
+		if (sqlite3_close_v2(database) != SQLITE_OK) {
+			fatal("failed to close %s because %s\n", database_file, sqlite3_errmsg(database));
+			exit(1);
+		}
+
+		exit(0);
+	}
 
 	int cf_errors = configure(argc, argv);
 	if (cf_errors != 0) {
