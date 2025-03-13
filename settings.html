@@ -554,7 +554,7 @@
 				}
 				const response = await fetch('/api/me', { method: 'patch', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
 				if (response.status >= 200 && response.status <= 299) {
-					notification('success', 'Successfully deleted your profile');
+					notification('success', 'Successfully updated your profile');
 					loadMe();
 					return;
 				}
