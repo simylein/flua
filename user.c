@@ -150,6 +150,41 @@ cleanup:
 	sqlite3_finalize(stmt);
 }
 
+void update_user(sqlite3 *database, bwt_t *bwt, user_t *user, response_t *response) {
+	sqlite3_stmt *stmt;
+
+	const char *sql = "update user set visibility = ? where id = ?";
+	debug("%s\n", sql);
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
+		response->status = 500;
+		goto cleanup;
+	}
+
+	sqlite3_bind_int(stmt, 1, user->visibility);
+	sqlite3_bind_blob(stmt, 2, bwt->id, sizeof(bwt->id), SQLITE_STATIC);
+
+	int result = sqlite3_step(stmt);
+	if (result != SQLITE_DONE) {
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
+		response->status = 500;
+		goto cleanup;
+	}
+
+	if (sqlite3_changes(database) == 0) {
+		error("user %.8x not found\n", *(uint32_t *)bwt->id);
+		response->status = 500;
+		goto cleanup;
+	}
+
+	info("user %.8x updated himself\n", *(uint32_t *)bwt->id);
+	response->status = 200;
+
+cleanup:
+	sqlite3_finalize(stmt);
+}
+
 void delete_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	sqlite3_stmt *stmt;
 
