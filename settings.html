@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Profile settings for flight graphs and account management" />
+		<title>Profile settings</title>
+		<style>
+			.font-sans {
+				font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+			}
+			.fixed {
+				position: fixed;
+			}
+			.top-0 {
+				top: 0px;
+			}
+			.right-0 {
+				right: 0px;
+			}
+			.w-full {
+				width: 100%;
+			}
+			.min-w-28 {
+				min-width: 112px;
+			}
+			.max-w-96 {
+				max-width: 384px;
+			}
+			.max-w-screen-md {
+				max-width: 768px;
+			}
+			.flex {
+				display: flex;
+			}
+			.flex-col {
+				flex-direction: column;
+			}
+			.flex-row-reverse {
+				flex-direction: row-reverse;
+			}
+			.items-start {
+				align-items: flex-start;
+			}
+			.items-center {
+				align-items: center;
+			}
+			.justify-start {
+				justify-content: flex-start;
+			}
+			.gap-1 {
+				gap: 4px;
+			}
+			.gap-2 {
+				gap: 8px;
+			}
+			.m-0 {
+				margin: 0px;
+			}
+			.m-2 {
+				margin: 8px;
+			}
+			.m-4 {
+				margin: 16px;
+			}
+			.p-1 {
+				padding: 4px;
+			}
+			.p-4 {
+				padding: 16px;
+			}
+			.px-4 {
+				padding-left: 16px;
+				padding-right: 16px;
+			}
+			.py-1 {
+				padding-top: 4px;
+				padding-bottom: 4px;
+			}
+			.border-0 {
+				border-width: 0px;
+			}
+			.text-base {
+				font-size: 16px;
+				line-height: 24px;
+			}
+			.text-xl {
+				font-size: 20px;
+				line-height: 28px;
+			}
+			.font-normal {
+				font-weight: 400;
+			}
+			.font-medium {
+				font-weight: 500;
+			}
+			.text-black {
+				color: #000000;
+			}
+			.bg-white {
+				background-color: #ffffff;
+			}
+			.bg-neutral-100 {
+				background-color: #f5f5f5;
+			}
+			.bg-neutral-300 {
+				background-color: #d4d4d4;
+			}
+			.bg-red-200 {
+				background-color: #fecaca;
+			}
+			.bg-red-300 {
+				background-color: #fca5a5;
+			}
+			.bg-amber-200 {
+				background-color: #fde68a;
+			}
+			.bg-amber-300 {
+				background-color: #fcd34d;
+			}
+			.bg-green-200 {
+				background-color: #bbf7d0;
+			}
+			.bg-blue-200 {
+				background-color: #bfdbfe;
+			}
+			.active\:scale-95:active {
+				transform: scale(0.95);
+			}
+			.focus\:outline-none:focus {
+				outline: none;
+			}
+			.cursor-pointer {
+				cursor: pointer;
+			}
+			.z-10 {
+				z-index: 10;
+			}
+			@media (min-width: 640px) {
+				.sm\:flex-row {
+					flex-direction: row;
+				}
+			}
+			@media (min-width: 768px) {
+				.md\:gap-3 {
+					gap: 12px;
+				}
+				.md\:m-4 {
+					margin: 16px;
+				}
+				.md\:m-6 {
+					margin: 24px;
+				}
+			}
+			@media (min-width: 1024px) {
+				.lg\:gap-4 {
+					gap: 16px;
+				}
+				.lg\:m-8 {
+					margin: 32px;
+				}
+			}
+			@media (prefers-color-scheme: dark) {
+				.dark\:text-white {
+					color: #ffffff;
+				}
+				.dark\:bg-black {
+					background-color: #000000;
+				}
+				.dark\:bg-neutral-700 {
+					background-color: #404040;
+				}
+				.dark\:bg-neutral-900 {
+					background-color: #171717;
+				}
+				.dark\:bg-red-700 {
+					background-color: #b91c1c;
+				}
+				.dark\:bg-red-800 {
+					background-color: #991b1b;
+				}
+				.dark\:bg-amber-700 {
+					background-color: #b45309;
+				}
+				.dark\:bg-amber-800 {
+					background-color: #92400e;
+				}
+				.dark\:bg-green-800 {
+					background-color: #166534;
+				}
+				.dark\:bg-blue-800 {
+					background-color: #1e40af;
+				}
+			}
+		</style>
+	</head>
+	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black">
+		<main class="flex flex-col items-center m-4 md:m-6 lg:m-8">
+			<div id="notifications" class="top-0 right-0 fixed m-2 md:m-4"></div>
+			<div class="w-full max-w-screen-md flex flex-col gap-2 md:gap-3 lg:gap-4">
+				<div class="flex flex-col items-start gap-1">
+					<h2 class="m-0 text-base font-normal">Danger zone</h2>
+					<div class="flex flex-col sm:flex-row gap-1">
+						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-amber-300 dark:bg-amber-700 active:scale-95 cursor-pointer" onclick="openPurgeDialog()">
+							Purge flights
+						</button>
+						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-red-300 dark:bg-red-700 active:scale-95 cursor-pointer" onclick="openProfileDialog()">
+							Delete profile
+						</button>
+					</div>
+				</div>
+			</div>
+			<dialog id="purge-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex flex-col gap-2">
+					<h1 class="m-0 text-xl font-medium">Purge flights?</h1>
+					<p class="m-0 text-base font-normal">Purging your flights will delete your flights from the database.</p>
+					<div class="flex flex-row-reverse justify-start gap-2">
+						<button
+							id="purge-dialog-confirm"
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-amber-300 dark:bg-amber-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="handleSubmit(purgeDialogConfirm, purgeDialogCancel, deleteFlights, closePurgeDialog)"
+						>
+							Purge
+						</button>
+						<button
+							id="purge-dialog-cancel"
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="closePurgeDialog()"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</dialog>
+			<dialog id="delete-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+				<div class="flex flex-col gap-2">
+					<h1 class="m-0 text-xl font-medium">Delete profile?</h1>
+					<p class="m-0 text-base font-normal">Deleting your profile will delete your flights alongside your user from the database.</p>
+					<div class="flex flex-row-reverse justify-start gap-2">
+						<button
+							id="delete-dialog-confirm"
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-red-300 dark:bg-red-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="handleSubmit(deleteDialogConfirm, deleteDialogCancel, deleteMe, closeProfileDialog)"
+						>
+							Delete
+						</button>
+						<button
+							id="delete-dialog-cancel"
+							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							onclick="closeProfileDialog()"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</dialog>
+		</main>
+	</body>
+	<script>
+		const purgeDialog = document.getElementById('purge-dialog');
+		const purgeDialogCancel = document.getElementById('purge-dialog-cancel');
+		const purgeDialogConfirm = document.getElementById('purge-dialog-confirm');
+		const deleteDialog = document.getElementById('delete-dialog');
+		const deleteDialogCancel = document.getElementById('delete-dialog-cancel');
+		const deleteDialogConfirm = document.getElementById('delete-dialog-confirm');
+		const openPurgeDialog = () => {
+			purgeDialog.showModal();
+		};
+		const closePurgeDialog = () => {
+			purgeDialog.close();
+		};
+		const openProfileDialog = () => {
+			deleteDialog.showModal();
+		};
+		const closeProfileDialog = () => {
+			deleteDialog.close();
+		};
+		const handleSubmit = async (confirm, cancel, submit, close) => {
+			const store = confirm.innerText;
+			confirm.innerText = 'loading...';
+			confirm.disabled = true;
+			confirm.classList.add('cursor-progress');
+			confirm.classList.remove('active:scale-95', 'cursor-pointer');
+			cancel.disabled = true;
+			cancel.classList.add('cursor-progress');
+			cancel.classList.remove('active:scale-95', 'cursor-pointer');
+			await submit();
+			confirm.innerText = store;
+			confirm.disabled = false;
+			confirm.classList.add('active:scale-95', 'cursor-pointer');
+			confirm.classList.remove('cursor-progress');
+			cancel.disabled = false;
+			cancel.classList.add('active:scale-95', 'cursor-pointer');
+			cancel.classList.remove('cursor-progress');
+			close();
+		};
+		const deleteFlights = async () => {
+			try {
+				if (window.localStorage.getItem('develop')) {
+					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
+					if (Math.random() < 0.1) {
+						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
+					}
+				}
+				const response = await fetch('/api/flight', { method: 'delete' });
+				if (response.status >= 200 && response.status <= 299) {
+					notification('success', 'Successfully purged your flights');
+					window.location.href = '/';
+					return;
+				}
+				throw response;
+			} catch (err) {
+				if (err instanceof TypeError) {
+					return notification('info', 'Seems like you might be offline');
+				}
+				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
+				if (err.status < 500) {
+					return notification('warning', message);
+				}
+				return notification('error', message);
+			}
+		};
+		const deleteMe = async () => {
+			try {
+				if (window.localStorage.getItem('develop')) {
+					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
+					if (Math.random() < 0.1) {
+						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
+					}
+				}
+				const response = await fetch('/api/me', { method: 'delete' });
+				if (response.status >= 200 && response.status <= 299) {
+					notification('success', 'Successfully deleted your profile');
+					window.location.href = '/';
+					return;
+				}
+				throw response;
+			} catch (err) {
+				if (err instanceof TypeError) {
+					return notification('info', 'Seems like you might be offline');
+				}
+				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
+				if (err.status < 500) {
+					return notification('warning', message);
+				}
+				return notification('error', message);
+			}
+		};
+		const notifications = document.getElementById('notifications');
+		const kind = (type) => {
+			switch (type) {
+				case 'info':
+					return 'Info';
+				case 'success':
+					return 'Success';
+				case 'warning':
+					return 'Warning';
+				case 'error':
+					return 'Error';
+			}
+		};
+		const color = (type) => {
+			switch (type) {
+				case 'info':
+					return ['bg-blue-200', 'dark:bg-blue-800'];
+				case 'success':
+					return ['bg-green-200', 'dark:bg-green-800'];
+				case 'warning':
+					return ['bg-amber-200', 'dark:bg-amber-800'];
+				case 'error':
+					return ['bg-red-200', 'dark:bg-red-800'];
+			}
+		};
+		const duration = (type) => {
+			switch (type) {
+				case 'info':
+					return 4000;
+				case 'success':
+					return 3000;
+				case 'warning':
+					return 6000;
+				case 'error':
+					return 8000;
+			}
+		};
+		const notification = (type, message) => {
+			const element = document.createElement('div');
+			element.classList.add('p-4', ...color(type), 'z-10');
+			const head = document.createElement('h2');
+			head.classList.add('m-0', 'mb-1', 'font-semibold');
+			const text = document.createElement('p');
+			text.classList.add('m-0', 'font-normal');
+			element.appendChild(head);
+			element.appendChild(text);
+			element.children[0].innerText = kind(type);
+			element.children[1].innerText = message;
+			if (notifications.children.length > 0) {
+				notifications.children[0].remove();
+			}
+			notifications.appendChild(element);
+			setTimeout(() => element.remove(), duration(type));
+		};
+	</script>
+</html>
