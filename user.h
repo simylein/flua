@@ -4,16 +4,17 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum visibility_t {
+#pragma once
+enum visibility_t {
 	private = 0,
 	friends = 1,
 	public = 2,
-} visibility_t;
+};
 
 typedef struct user_t {
 	uint8_t id[16];
 	char username[17];
-	visibility_t visibility;
+	uint8_t visibility;
 } user_t;
 
 uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user);

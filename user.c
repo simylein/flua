@@ -28,7 +28,7 @@ uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
+		const uint8_t visibility = (uint8_t)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
 			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
@@ -78,7 +78,7 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
+		const uint8_t visibility = (uint8_t)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
 			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
@@ -126,7 +126,7 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
+		const uint8_t visibility = (uint8_t)sqlite3_column_int(stmt, 2);
 		append_body(response, id, id_len);
 		append_body(response, username, username_len + 1);
 		append_body(response, &visibility, sizeof(visibility));
