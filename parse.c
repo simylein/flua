@@ -2,6 +2,7 @@
 #include "flight.h"
 #include "logger.h"
 #include "request.h"
+#include "user.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -88,6 +89,27 @@ int validate_credentials(char **username, uint8_t *username_len, char **password
 	}
 
 	if (!lower || !upper || !digit) {
+		return -1;
+	}
+
+	return 0;
+}
+
+int parse_user(user_t *user, request_t *request) {
+	if (request->body_len != sizeof(user->visibility)) {
+		return -1;
+	}
+
+	uint8_t offset = 0;
+
+	user->visibility = (uint8_t)(request->body[offset]);
+	offset += sizeof(user->visibility);
+
+	return 0;
+}
+
+int validate_user(user_t *user) {
+	if (user->visibility != private && user->visibility != friends && user->visibility != public) {
 		return -1;
 	}
 
