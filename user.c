@@ -11,7 +11,7 @@ uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user
 
 	uint16_t status = 404;
 
-	const char *sql = "select id, username, public from user where id = ?";
+	const char *sql = "select id, username, visibility from user where id = ?";
 	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
@@ -28,7 +28,7 @@ uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const bool public = (bool)sqlite3_column_int(stmt, 2);
+		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
 			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
@@ -41,7 +41,7 @@ uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user
 		}
 		memcpy(user->id, id, id_len);
 		memcpy(user->username, username, username_len + 1);
-		user->public = public;
+		user->visibility = visibility;
 		status = 0;
 	} else if (result == SQLITE_DONE) {
 		goto cleanup;
@@ -61,7 +61,7 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 
 	uint16_t status = 404;
 
-	const char *sql = "select id, username, public from user where username = ?";
+	const char *sql = "select id, username, visibility from user where username = ?";
 	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
@@ -78,7 +78,7 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const bool public = (bool)sqlite3_column_int(stmt, 2);
+		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
 		if (id_len != sizeof(user->id)) {
 			error("id length %zu does not match buffer length %zu\n", id_len, sizeof(user->id));
 			status = 500;
@@ -91,7 +91,7 @@ uint16_t find_user_by_name(sqlite3 *database, char *name, size_t name_len, user_
 		}
 		memcpy(user->id, id, id_len);
 		memcpy(user->username, username, username_len + 1);
-		user->public = public;
+		user->visibility = visibility;
 		status = 0;
 	} else if (result == SQLITE_DONE) {
 		goto cleanup;
@@ -109,7 +109,7 @@ cleanup:
 void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "select id, username, public from user where id = ?";
+	const char *sql = "select id, username, visibility from user where id = ?";
 	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
@@ -126,10 +126,10 @@ void find_user(sqlite3 *database, bwt_t *bwt, response_t *response) {
 		const size_t id_len = (size_t)sqlite3_column_bytes(stmt, 0);
 		const uint8_t *username = sqlite3_column_text(stmt, 1);
 		const size_t username_len = (size_t)sqlite3_column_bytes(stmt, 1);
-		const uint8_t public = (uint8_t)sqlite3_column_int(stmt, 2);
+		const visibility_t visibility = (visibility_t)sqlite3_column_int(stmt, 2);
 		append_body(response, id, id_len);
 		append_body(response, username, username_len + 1);
-		append_body(response, &public, sizeof(public));
+		append_body(response, &visibility, sizeof(visibility));
 	} else if (result == SQLITE_DONE) {
 		error("user %.8x not found\n", *(uint32_t *)bwt->id);
 		response->status = 500;

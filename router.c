@@ -251,7 +251,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		if (user.public == false) {
+		if (user.visibility == private) {
 			const char *cookie = find_header(request, "cookie:");
 			if (cookie == NULL) {
 				response->status = 401;
@@ -295,7 +295,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			goto respond;
 		}
 
-		if (user.public == false) {
+		if (user.visibility == private) {
 			const char *cookie = find_header(request, "cookie:");
 			if (cookie == NULL) {
 				response->status = 401;
@@ -392,7 +392,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			}
 
 			const char *cookie = find_header(request, "cookie:");
-			if (user.public == false && cookie == NULL) {
+			if (user.visibility == private && cookie == NULL) {
 				debug("redirecting to location signin\n");
 				response->status = 307;
 				append_header(response, "location:/signin\r\n");
@@ -409,7 +409,7 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				}
 
 				self = memcmp(bwt.id, user.id, sizeof(user.id)) == 0;
-				if (user.public == false && self == false) {
+				if (user.visibility == private && self == false) {
 					response->status = 403;
 					goto respond;
 				}
