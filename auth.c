@@ -5,6 +5,7 @@
 #include "request.h"
 #include "response.h"
 #include "sha256.h"
+#include "user.h"
 #include <sqlite3.h>
 #include <stdint.h>
 #include <string.h>
@@ -59,7 +60,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 									 response_t *response) {
 	sqlite3_stmt *stmt;
 
-	const char *sql = "insert into user (id, username, password, public) values (randomblob(16), ?, ?, 0) returning id";
+	const char *sql = "insert into user (id, username, password, visibility) values (randomblob(16), ?, ?, ?) returning id";
 	debug("%s\n", sql);
 
 	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
@@ -73,6 +74,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 
 	sqlite3_bind_text(stmt, 1, username, username_len, SQLITE_STATIC);
 	sqlite3_bind_blob(stmt, 2, hash, sizeof(hash), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 3, private);
 
 	int result = sqlite3_step(stmt);
 	if (result == SQLITE_ROW) {
