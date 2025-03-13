@@ -400,7 +400,7 @@
 		};
 		const loadingSettings = () => {
 			array(profileVisibility.children.length).forEach((ind) => {
-				loading(profileVisibility.children[ind], [], visibilityColors[ind]);
+				loading(profileVisibility.children[ind], [], ['bg-neutral-300', 'dark:bg-neutral-700', ...visibilityColors[ind]]);
 			});
 		};
 		const paintSettings = (data) => {
