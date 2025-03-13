@@ -3,6 +3,7 @@
 #include <sqlite3.h>
 #include <stdint.h>
 
+#pragma once
 typedef struct flight_t {
 	uint8_t (*hash)[32];
 	uint64_t *starts_at;
