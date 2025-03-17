@@ -3,6 +3,7 @@
 #include "cull.h"
 #include "file.h"
 #include "flight.h"
+#include "friend.h"
 #include "logger.h"
 #include "parse.h"
 #include "request.h"
@@ -279,13 +280,13 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct user_t user;
-		uint16_t status = find_user_by_name(database, name, name_len, &user);
-		if (status != 0) {
-			response->status = status;
+		uint16_t user_status = find_user_by_name(database, name, name_len, &user);
+		if (user_status != 0) {
+			response->status = user_status;
 			goto respond;
 		}
 
-		if (user.visibility == private) {
+		if (user.visibility == private || user.visibility == friends) {
 			const char *cookie = find_header(request, "cookie:");
 			if (cookie == NULL) {
 				response->status = 401;
@@ -298,8 +299,16 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				goto respond;
 			}
 
-			if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+			bool self = memcmp(bwt.id, user.id, sizeof(user.id)) == 0;
+			if (user.visibility == private && self == false) {
 				response->status = 403;
+				goto respond;
+			}
+
+			struct friend_t friend;
+			uint16_t friend_status = find_friend_by_user_id(database, &bwt, &user, &friend);
+			if (user.visibility == friends && self == false && friend_status != 0) {
+				response->status = friend_status == 404 ? 403 : friend_status;
 				goto respond;
 			}
 		}
@@ -323,13 +332,13 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 		}
 
 		struct user_t user;
-		uint16_t status = find_user_by_name(database, name, name_len, &user);
-		if (status != 0) {
-			response->status = status;
+		uint16_t user_status = find_user_by_name(database, name, name_len, &user);
+		if (user_status != 0) {
+			response->status = user_status;
 			goto respond;
 		}
 
-		if (user.visibility == private) {
+		if (user.visibility == private || user.visibility == friends) {
 			const char *cookie = find_header(request, "cookie:");
 			if (cookie == NULL) {
 				response->status = 401;
@@ -342,8 +351,16 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				goto respond;
 			}
 
-			if (memcmp(bwt.id, user.id, sizeof(user.id)) != 0) {
+			bool self = memcmp(bwt.id, user.id, sizeof(user.id)) == 0;
+			if (user.visibility == private && self == false) {
 				response->status = 403;
+				goto respond;
+			}
+
+			struct friend_t friend;
+			uint16_t friend_status = find_friend_by_user_id(database, &bwt, &user, &friend);
+			if (user.visibility == friends && self == false && friend_status != 0) {
+				response->status = friend_status == 404 ? 403 : friend_status;
 				goto respond;
 			}
 		}
@@ -419,14 +436,14 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 			method_found = 1;
 
 			struct user_t user;
-			uint16_t status = find_user_by_name(database, &request->pathname[1], request->pathname_len - 1, &user);
-			if (status != 0) {
-				response->status = status;
+			uint16_t user_status = find_user_by_name(database, &request->pathname[1], request->pathname_len - 1, &user);
+			if (user_status != 0) {
+				response->status = user_status;
 				goto respond;
 			}
 
 			const char *cookie = find_header(request, "cookie:");
-			if (user.visibility == private && cookie == NULL) {
+			if ((user.visibility == private || user.visibility == friends) && cookie == NULL) {
 				debug("redirecting to location signin\n");
 				response->status = 307;
 				append_header(response, "location:/signin\r\n");
@@ -445,6 +462,13 @@ void route(sqlite3 *database, request_t *request, response_t *response) {
 				self = memcmp(bwt.id, user.id, sizeof(user.id)) == 0;
 				if (user.visibility == private && self == false) {
 					response->status = 403;
+					goto respond;
+				}
+
+				struct friend_t friend;
+				uint16_t friend_status = find_friend_by_user_id(database, &bwt, &user, &friend);
+				if (user.visibility == friends && self == false && friend_status != 0) {
+					response->status = friend_status == 404 ? 403 : friend_status;
 					goto respond;
 				}
 			}
