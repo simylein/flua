@@ -4,6 +4,7 @@
 #include "response.h"
 #include <sqlite3.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 uint16_t find_user_by_id(sqlite3 *database, uint8_t (*user_id)[16], user_t *user) {

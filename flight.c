@@ -7,6 +7,7 @@
 #include "utils.h"
 #include <sqlite3.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 void find_years(sqlite3 *database, uint8_t (*user_id)[16], response_t *response) {
