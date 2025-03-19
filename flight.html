@@ -1175,19 +1175,6 @@
 					return seconds % 1 === 0 ? `${seconds}s` : `${seconds.toFixed(1)}s`;
 			}
 		};
-		const buckets = (items, max) => {
-			return items.reduce(
-				(accumulator, item) => {
-					const month = new Date(Number(item.startsAt) * 1000).getMonth();
-					accumulator[month].push(item);
-					return accumulator;
-				},
-				array(max).map(() => [])
-			);
-		};
-		const seconds = (item) => {
-			return Number(item.endsAt - item.startsAt);
-		};
 		const resize = (element, length) => {
 			let index = 0;
 			while (element.children.length !== length) {
@@ -1289,7 +1276,7 @@
 				error(years.children[ind].children[0]);
 			});
 		};
-		const loadingFlights = () => {
+		const loadingFlight = () => {
 			loading(flightCount, ['w-10', 'h-6'], [], '');
 			array(flightScale.children.length).forEach((ind) => {
 				loading(flightScale.children[ind], ['h-4'], [], '');
@@ -1298,22 +1285,21 @@
 				loading(flightGraph.children[ind].children[0], [], ['bg-green-400/80', 'dark:bg-green-600/80'], null, verticalSkeletons[ind]);
 			});
 		};
-		const paintFlights = (data) => {
-			paint(flightCount, [], ['w-10', 'h-6'], units(data.length));
-			const windows = buckets(data, flightGraph.children.length);
-			const max = Math.max(...windows.map((window) => window.length));
+		const paintFlight = (flight) => {
+			paint(flightCount, [], ['w-10', 'h-6'], units(flight.sum));
+			const max = Math.max(...flight.bins);
 			array(flightScale.children.length).forEach((ind) => {
 				paint(flightScale.children[ind], [], ['h-4'], units((max / flightScale.children.length) * (5 - ind)));
 			});
-			windows.forEach((window, index) => {
+			array(flightGraph.children.length).forEach((index) => {
 				array(flightGraph.children[index].children.length).forEach((ind) => {
 					flightGraph.children[index].children[ind].style.height = null;
 				});
-				const percent = (window.length / max) * 100;
+				const percent = (flight.bins[index] / max) * 100;
 				paint(flightGraph.children[index].children[0], ['bg-green-400/80', 'dark:bg-green-600/80'], [], null, percent);
 			});
 		};
-		const errorFlights = () => {
+		const errorFlight = () => {
 			error(flightCount);
 			array(flightScale.children.length).forEach((ind) => {
 				error(flightScale.children[ind]);
@@ -1331,18 +1317,17 @@
 				loading(airtimeGraph.children[ind].children[0], [], ['bg-blue-400/80', 'dark:bg-blue-600/80'], null, verticalSkeletons[ind]);
 			});
 		};
-		const paintAirtime = (data) => {
-			paint(airtimeCount, [], ['w-10', 'h-6'], times(data.reduce((accumulator, item) => accumulator + seconds(item), 0)));
-			const windows = buckets(data, airtimeGraph.children.length);
-			const max = Math.max(...windows.map((window) => window.reduce((accumulator, item) => accumulator + seconds(item), 0)));
+		const paintAirtime = (airtime) => {
+			paint(airtimeCount, [], ['w-10', 'h-6'], times(airtime.sum));
+			const max = Math.max(...airtime.bins);
 			array(airtimeScale.children.length).forEach((ind) => {
 				paint(airtimeScale.children[ind], [], ['h-4'], times((max / airtimeScale.children.length) * (5 - ind)));
 			});
-			windows.forEach((window, index) => {
+			array(airtimeGraph.children.length).forEach((index) => {
 				array(airtimeGraph.children[index].children.length).forEach((ind) => {
 					airtimeGraph.children[index].children[ind].style.height = null;
 				});
-				const percent = (window.reduce((accumulator, item) => accumulator + seconds(item), 0) / max) * 100;
+				const percent = (airtime.bins[index] / max) * 100;
 				paint(airtimeGraph.children[index].children[0], ['bg-blue-400/80', 'dark:bg-blue-600/80'], [], null, percent);
 			});
 		};
@@ -1367,39 +1352,24 @@
 				});
 			});
 		};
-		const paintAltitude = (data) => {
-			const altitudeBins = data.reduce(
-				(accumulator, flight) => {
-					const month = new Date(Number(flight.startsAt) * 1000).getMonth();
-					flight.altitudeBins.forEach((altitude, ind) => (accumulator[Math.floor(month / 3)][ind] += altitude));
-					return accumulator;
-				},
-				array(4).map(() => [0, 0, 0, 0, 0])
-			);
-			const altitudes = altitudeBins.reduce(
-				(accumulator, bins) => {
-					bins.forEach((bin, ind) => (accumulator[ind] += bin));
-					return accumulator;
-				},
-				[0, 0, 0, 0, 0]
-			);
-			const totalMax = altitudes.reduce((accumulator, altitude) => accumulator + altitude, 0);
-			if (totalMax > 0) {
+		const paintAltitude = (altitude) => {
+			const sumMax = altitude.sum.reduce((accumulator, altitude) => accumulator + altitude, 0);
+			if (sumMax > 0) {
 				altitudeScale.classList.remove('h-4');
 			}
 			paint(altitudeScale, [], []);
 			array(altitudeScale.children.length).forEach((ind) => {
-				if (altitudes[ind] > 0) {
+				if (altitude.sum[ind] > 0) {
 					paint(altitudeScale.children[ind], ['flex'], ['hidden']);
 				} else {
 					paint(altitudeScale.children[ind], ['hidden'], ['flex']);
 				}
-				altitudeScale.children[ind].children[2].innerHTML = times(altitudes[ind]);
+				altitudeScale.children[ind].children[2].innerHTML = times(altitude.sum[ind]);
 			});
 			array(altitudeGraph.children.length).forEach((ind) => {
-				const binMax = altitudeBins[ind].reduce((accumulator, altitudeBin) => accumulator + altitudeBin, 0);
+				const binMax = altitude.bins[ind].reduce((accumulator, altitudeBin) => accumulator + altitudeBin, 0);
 				array(altitudeGraph.children[ind].children.length).forEach((i) => {
-					const percent = binMax === 0 ? 0 : (altitudeBins[ind][i] / binMax) * 100;
+					const percent = binMax === 0 ? 0 : (altitude.bins[ind][i] / binMax) * 100;
 					paint(altitudeGraph.children[ind].children[i], altitudeColors[i], [], null, null, percent);
 				});
 			});
@@ -1424,39 +1394,24 @@
 				});
 			});
 		};
-		const paintThermal = (data) => {
-			const thermalBins = data.reduce(
-				(accumulator, flight) => {
-					const month = new Date(Number(flight.startsAt) * 1000).getMonth();
-					flight.thermalBins.forEach((thermal, ind) => (accumulator[Math.floor(month / 3)][ind] += thermal));
-					return accumulator;
-				},
-				array(4).map(() => [0, 0, 0, 0, 0])
-			);
-			const thermals = thermalBins.reduce(
-				(accumulator, bins) => {
-					bins.forEach((bin, ind) => (accumulator[ind] += bin));
-					return accumulator;
-				},
-				[0, 0, 0, 0, 0]
-			);
-			const totalMax = thermals.reduce((accumulator, thermal) => accumulator + thermal, 0);
-			if (totalMax > 0) {
+		const paintThermal = (thermal) => {
+			const sumMax = thermal.sum.reduce((accumulator, thermal) => accumulator + thermal, 0);
+			if (sumMax > 0) {
 				thermalScale.classList.remove('h-4');
 			}
 			paint(thermalScale, [], []);
 			array(thermalScale.children.length).forEach((ind) => {
-				if (thermals[ind] > 0) {
+				if (thermal.sum[ind] > 0) {
 					paint(thermalScale.children[ind], ['flex'], ['hidden']);
 				} else {
 					paint(thermalScale.children[ind], ['hidden'], ['flex']);
 				}
-				thermalScale.children[ind].children[2].innerHTML = times(thermals[ind]);
+				thermalScale.children[ind].children[2].innerHTML = times(thermal.sum[ind]);
 			});
 			array(thermalGraph.children.length).forEach((ind) => {
-				const binMax = thermalBins[ind].reduce((accumulator, thermalBin) => accumulator + thermalBin, 0);
+				const binMax = thermal.bins[ind].reduce((accumulator, thermalBin) => accumulator + thermalBin, 0);
 				array(thermalGraph.children[ind].children.length).forEach((i) => {
-					const percent = binMax === 0 ? 0 : (thermalBins[ind][i] / binMax) * 100;
+					const percent = binMax === 0 ? 0 : (thermal.bins[ind][i] / binMax) * 100;
 					paint(thermalGraph.children[ind].children[i], thermalColors[i], [], null, null, percent);
 				});
 			});
@@ -1481,39 +1436,24 @@
 				});
 			});
 		};
-		const paintSpeed = (data) => {
-			const speedBins = data.reduce(
-				(accumulator, flight) => {
-					const month = new Date(Number(flight.startsAt) * 1000).getMonth();
-					flight.speedBins.forEach((speed, ind) => (accumulator[Math.floor(month / 3)][ind] += speed));
-					return accumulator;
-				},
-				array(4).map(() => [0, 0, 0, 0, 0])
-			);
-			const speeds = speedBins.reduce(
-				(accumulator, bins) => {
-					bins.forEach((bin, ind) => (accumulator[ind] += bin));
-					return accumulator;
-				},
-				[0, 0, 0, 0, 0]
-			);
-			const totalMax = speeds.reduce((accumulator, speed) => accumulator + speed, 0);
-			if (totalMax > 0) {
+		const paintSpeed = (speed) => {
+			const sumMax = speed.sum.reduce((accumulator, speed) => accumulator + speed, 0);
+			if (sumMax > 0) {
 				speedScale.classList.remove('h-4');
 			}
 			paint(speedScale, [], []);
 			array(speedScale.children.length).forEach((ind) => {
-				if (speeds[ind] > 0) {
+				if (speed.sum[ind] > 0) {
 					paint(speedScale.children[ind], ['flex'], ['hidden']);
 				} else {
 					paint(speedScale.children[ind], ['hidden'], ['flex']);
 				}
-				speedScale.children[ind].children[2].innerHTML = times(speeds[ind]);
+				speedScale.children[ind].children[2].innerHTML = times(speed.sum[ind]);
 			});
 			array(speedGraph.children.length).forEach((ind) => {
-				const binMax = speedBins[ind].reduce((accumulator, speedBin) => accumulator + speedBin, 0);
+				const binMax = speed.bins[ind].reduce((accumulator, speedBin) => accumulator + speedBin, 0);
 				array(speedGraph.children[ind].children.length).forEach((i) => {
-					const percent = binMax === 0 ? 0 : (speedBins[ind][i] / binMax) * 100;
+					const percent = binMax === 0 ? 0 : (speed.bins[ind][i] / binMax) * 100;
 					paint(speedGraph.children[ind].children[i], speedColors[i], [], null, null, percent);
 				});
 			});
@@ -1538,39 +1478,24 @@
 				});
 			});
 		};
-		const paintGlide = (data) => {
-			const glideBins = data.reduce(
-				(accumulator, flight) => {
-					const month = new Date(Number(flight.startsAt) * 1000).getMonth();
-					flight.glideBins.forEach((altitude, ind) => (accumulator[Math.floor(month / 3)][ind] += altitude));
-					return accumulator;
-				},
-				array(4).map(() => [0, 0, 0, 0, 0])
-			);
-			const glides = glideBins.reduce(
-				(accumulator, bins) => {
-					bins.forEach((bin, ind) => (accumulator[ind] += bin));
-					return accumulator;
-				},
-				[0, 0, 0, 0, 0]
-			);
-			const totalMax = glides.reduce((accumulator, glide) => accumulator + glide, 0);
-			if (totalMax > 0) {
+		const paintGlide = (glide) => {
+			const sumMax = glide.sum.reduce((accumulator, glide) => accumulator + glide, 0);
+			if (sumMax > 0) {
 				glideScale.classList.remove('h-4');
 			}
 			paint(glideScale, [], []);
 			array(glideScale.children.length).forEach((ind) => {
-				if (glides[ind] > 0) {
+				if (glide.sum[ind] > 0) {
 					paint(glideScale.children[ind], ['flex'], ['hidden']);
 				} else {
 					paint(glideScale.children[ind], ['hidden'], ['flex']);
 				}
-				glideScale.children[ind].children[2].innerHTML = times(glides[ind]);
+				glideScale.children[ind].children[2].innerHTML = times(glide.sum[ind]);
 			});
 			array(glideGraph.children.length).forEach((ind) => {
-				const binMax = glideBins[ind].reduce((accumulator, glideBin) => accumulator + glideBin, 0);
+				const binMax = glide.bins[ind].reduce((accumulator, glideBin) => accumulator + glideBin, 0);
 				array(glideGraph.children[ind].children.length).forEach((i) => {
-					const percent = binMax === 0 ? 0 : (glideBins[ind][i] / binMax) * 100;
+					const percent = binMax === 0 ? 0 : (glide.bins[ind][i] / binMax) * 100;
 					paint(glideGraph.children[ind].children[i], glideColors[i], [], null, null, percent);
 				});
 			});
@@ -1742,7 +1667,7 @@
 				flightController.abort();
 			}
 			flightController = new AbortController();
-			window.requestAnimationFrame(() => loadingFlights());
+			window.requestAnimationFrame(() => loadingFlight());
 			window.requestAnimationFrame(() => loadingAirtime());
 			window.requestAnimationFrame(() => loadingAltitude());
 			window.requestAnimationFrame(() => loadingThermal());
@@ -1761,16 +1686,47 @@
 					throw Error(response);
 				}
 				const data = await parseFlights(response);
-				window.requestAnimationFrame(() => paintFlights(data));
-				window.requestAnimationFrame(() => paintAirtime(data));
-				window.requestAnimationFrame(() => paintAltitude(data));
-				window.requestAnimationFrame(() => paintThermal(data));
-				window.requestAnimationFrame(() => paintSpeed(data));
-				window.requestAnimationFrame(() => paintGlide(data));
+				const flight = { sum: 0, bins: array(12).map(() => 0) };
+				const airtime = { sum: 0, bins: array(12).map(() => 0) };
+				const altitude = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const thermal = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const speed = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const glide = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				for (const item of data) {
+					const month = new Date(Number(item.startsAt) * 1000).getMonth();
+					flight.sum++;
+					flight.bins[month]++;
+					const seconds = Number(item.endsAt - item.startsAt);
+					airtime.sum += seconds;
+					airtime.bins[month] += seconds;
+					const quarter = Math.floor(month / 3);
+					for (let ind = 0; ind < altitude.sum.length; ind++) {
+						altitude.sum[ind] += item.altitudeBins[ind];
+						altitude.bins[quarter][ind] += item.altitudeBins[ind];
+					}
+					for (let ind = 0; ind < thermal.sum.length; ind++) {
+						thermal.sum[ind] += item.thermalBins[ind];
+						thermal.bins[quarter][ind] += item.thermalBins[ind];
+					}
+					for (let ind = 0; ind < speed.sum.length; ind++) {
+						speed.sum[ind] += item.speedBins[ind];
+						speed.bins[quarter][ind] += item.speedBins[ind];
+					}
+					for (let ind = 0; ind < glide.sum.length; ind++) {
+						glide.sum[ind] += item.glideBins[ind];
+						glide.bins[quarter][ind] += item.glideBins[ind];
+					}
+				}
+				window.requestAnimationFrame(() => paintFlight(flight));
+				window.requestAnimationFrame(() => paintAirtime(airtime));
+				window.requestAnimationFrame(() => paintAltitude(altitude));
+				window.requestAnimationFrame(() => paintThermal(thermal));
+				window.requestAnimationFrame(() => paintSpeed(speed));
+				window.requestAnimationFrame(() => paintGlide(glide));
 				window.requestAnimationFrame(() => paintLogbook(data.length > 0 ? data : [null]));
 			} catch (err) {
 				if (err?.name !== 'AbortError') {
-					window.requestAnimationFrame(() => errorFlights());
+					window.requestAnimationFrame(() => errorFlight());
 					window.requestAnimationFrame(() => errorAirtime());
 					window.requestAnimationFrame(() => errorAltitude());
 					window.requestAnimationFrame(() => errorThermal());
