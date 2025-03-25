@@ -45,6 +45,9 @@
 			.w-20 {
 				width: 80px;
 			}
+			.w-32 {
+				width: 128px;
+			}
 			.w-64 {
 				width: 256px;
 			}
@@ -59,6 +62,9 @@
 			}
 			.h-4 {
 				height: 16px;
+			}
+			.h-5 {
+				height: 20px;
 			}
 			.h-6 {
 				height: 24px;
@@ -707,8 +713,9 @@
 			</div>
 			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
 				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+					<div class="flex justify-between items-end gap-2 mb-1">
 						<h2 class="m-0 text-base font-normal">Altitude</h2>
+						<p id="altitude-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="altitude-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
@@ -771,8 +778,9 @@
 					</div>
 				</div>
 				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+					<div class="flex justify-between items-end gap-2 mb-1">
 						<h2 class="m-0 text-base font-normal">Thermal</h2>
+						<p id="thermal-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="thermal-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
@@ -837,8 +845,9 @@
 			</div>
 			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
 				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+					<div class="flex justify-between items-end gap-2 mb-1">
 						<h2 class="m-0 text-base font-normal">Speed</h2>
+						<p id="speed-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="speed-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
@@ -901,8 +910,9 @@
 					</div>
 				</div>
 				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+					<div class="flex justify-between items-end gap-2 mb-1">
 						<h2 class="m-0 text-base font-normal">Glide</h2>
+						<p id="glide-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="glide-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
@@ -1107,6 +1117,7 @@
 		const airtimeCount = document.getElementById('airtime-count');
 		const airtimeScale = document.getElementById('airtime-scale');
 		const airtimeGraph = document.getElementById('airtime-graph');
+		const altitudeStats = document.getElementById('altitude-stats');
 		const altitudeScale = document.getElementById('altitude-scale');
 		const altitudeGraph = document.getElementById('altitude-graph');
 		const altitudeColors = [
@@ -1116,6 +1127,7 @@
 			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
 			['bg-purple-400/80', 'dark:bg-purple-600/80'],
 		];
+		const thermalStats = document.getElementById('thermal-stats');
 		const thermalScale = document.getElementById('thermal-scale');
 		const thermalGraph = document.getElementById('thermal-graph');
 		const thermalColors = [
@@ -1125,6 +1137,7 @@
 			['bg-cyan-400/80', 'dark:bg-cyan-600/80'],
 			['bg-blue-400/80', 'dark:bg-blue-600/80'],
 		];
+		const speedStats = document.getElementById('speed-stats');
 		const speedScale = document.getElementById('speed-scale');
 		const speedGraph = document.getElementById('speed-graph');
 		const speedColors = [
@@ -1134,6 +1147,7 @@
 			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
 			['bg-purple-400/80', 'dark:bg-purple-600/80'],
 		];
+		const glideStats = document.getElementById('glide-stats');
 		const glideScale = document.getElementById('glide-scale');
 		const glideGraph = document.getElementById('glide-graph');
 		const glideColors = [
@@ -1341,6 +1355,7 @@
 			});
 		};
 		const loadingAltitude = () => {
+			loading(altitudeStats, ['w-32', 'h-5'], [], '');
 			loading(altitudeScale, ['h-4'], []);
 			array(altitudeScale.children.length).forEach((ind) => {
 				altitudeScale.children[ind].classList.add('hidden');
@@ -1353,6 +1368,7 @@
 			});
 		};
 		const paintAltitude = (altitude) => {
+			paint(altitudeStats, [], ['w-32', 'h-5'], altitude.min === null || altitude.max === null ? '' : `${altitude.min}m - ${altitude.max}m`);
 			const sumMax = altitude.sum.reduce((accumulator, altitude) => accumulator + altitude, 0);
 			if (sumMax > 0) {
 				altitudeScale.classList.remove('h-4');
@@ -1375,6 +1391,7 @@
 			});
 		};
 		const errorAltitude = () => {
+			error(altitudeStats);
 			error(altitudeScale);
 			array(altitudeGraph.children.length).forEach((ind) => {
 				array(altitudeGraph.children[ind].children.length).forEach((i) => {
@@ -1383,6 +1400,7 @@
 			});
 		};
 		const loadingThermal = () => {
+			loading(thermalStats, ['w-32', 'h-5'], [], '');
 			loading(thermalScale, ['h-4'], []);
 			array(thermalScale.children.length).forEach((ind) => {
 				thermalScale.children[ind].classList.add('hidden');
@@ -1395,6 +1413,7 @@
 			});
 		};
 		const paintThermal = (thermal) => {
+			paint(thermalStats, [], ['w-32', 'h-5'], thermal.climb === null || thermal.sink === null ? '' : `+${(thermal.climb / 10).toFixed(1)}m/s -${(thermal.sink / 10).toFixed(1)}m/s`);
 			const sumMax = thermal.sum.reduce((accumulator, thermal) => accumulator + thermal, 0);
 			if (sumMax > 0) {
 				thermalScale.classList.remove('h-4');
@@ -1417,6 +1436,7 @@
 			});
 		};
 		const errorThermal = () => {
+			error(thermalStats);
 			error(thermalScale);
 			array(thermalGraph.children.length).forEach((ind) => {
 				array(thermalGraph.children[ind].children.length).forEach((i) => {
@@ -1425,6 +1445,7 @@
 			});
 		};
 		const loadingSpeed = () => {
+			loading(speedStats, ['w-32', 'h-5'], [], '');
 			loading(speedScale, ['h-4'], []);
 			array(speedScale.children.length).forEach((ind) => {
 				speedScale.children[ind].classList.add('hidden');
@@ -1437,6 +1458,7 @@
 			});
 		};
 		const paintSpeed = (speed) => {
+			paint(speedStats, [], ['w-32', 'h-5'], speed.avg === null ? '' : `${speed.avg.toFixed(2)}km/h`);
 			const sumMax = speed.sum.reduce((accumulator, speed) => accumulator + speed, 0);
 			if (sumMax > 0) {
 				speedScale.classList.remove('h-4');
@@ -1459,6 +1481,7 @@
 			});
 		};
 		const errorSpeed = () => {
+			error(speedStats);
 			error(speedScale);
 			array(speedGraph.children.length).forEach((ind) => {
 				array(speedGraph.children[ind].children.length).forEach((i) => {
@@ -1467,6 +1490,7 @@
 			});
 		};
 		const loadingGlide = () => {
+			loading(glideStats, ['w-32', 'h-5'], [], '');
 			loading(glideScale, ['h-4'], []);
 			array(glideScale.children.length).forEach((ind) => {
 				glideScale.children[ind].classList.add('hidden');
@@ -1479,6 +1503,7 @@
 			});
 		};
 		const paintGlide = (glide) => {
+			paint(glideStats, [], ['w-32', 'h-5'], glide.distance === 0 ? '' : `${(glide.distance / 1000).toFixed(2)}km`);
 			const sumMax = glide.sum.reduce((accumulator, glide) => accumulator + glide, 0);
 			if (sumMax > 0) {
 				glideScale.classList.remove('h-4');
@@ -1501,6 +1526,7 @@
 			});
 		};
 		const errorGlide = () => {
+			error(glideStats);
 			error(glideScale);
 			array(glideGraph.children.length).forEach((ind) => {
 				array(glideGraph.children[ind].children.length).forEach((i) => {
@@ -1688,10 +1714,10 @@
 				const data = await parseFlights(response);
 				const flight = { sum: 0, bins: array(12).map(() => 0) };
 				const airtime = { sum: 0, bins: array(12).map(() => 0) };
-				const altitude = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const thermal = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const speed = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const glide = { sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const altitude = { min: null, max: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const thermal = { climb: null, sink: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const speed = { avg: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
+				const glide = { distance: 0, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
 				for (const item of data) {
 					const month = new Date(Number(item.startsAt) * 1000).getMonth();
 					flight.sum++;
@@ -1700,9 +1726,21 @@
 					airtime.sum += seconds;
 					airtime.bins[month] += seconds;
 					const quarter = Math.floor(month / 3);
+					if (altitude.min === null || altitude.min > item.altitudeMin) {
+						altitude.min = item.altitudeMin;
+					}
+					if (altitude.max === null || altitude.max < item.altitudeMax) {
+						altitude.max = item.altitudeMax;
+					}
 					for (let ind = 0; ind < altitude.sum.length; ind++) {
 						altitude.sum[ind] += item.altitudeBins[ind];
 						altitude.bins[quarter][ind] += item.altitudeBins[ind];
+					}
+					if (thermal.climb === null || thermal.climb < item.maxClimb) {
+						thermal.climb = item.maxClimb;
+					}
+					if (thermal.sink === null || thermal.sink < item.maxSink) {
+						thermal.sink = item.maxSink;
 					}
 					for (let ind = 0; ind < thermal.sum.length; ind++) {
 						thermal.sum[ind] += item.thermalBins[ind];
@@ -1712,11 +1750,13 @@
 						speed.sum[ind] += item.speedBins[ind];
 						speed.bins[quarter][ind] += item.speedBins[ind];
 					}
+					glide.distance += item.distanceFlown;
 					for (let ind = 0; ind < glide.sum.length; ind++) {
 						glide.sum[ind] += item.glideBins[ind];
 						glide.bins[quarter][ind] += item.glideBins[ind];
 					}
 				}
+				speed.avg = (glide.distance / airtime.sum) * 3.6;
 				window.requestAnimationFrame(() => paintFlight(flight));
 				window.requestAnimationFrame(() => paintAirtime(airtime));
 				window.requestAnimationFrame(() => paintAltitude(altitude));
