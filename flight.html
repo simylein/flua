@@ -1756,7 +1756,7 @@
 						glide.bins[quarter][ind] += item.glideBins[ind];
 					}
 				}
-				speed.avg = (glide.distance / airtime.sum) * 3.6;
+				speed.avg = glide.distance === 0 ? null : (glide.distance / airtime.sum) * 3.6;
 				window.requestAnimationFrame(() => paintFlight(flight));
 				window.requestAnimationFrame(() => paintAirtime(airtime));
 				window.requestAnimationFrame(() => paintAltitude(altitude));
