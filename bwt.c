@@ -7,9 +7,9 @@
 #include "request.h"
 #include "sha256.h"
 #include "string.h"
-#include "time.h"
 #include "utils.h"
 #include <stdint.h>
+#include <time.h>
 
 int sign_bwt(char (*buffer)[89], const uint8_t *id, const size_t id_len) {
 	const time_t iat = time(NULL);
