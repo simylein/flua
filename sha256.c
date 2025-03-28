@@ -1,5 +1,6 @@
 #include <memory.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 typedef struct sha256_ctx {
 	uint32_t state[8];
