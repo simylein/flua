@@ -34,7 +34,7 @@ int user_init(sqlite3 *database) {
 		goto cleanup;
 	};
 
-	info("successfully initialised user table\n");
+	info("created user table\n");
 	status = 0;
 
 cleanup:
@@ -74,7 +74,7 @@ int friend_init(sqlite3 *database) {
 		goto cleanup;
 	};
 
-	info("successfully initialised friend table\n");
+	info("created friend table\n");
 	status = 0;
 
 cleanup:
@@ -127,7 +127,7 @@ int flight_init(sqlite3 *database) {
 		goto cleanup;
 	};
 
-	info("successfully initialised flight table\n");
+	info("created flight table\n");
 	status = 0;
 
 cleanup:
@@ -145,5 +145,6 @@ int init(sqlite3 *database) {
 	if (flight_init(database) != 0) {
 		return -1;
 	}
+
 	return 0;
 }
