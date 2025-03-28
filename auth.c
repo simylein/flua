@@ -40,7 +40,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 		}
 		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%u;SameSite=Strict;HttpOnly;\r\n", bwt, bwt_ttl);
 	} else if (result == SQLITE_DONE) {
-		warn("invalid password for %s\n", username);
+		warn("invalid password for %.*s\n", (int)username_len, username);
 		response->status = 401;
 		goto cleanup;
 	} else {
@@ -49,7 +49,7 @@ void create_signin(sqlite3 *database, char *username, uint8_t username_len, char
 		goto cleanup;
 	}
 
-	info("user %s signed in\n", username);
+	info("user %.*s signed in\n", (int)username_len, username);
 	response->status = 201;
 
 cleanup:
@@ -87,7 +87,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 		}
 		append_header(response, "set-cookie:auth=%s;Path=/;Max-Age=%d;SameSite=Strict;HttpOnly;\r\n", bwt, bwt_ttl);
 	} else if (result == SQLITE_CONSTRAINT) {
-		warn("username %s already taken\n", username);
+		warn("username %.*s already taken\n", (int)username_len, username);
 		response->status = 409;
 		goto cleanup;
 	} else {
@@ -96,7 +96,7 @@ void create_signup(sqlite3 *database, char *username, uint8_t username_len, char
 		goto cleanup;
 	}
 
-	info("user %s signed up\n", username);
+	info("user %.*s signed up\n", (int)username_len, username);
 	response->status = 201;
 
 cleanup:
