@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (uint8_t index = 0; index < least_workers; index++) {
-		if (spawn(&thread_pool.workers[index], thread_pool.size, &fatal) == -1) {
+		if (spawn(&thread_pool.workers[index], thread_pool.size, &thread, &fatal) == -1) {
 			exit(1);
 		}
 		thread_pool.size++;
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
 		if (thread_pool.load >= thread_pool.size) {
 			debug("all worker threads currently busy\n");
 			uint8_t new_size = thread_pool.size + 1;
-			if (new_size <= most_workers && spawn(&thread_pool.workers[thread_pool.size], thread_pool.size, &error) == 0) {
+			if (new_size <= most_workers && spawn(&thread_pool.workers[thread_pool.size], thread_pool.size, &thread, &error) == 0) {
 				info("scaled threads from %hhu to %hhu\n", thread_pool.size, new_size);
 				thread_pool.size = new_size;
 			}

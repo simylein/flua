@@ -40,6 +40,7 @@ typedef struct thread_pool_t {
 
 extern struct thread_pool_t thread_pool;
 
-int spawn(worker_t *worker, uint8_t id, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2))));
+int spawn(worker_t *worker, uint8_t id, void *(*function)(void *),
+					void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2))));
 
 void *thread(void *args);

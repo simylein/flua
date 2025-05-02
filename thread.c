@@ -23,7 +23,8 @@ thread_pool_t thread_pool = {
 		.available = PTHREAD_COND_INITIALIZER,
 };
 
-int spawn(worker_t *worker, uint8_t id, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
+int spawn(worker_t *worker, uint8_t id, void *(*function)(void *),
+					void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
 	worker->arg.id = id;
 	trace("spawning worker thread %hhu\n", id);
 
@@ -41,7 +42,7 @@ int spawn(worker_t *worker, uint8_t id, void (*logger)(const char *message, ...)
 
 	sqlite3_busy_timeout(worker->arg.database, database_timeout);
 
-	int spawn_error = pthread_create(&worker->thread, NULL, thread, (void *)&worker->arg);
+	int spawn_error = pthread_create(&worker->thread, NULL, function, (void *)&worker->arg);
 	if (spawn_error != 0) {
 		errno = spawn_error;
 		logger("failed to spawn worker thread %hhu because %s\n", worker->arg.id, errno_str());
