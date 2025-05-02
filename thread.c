@@ -23,35 +23,35 @@ thread_pool_t thread_pool = {
 		.available = PTHREAD_COND_INITIALIZER,
 };
 
-int spawn(worker_t *workers, uint8_t index, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
-	workers[index].arg.id = index;
-	trace("spawning worker thread %hhu\n", index);
+int spawn(worker_t *worker, uint8_t id, void (*logger)(const char *message, ...) __attribute__((format(printf, 1, 2)))) {
+	worker->arg.id = id;
+	trace("spawning worker thread %hhu\n", id);
 
-	int db_error = sqlite3_open_v2(database_file, &workers[index].arg.database, SQLITE_OPEN_READWRITE, NULL);
+	int db_error = sqlite3_open_v2(database_file, &worker->arg.database, SQLITE_OPEN_READWRITE, NULL);
 	if (db_error != SQLITE_OK) {
-		logger("failed to open %s because %s\n", database_file, sqlite3_errmsg(workers[index].arg.database));
+		logger("failed to open %s because %s\n", database_file, sqlite3_errmsg(worker->arg.database));
 		return -1;
 	}
 
-	int exec_error = sqlite3_exec(workers[index].arg.database, "pragma foreign_keys = on;", NULL, NULL, NULL);
+	int exec_error = sqlite3_exec(worker->arg.database, "pragma foreign_keys = on;", NULL, NULL, NULL);
 	if (exec_error != SQLITE_OK) {
-		logger("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(workers[index].arg.database));
+		logger("failed to enforce foreign key constraints because %s\n", sqlite3_errmsg(worker->arg.database));
 		return -1;
 	}
 
-	sqlite3_busy_timeout(workers[index].arg.database, database_timeout);
+	sqlite3_busy_timeout(worker->arg.database, database_timeout);
 
-	int spawn_error = pthread_create(&workers[index].thread, NULL, thread, (void *)&workers[index].arg);
+	int spawn_error = pthread_create(&worker->thread, NULL, thread, (void *)&worker->arg);
 	if (spawn_error != 0) {
 		errno = spawn_error;
-		logger("failed to spawn worker thread %hhu because %s\n", workers[index].arg.id, errno_str());
+		logger("failed to spawn worker thread %hhu because %s\n", worker->arg.id, errno_str());
 		return -1;
 	}
 
-	int detach_error = pthread_detach(workers[index].thread);
+	int detach_error = pthread_detach(worker->thread);
 	if (detach_error != 0) {
 		errno = detach_error;
-		logger("failed to detach worker thread %hhu because %s\n", workers[index].arg.id, errno_str());
+		logger("failed to detach worker thread %hhu because %s\n", worker->arg.id, errno_str());
 		return -1;
 	}
 
