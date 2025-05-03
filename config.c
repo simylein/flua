@@ -8,6 +8,7 @@ const char *address = "0.0.0.0";
 uint16_t port = 2254;
 
 uint8_t backlog = 16;
+uint8_t stash_size = 64;
 uint8_t queue_size = 8;
 uint8_t least_workers = 4;
 uint8_t most_workers = 64;
@@ -201,6 +202,7 @@ int configure(int argc, char *argv[]) {
 			info("--address           -a   ip address to bind              (%s)\n", address);
 			info("--port              -p   port to listen on               (%hu)\n", port);
 			info("--backlog           -b   backlog allowed on socket       (%hhu)\n", backlog);
+			info("--stash-size        -ss  size of flows in stash          (%hhu)\n", stash_size);
 			info("--queue-size        -qs  size of clients in queue        (%hhu)\n", queue_size);
 			info("--least-workers     -lw  least amount of worker threads  (%hhu)\n", least_workers);
 			info("--most-workers      -mw  most amount of worker threads   (%hhu)\n", most_workers);
@@ -217,7 +219,7 @@ int configure(int argc, char *argv[]) {
 			info("--log-responses     -ls  log outgoing response           (%s)\n", human_bool(log_responses));
 			exit(0);
 		} else if (strcmp(flag, "--version") == 0 || strcmp(flag, "-v") == 0) {
-			info("flua flights version 0.18.15\n");
+			info("flua flights version 0.19.0\n");
 			info("written by simylein in c\n");
 			exit(0);
 		} else if (strcmp(flag, "--address") == 0 || strcmp(flag, "-a") == 0) {
@@ -229,6 +231,9 @@ int configure(int argc, char *argv[]) {
 		} else if (strcmp(flag, "--backlog") == 0 || strcmp(flag, "-b") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_uint8(arg, "backlog", 0, 255, &backlog);
+		} else if (strcmp(flag, "--stash-size") == 0 || strcmp(flag, "-ss") == 0) {
+			const char *arg = next_arg(argc, argv, &ind);
+			errors += parse_uint8(arg, "stash size", 0, 127, &stash_size);
 		} else if (strcmp(flag, "--queue-size") == 0 || strcmp(flag, "-qs") == 0) {
 			const char *arg = next_arg(argc, argv, &ind);
 			errors += parse_uint8(arg, "queue size", 0, 127, &queue_size);
