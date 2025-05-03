@@ -97,15 +97,26 @@ int main(int argc, char *argv[]) {
 
 	info("listening on %s:%d...\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
 
-	thread_pool.workers = malloc(most_workers * sizeof(*thread_pool.workers));
-	if (thread_pool.workers == NULL) {
-		fatal("failed to allocate %zu bytes for workers because %s\n", most_workers * sizeof(*thread_pool.workers), errno_str());
+	stash.flows = malloc(stash_size * sizeof(*stash.flows));
+	if (stash.flows == NULL) {
+		fatal("failed to allocate %zu bytes for flows because %s\n", stash_size * sizeof(*stash.flows), errno_str());
+		exit(1);
+	}
+
+	worker_t worker;
+	if (spawn(&worker, 0, &flowing, &fatal) == -1) {
 		exit(1);
 	}
 
 	queue.tasks = malloc(queue_size * sizeof(*queue.tasks));
 	if (queue.tasks == NULL) {
 		fatal("failed to allocate %zu bytes for tasks because %s\n", queue_size * sizeof(*queue.tasks), errno_str());
+		exit(1);
+	}
+
+	thread_pool.workers = malloc(most_workers * sizeof(*thread_pool.workers));
+	if (thread_pool.workers == NULL) {
+		fatal("failed to allocate %zu bytes for workers because %s\n", most_workers * sizeof(*thread_pool.workers), errno_str());
 		exit(1);
 	}
 
@@ -120,7 +131,7 @@ int main(int argc, char *argv[]) {
 		pthread_mutex_lock(&queue.lock);
 
 		while (queue.size >= queue_size) {
-			warn("waiting for queue size to decrease\n");
+			warn("waiting for queue size %hhu to decrease\n", queue.size);
 			pthread_cond_wait(&queue.available, &queue.lock);
 		}
 

@@ -1,7 +1,19 @@
+#include "flow.h"
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <sqlite3.h>
 #include <stdint.h>
+
+typedef struct stash_t {
+	flow_t *flows;
+	uint8_t head;
+	uint8_t tail;
+	uint8_t size;
+	pthread_mutex_t lock;
+	pthread_cond_t filled;
+} stash_t;
+
+extern struct stash_t stash;
 
 typedef struct task_t {
 	int client_sock;

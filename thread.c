@@ -7,6 +7,14 @@
 #include <sqlite3.h>
 #include <stdbool.h>
 
+stash_t stash = {
+		.head = 0,
+		.tail = 0,
+		.size = 0,
+		.lock = PTHREAD_MUTEX_INITIALIZER,
+		.filled = PTHREAD_COND_INITIALIZER,
+};
+
 queue_t queue = {
 		.head = 0,
 		.tail = 0,
