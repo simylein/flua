@@ -71,7 +71,7 @@ void *thread(void *args) {
 		}
 
 		task_t task = queue.tasks[queue.head];
-		queue.head = (uint8_t)((queue.head + 1) % (queue_size));
+		queue.head = (uint8_t)((queue.head + 1) % queue_size);
 		queue.size--;
 		trace("worker thread %hhu decreased queue size to %hhu\n", arg->id, queue.size);
 		pthread_cond_signal(&queue.available);
