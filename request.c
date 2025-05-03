@@ -136,7 +136,7 @@ void request(char *buffer, size_t length, request_t *req, response_t *res) {
 
 const char *find_header(request_t *request, const char *key) {
 	const char *header = strncasestrn(request->header, request->header_len, key, strlen(key));
-	if (header) {
+	if (header != NULL) {
 		header += strlen(key);
 		if (header[0] == ' ') {
 			header += 1;
