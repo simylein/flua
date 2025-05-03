@@ -1,5 +1,6 @@
 #include "config.h"
 #include "error.h"
+#include "flow.h"
 #include "format.h"
 #include "logger.h"
 #include "request.h"
@@ -15,6 +16,8 @@
 void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr) {
 	char request_buffer[98304];
 	char response_buffer[98304];
+
+	time_t timestamp = time(NULL);
 
 	if (setsockopt(*client_sock, SOL_SOCKET, SO_RCVTIMEO, &(struct timeval){.tv_sec = receive_timeout, .tv_usec = 0},
 								 sizeof(struct timeval)) == -1) {
@@ -159,6 +162,8 @@ void handle(sqlite3 *database, int *client_sock, struct sockaddr_in *client_addr
 
 	trace("sent %zd bytes in %hhu packets to %s:%d\n", bytes_sent, packets_sent, inet_ntoa(client_addr->sin_addr),
 				ntohs(client_addr->sin_port));
+
+	stash_flow(timestamp, &reqs, &resp, &start, &stop, bytes_received, bytes_sent);
 
 cleanup:
 	if (close(*client_sock) == -1) {
