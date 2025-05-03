@@ -2,6 +2,43 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 
+int flow_init(sqlite3 *database) {
+	int status;
+
+	sqlite3_stmt *stmt;
+
+	const char *sql = "create table flow "
+										"(id blob not null primary key, "
+										"timestamp int not null, "
+										"method text not null, "
+										"pathname text not null, "
+										"search text not null, "
+										"status int not null, "
+										"duration int not null, "
+										"bytes_received int not null, "
+										"bytes_sent int not null)";
+	debug("%s\n", sql);
+
+	if (sqlite3_prepare_v2(database, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		error("failed to prepare statement because %s\n", sqlite3_errmsg(database));
+		status = -1;
+		goto cleanup;
+	}
+
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		error("failed to execute statement because %s\n", sqlite3_errmsg(database));
+		status = -1;
+		goto cleanup;
+	}
+
+	info("created flow table\n");
+	status = 0;
+
+cleanup:
+	sqlite3_finalize(stmt);
+	return status;
+}
+
 int user_init(sqlite3 *database) {
 	int status;
 
@@ -136,6 +173,9 @@ cleanup:
 }
 
 int init(sqlite3 *database) {
+	if (flow_init(database) != 0) {
+		return -1;
+	}
 	if (user_init(database) != 0) {
 		return -1;
 	}
