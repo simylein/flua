@@ -1,6 +1,6 @@
 ## flua flights
 
-the source code of https://flua.dev
+the source code of https://flua.simylein.net
 
 a simple web application which presents flight and airtime statistics
 
