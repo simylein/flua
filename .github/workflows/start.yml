@@ -1,0 +1,33 @@
+name: flua
+on:
+  push:
+    branches: [main, develop, feature/*, refactor/*, bugfix/*, hotfix/*]
+jobs:
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: make release
+        run: make release
+      - name: flua version
+        run: ./flua --version
+      - name: flua init
+        run: ./flua --init
+      - name: flua start
+        run: |
+          address=0.0.0.0
+          port=2254
+          ./flua --address $address --port $port >flua.log 2>&1 &
+          for i in {1..8}; do
+            if nc -z $address $port; then
+              echo "listening on $address $port"
+              break
+            fi
+            echo "waiting for listening socket"
+            sleep 1
+          done
+          if ! nc -z $address $port; then
+            echo "$address $port timed out"
+            cat flua.log
+            exit 1
+          fi

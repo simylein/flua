@@ -1,8 +1,11 @@
 # operating system
 .DS_Store
 
+# vscode
+.vscode
+
 # objects
-*.o
+obj
 
 # executable
 flua
@@ -12,6 +15,3 @@ flua.sqlite
 
 # logs
 *.log
-
-# tailwind
-tailwind.config.ts
