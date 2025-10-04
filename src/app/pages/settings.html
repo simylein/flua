@@ -5,268 +5,66 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Profile settings for flight graphs and account management" />
 		<title>Profile settings</title>
-		<style>
-			.font-sans {
-				font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-			}
-			.fixed {
-				position: fixed;
-			}
-			.top-0 {
-				top: 0px;
-			}
-			.right-0 {
-				right: 0px;
-			}
-			.w-full {
-				width: 100%;
-			}
-			.min-w-28 {
-				min-width: 112px;
-			}
-			.max-w-96 {
-				max-width: 384px;
-			}
-			.max-w-screen-md {
-				max-width: 768px;
-			}
-			.flex {
-				display: flex;
-			}
-			.flex-col {
-				flex-direction: column;
-			}
-			.flex-row-reverse {
-				flex-direction: row-reverse;
-			}
-			.items-start {
-				align-items: flex-start;
-			}
-			.items-center {
-				align-items: center;
-			}
-			.justify-start {
-				justify-content: flex-start;
-			}
-			.gap-1 {
-				gap: 4px;
-			}
-			.gap-2 {
-				gap: 8px;
-			}
-			.m-0 {
-				margin: 0px;
-			}
-			.m-2 {
-				margin: 8px;
-			}
-			.m-4 {
-				margin: 16px;
-			}
-			.p-1 {
-				padding: 4px;
-			}
-			.p-4 {
-				padding: 16px;
-			}
-			.px-4 {
-				padding-left: 16px;
-				padding-right: 16px;
-			}
-			.py-1 {
-				padding-top: 4px;
-				padding-bottom: 4px;
-			}
-			.border-0 {
-				border-width: 0px;
-			}
-			.text-base {
-				font-size: 16px;
-				line-height: 24px;
-			}
-			.text-xl {
-				font-size: 20px;
-				line-height: 28px;
-			}
-			.font-normal {
-				font-weight: 400;
-			}
-			.font-medium {
-				font-weight: 500;
-			}
-			.no-underline {
-				text-decoration-line: none;
-			}
-			.text-black {
-				color: #000000;
-			}
-			.text-blue-600 {
-				color: #2563eb;
-			}
-			.bg-white {
-				background-color: #ffffff;
-			}
-			.bg-neutral-100 {
-				background-color: #f5f5f5;
-			}
-			.bg-neutral-200 {
-				background-color: #e5e5e5;
-			}
-			.bg-neutral-300 {
-				background-color: #d4d4d4;
-			}
-			.bg-red-200 {
-				background-color: #fecaca;
-			}
-			.bg-red-300 {
-				background-color: #fca5a5;
-			}
-			.bg-amber-200 {
-				background-color: #fde68a;
-			}
-			.bg-amber-300 {
-				background-color: #fcd34d;
-			}
-			.bg-green-200 {
-				background-color: #bbf7d0;
-			}
-			.bg-green-300 {
-				background-color: #86efac;
-			}
-			.bg-teal-300 {
-				background-color: #5eead4;
-			}
-			.bg-sky-300 {
-				background-color: #7dd3fc;
-			}
-			.bg-blue-200 {
-				background-color: #bfdbfe;
-			}
-			.active\:scale-95:active {
-				transform: scale(0.95);
-			}
-			.focus\:outline-none:focus {
-				outline: none;
-			}
-			.cursor-pointer {
-				cursor: pointer;
-			}
-			.z-10 {
-				z-index: 10;
-			}
-			@media (min-width: 640px) {
-				.sm\:flex-row {
-					flex-direction: row;
-				}
-			}
-			@media (min-width: 768px) {
-				.md\:gap-3 {
-					gap: 12px;
-				}
-				.md\:m-4 {
-					margin: 16px;
-				}
-				.md\:m-6 {
-					margin: 24px;
-				}
-			}
-			@media (min-width: 1024px) {
-				.lg\:gap-4 {
-					gap: 16px;
-				}
-				.lg\:m-8 {
-					margin: 32px;
-				}
-			}
-			@media (prefers-color-scheme: dark) {
-				.dark\:text-white {
-					color: #ffffff;
-				}
-				.dark\:text-blue-400 {
-					color: #60a5fa;
-				}
-				.dark\:bg-black {
-					background-color: #000000;
-				}
-				.dark\:bg-neutral-700 {
-					background-color: #404040;
-				}
-				.dark\:bg-neutral-800 {
-					background-color: #262626;
-				}
-				.dark\:bg-neutral-900 {
-					background-color: #171717;
-				}
-				.dark\:bg-red-700 {
-					background-color: #b91c1c;
-				}
-				.dark\:bg-red-800 {
-					background-color: #991b1b;
-				}
-				.dark\:bg-amber-700 {
-					background-color: #b45309;
-				}
-				.dark\:bg-amber-800 {
-					background-color: #92400e;
-				}
-				.dark\:bg-green-700 {
-					background-color: #15803d;
-				}
-				.dark\:bg-green-800 {
-					background-color: #166534;
-				}
-				.dark\:bg-teal-700 {
-					background-color: #0f766e;
-				}
-				.dark\:bg-sky-700 {
-					background-color: #0369a1;
-				}
-				.dark\:bg-blue-800 {
-					background-color: #1e40af;
-				}
-			}
-		</style>
+		<style></style>
 	</head>
-	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="loadMe();">
+	<body class="font-sans flex flex-col m-0 text-base leading-none text-black background-white dark:text-white dark:background-black" onload="loadMe();">
+		<notifications ref="./src/app/components/notifications.html" />
 		<main class="flex flex-col items-center m-4 md:m-6 lg:m-8">
-			<div id="notifications" class="top-0 right-0 fixed m-2 md:m-4"></div>
-			<div class="w-full max-w-screen-md flex flex-col gap-2 md:gap-3 lg:gap-4">
-				<div class="flex flex-col items-start gap-1">
+			<div class="w-full max-w-md flex flex-col gap-2 md:gap-3 lg:gap-4">
+				<div class="flex flex-col items-start gap-2">
 					<a href="/" class="no-underline text-base font-normal text-blue-600 dark:text-blue-400">home</a>
 				</div>
-				<div class="flex flex-col items-start gap-1">
+				<div class="flex flex-col items-start gap-2">
 					<h2 class="m-0 text-base font-normal">Profile visibility</h2>
-					<div id="profile-visibility" class="p-1 bg-neutral-100 dark:bg-neutral-900">
-						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Private</button>
-						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Friends</button>
-						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-200 dark:bg-neutral-800 cursor-pointer">Public</button>
+					<div id="profile-visibility" class="p-1 background-neutral-100 dark:background-neutral-900">
+						<button
+							class="text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-200 dark:background-neutral-800 cursor-pointer"
+						>
+							Private
+						</button>
+						<button
+							class="text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-200 dark:background-neutral-800 cursor-pointer"
+						>
+							Friends
+						</button>
+						<button
+							class="text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-200 dark:background-neutral-800 cursor-pointer"
+						>
+							Public
+						</button>
 					</div>
 				</div>
-				<div class="flex flex-col items-start gap-1">
+				<div class="flex flex-col items-start gap-2">
 					<h2 class="m-0 text-base font-normal">Danger zone</h2>
 					<div class="flex flex-col sm:flex-row gap-1">
-						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-amber-300 dark:bg-amber-700 active:scale-95 cursor-pointer" onclick="openPurgeDialog()">
+						<button
+							class="text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-amber-300 dark:background-amber-700 cursor-pointer"
+							onclick="openPurgeDialog()"
+						>
 							Purge flights
 						</button>
-						<button class="text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-red-300 dark:bg-red-700 active:scale-95 cursor-pointer" onclick="openProfileDialog()">
+						<button
+							class="text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-red-300 dark:background-red-700 cursor-pointer"
+							onclick="openProfileDialog()"
+						>
 							Delete profile
 						</button>
 					</div>
 				</div>
 			</div>
-			<dialog id="private-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+			<dialog id="private-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white background-neutral-100 dark:background-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Make profile visibility private?</h1>
 					<p class="m-0 text-base font-normal">A private profile can only be viewed by yourself.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-green-300 dark:bg-green-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-green-300 dark:background-green-700 outline-none cursor-pointer"
 							onclick="handleSubmit(privateDialog.children[0].children[2].children[0], privateDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'private' }), closePrivateDialog)"
 						>
 							Private
 						</button>
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-300 dark:background-neutral-700 outline-none cursor-pointer"
 							onclick="closePrivateDialog()"
 						>
 							Cancel
@@ -274,19 +72,19 @@
 					</div>
 				</div>
 			</dialog>
-			<dialog id="friends-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+			<dialog id="friends-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white background-neutral-100 dark:background-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Make profile visibility friends?</h1>
 					<p class="m-0 text-base font-normal">A friends profile can only be viewed by friends.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-teal-300 dark:bg-teal-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-teal-300 dark:background-teal-700 outline-none cursor-pointer"
 							onclick="handleSubmit(friendsDialog.children[0].children[2].children[0], friendsDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'friends' }), closeFriendsDialog)"
 						>
 							Friends
 						</button>
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-300 dark:background-neutral-700 outline-none cursor-pointer"
 							onclick="closeFriendsDialog()"
 						>
 							Cancel
@@ -294,19 +92,19 @@
 					</div>
 				</div>
 			</dialog>
-			<dialog id="public-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+			<dialog id="public-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white background-neutral-100 dark:background-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Make profile visibility public?</h1>
 					<p class="m-0 text-base font-normal">A public profile can be viewed by anyone.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-sky-300 dark:bg-sky-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-sky-300 dark:background-sky-700 outline-none cursor-pointer"
 							onclick="handleSubmit(publicDialog.children[0].children[2].children[0], publicDialog.children[0].children[2].children[1], () => patchMe({ visibility: 'public' }), closePublicDialog)"
 						>
 							Public
 						</button>
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-300 dark:background-neutral-700 outline-none cursor-pointer"
 							onclick="closePublicDialog()"
 						>
 							Cancel
@@ -314,19 +112,19 @@
 					</div>
 				</div>
 			</dialog>
-			<dialog id="purge-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+			<dialog id="purge-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white background-neutral-100 dark:background-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Purge flights?</h1>
 					<p class="m-0 text-base font-normal">Purging your flights will delete your flights from the database.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-amber-300 dark:bg-amber-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-amber-300 dark:background-amber-700 outline-none cursor-pointer"
 							onclick="handleSubmit(purgeDialog.children[0].children[2].children[0], purgeDialog.children[0].children[2].children[1], deleteFlights, closePurgeDialog)"
 						>
 							Purge
 						</button>
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-300 dark:background-neutral-700 outline-none cursor-pointer"
 							onclick="closePurgeDialog()"
 						>
 							Cancel
@@ -334,19 +132,19 @@
 					</div>
 				</div>
 			</dialog>
-			<dialog id="delete-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white bg-neutral-100 dark:bg-neutral-900">
+			<dialog id="delete-dialog" class="max-w-96 p-4 border-0 text-black dark:text-white background-neutral-100 dark:background-neutral-900">
 				<div class="flex flex-col gap-2">
 					<h1 class="m-0 text-xl font-medium">Delete profile?</h1>
 					<p class="m-0 text-base font-normal">Deleting your profile will delete your flights alongside your user from the database.</p>
 					<div class="flex flex-row-reverse justify-start gap-2">
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-red-300 dark:bg-red-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-red-300 dark:background-red-700 outline-none cursor-pointer"
 							onclick="handleSubmit(deleteDialog.children[0].children[2].children[0], deleteDialog.children[0].children[2].children[1], deleteMe, closeProfileDialog)"
 						>
 							Delete
 						</button>
 						<button
-							class="min-w-28 text-base font-normal py-1 px-4 border-0 text-black dark:text-white bg-neutral-300 dark:bg-neutral-700 active:scale-95 focus:outline-none cursor-pointer"
+							class="min-w-28 text-base font-normal pt-1 pr-4 pb-1 pl-4 border-0 text-black dark:text-white background-neutral-300 dark:background-neutral-700 outline-none cursor-pointer"
 							onclick="closeProfileDialog()"
 						>
 							Cancel
@@ -357,37 +155,35 @@
 		</main>
 	</body>
 	<script>
-		let meRetries = 0;
-		let meTimeout = null;
-		let meController = null;
+		import './src/app/scripts/array.js';
+		import './src/app/scripts/fetcher.js';
+		import './src/app/scripts/fetching.js';
+		import './src/app/scripts/report.js';
+		import './src/app/scripts/notification.js';
+		const me = { retries: 0, reload: null, timeout: null, controller: null, data: null };
 		const profileVisibility = document.getElementById('profile-visibility');
 		const visibilityColors = [
-			['bg-green-300', 'dark:bg-green-700'],
-			['bg-teal-300', 'dark:bg-teal-700'],
-			['bg-sky-300', 'dark:bg-sky-700'],
+			['background-green-300', 'dark:background-green-700'],
+			['background-teal-300', 'dark:background-teal-700'],
+			['background-sky-300', 'dark:background-sky-700'],
 		];
 		const privateDialog = document.getElementById('private-dialog');
 		const friendsDialog = document.getElementById('friends-dialog');
 		const publicDialog = document.getElementById('public-dialog');
 		const purgeDialog = document.getElementById('purge-dialog');
 		const deleteDialog = document.getElementById('delete-dialog');
-		const array = (length) => {
-			return Array(length)
-				.fill(null)
-				.map((__, ind) => ind);
-		};
 		const loading = (element, add, remove) => {
 			element.disabled = true;
-			element.classList.add(...add, 'bg-neutral-200', 'dark:bg-neutral-800');
-			element.classList.remove('bg-red-200', 'dark:bg-red-800', 'active:scale-95', 'cursor-pointer', ...remove);
+			element.classList.add(...add, 'background-neutral-200', 'dark:background-neutral-800');
+			element.classList.remove('background-red-200', 'dark:background-red-800', 'cursor-pointer', ...remove);
 		};
 		const paint = (element, add, remove, disable, onclick) => {
 			element.disabled = false;
-			element.classList.add('active:scale-95', 'cursor-pointer', ...add);
-			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', ...remove);
+			element.classList.add('cursor-pointer', ...add);
+			element.classList.remove('background-neutral-200', 'dark:background-neutral-800', ...remove);
 			if (disable) {
 				element.disabled = true;
-				element.classList.remove('active:scale-95', 'cursor-pointer');
+				element.classList.remove('cursor-pointer');
 			}
 			if (onclick !== undefined) {
 				element.onclick = onclick;
@@ -395,27 +191,27 @@
 		};
 		const error = (element) => {
 			element.disabled = true;
-			element.classList.add('bg-red-200', 'dark:bg-red-800');
-			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', 'active:scale-95', 'cursor-pointer');
+			element.classList.add('background-red-200', 'dark:background-red-800');
+			element.classList.remove('background-neutral-200', 'dark:background-neutral-800', 'cursor-pointer');
 		};
 		const loadingSettings = () => {
 			array(profileVisibility.children.length).forEach((ind) => {
-				loading(profileVisibility.children[ind], [], ['bg-neutral-300', 'dark:bg-neutral-700', ...visibilityColors[ind]]);
+				loading(profileVisibility.children[ind], [], ['background-neutral-300', 'dark:background-neutral-700', ...visibilityColors[ind]]);
 			});
 		};
 		const paintSettings = (data) => {
-			paint(profileVisibility.children[0], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openPrivateDialog);
-			paint(profileVisibility.children[1], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openFriendsDialog);
-			paint(profileVisibility.children[2], ['bg-neutral-300', 'dark:bg-neutral-700'], [], false, openPublicDialog);
+			paint(profileVisibility.children[0], ['background-neutral-300', 'dark:background-neutral-700'], [], false, openPrivateDialog);
+			paint(profileVisibility.children[1], ['background-neutral-300', 'dark:background-neutral-700'], [], false, openFriendsDialog);
+			paint(profileVisibility.children[2], ['background-neutral-300', 'dark:background-neutral-700'], [], false, openPublicDialog);
 			switch (true) {
 				case data.visibility === 'private':
-					paint(profileVisibility.children[0], visibilityColors[0], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					paint(profileVisibility.children[0], visibilityColors[0], ['background-neutral-300', 'dark:background-neutral-700'], true, null);
 					break;
 				case data.visibility === 'friends':
-					paint(profileVisibility.children[1], visibilityColors[1], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					paint(profileVisibility.children[1], visibilityColors[1], ['background-neutral-300', 'dark:background-neutral-700'], true, null);
 					break;
 				case data.visibility === 'public':
-					paint(profileVisibility.children[2], visibilityColors[2], ['bg-neutral-300', 'dark:bg-neutral-700'], true, null);
+					paint(profileVisibility.children[2], visibilityColors[2], ['background-neutral-300', 'dark:background-neutral-700'], true, null);
 					break;
 			}
 		};
@@ -475,57 +271,30 @@
 			}
 			return me;
 		};
-		const loadMe = async () => {
-			if (meTimeout) {
-				clearTimeout(meTimeout);
-				meTimeout = null;
-			}
-			if (meController) {
-				meController.abort();
-			}
-			meController = new AbortController();
-			window.requestAnimationFrame(() => loadingSettings());
-			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
-				}
-				const response = await fetch(`/api/me`, { signal: meController.signal });
-				if (response.status < 200 || response.status > 299) {
-					throw Error(response);
-				}
-				const data = await parseMe(response);
-				window.requestAnimationFrame(() => paintSettings(data));
-			} catch (err) {
-				if (err?.name !== 'AbortError') {
-					window.requestAnimationFrame(() => errorSettings());
-					if (meRetries < 4) {
-						meTimeout = setTimeout(() => {
-							meRetries++;
-							loadMe();
-						}, 2 ** meRetries * 1000);
-					}
-				}
-			}
-		};
+		const loadMe = fetching(
+			me,
+			(context) => window.requestAnimationFrame(() => loadingSettings()),
+			(context) => fetcher('get', '/api/me', null, { controller: context.controller }),
+			async (context, response) => (context.data = await parseMe(response)),
+			(context) => window.requestAnimationFrame(() => paintSettings(context.data)),
+			(context) => window.requestAnimationFrame(() => errorSettings())
+		);
 		const handleSubmit = async (confirm, cancel, submit, close) => {
 			const store = confirm.innerText;
 			confirm.innerText = 'loading...';
 			confirm.disabled = true;
 			confirm.classList.add('cursor-progress');
-			confirm.classList.remove('active:scale-95', 'cursor-pointer');
+			confirm.classList.remove('cursor-pointer');
 			cancel.disabled = true;
 			cancel.classList.add('cursor-progress');
-			cancel.classList.remove('active:scale-95', 'cursor-pointer');
+			cancel.classList.remove('cursor-pointer');
 			await submit();
 			confirm.innerText = store;
 			confirm.disabled = false;
-			confirm.classList.add('active:scale-95', 'cursor-pointer');
+			confirm.classList.add('cursor-pointer');
 			confirm.classList.remove('cursor-progress');
 			cancel.disabled = false;
-			cancel.classList.add('active:scale-95', 'cursor-pointer');
+			cancel.classList.add('cursor-pointer');
 			cancel.classList.remove('cursor-progress');
 			close();
 		};
@@ -552,74 +321,29 @@
 						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
 					}
 				}
-				const response = await fetch('/api/me', { method: 'patch', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
-				if (response.status >= 200 && response.status <= 299) {
-					notification('success', 'Successfully updated your profile');
-					loadMe();
-					return;
-				}
-				throw response;
+				const response = await fetcher('patch', '/api/me', buffer, { headers: { 'content-type': 'application/octet-stream' } });
+				notification('success', 'Successfully updated your profile');
+				loadMe();
 			} catch (err) {
-				if (err instanceof TypeError) {
-					return notification('info', 'Seems like you might be offline');
-				}
-				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
-				if (err.status < 500) {
-					return notification('warning', message);
-				}
-				return notification('error', message);
+				report(err);
 			}
 		};
 		const deleteFlights = async () => {
 			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
-				}
-				const response = await fetch('/api/flight', { method: 'delete' });
-				if (response.status >= 200 && response.status <= 299) {
-					notification('success', 'Successfully purged your flights');
-					window.location.href = '/';
-					return;
-				}
-				throw response;
+				const response = await fetcher('delete', '/api/flight');
+				notification('success', 'Successfully purged your flights');
+				window.location.href = '/';
 			} catch (err) {
-				if (err instanceof TypeError) {
-					return notification('info', 'Seems like you might be offline');
-				}
-				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
-				if (err.status < 500) {
-					return notification('warning', message);
-				}
-				return notification('error', message);
+				report(err);
 			}
 		};
 		const deleteMe = async () => {
 			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
-				}
-				const response = await fetch('/api/me', { method: 'delete' });
-				if (response.status >= 200 && response.status <= 299) {
-					notification('success', 'Successfully deleted your profile');
-					window.location.href = '/';
-					return;
-				}
-				throw response;
+				const response = await fetcher('delete', '/api/me');
+				notification('success', 'Successfully deleted your profile');
+				window.location.href = '/';
 			} catch (err) {
-				if (err instanceof TypeError) {
-					return notification('info', 'Seems like you might be offline');
-				}
-				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
-				if (err.status < 500) {
-					return notification('warning', message);
-				}
-				return notification('error', message);
+				report(err);
 			}
 		};
 		const openPrivateDialog = () => {
@@ -651,60 +375,6 @@
 		};
 		const closeProfileDialog = () => {
 			deleteDialog.close();
-		};
-		const notifications = document.getElementById('notifications');
-		const kind = (type) => {
-			switch (type) {
-				case 'info':
-					return 'Info';
-				case 'success':
-					return 'Success';
-				case 'warning':
-					return 'Warning';
-				case 'error':
-					return 'Error';
-			}
-		};
-		const color = (type) => {
-			switch (type) {
-				case 'info':
-					return ['bg-blue-200', 'dark:bg-blue-800'];
-				case 'success':
-					return ['bg-green-200', 'dark:bg-green-800'];
-				case 'warning':
-					return ['bg-amber-200', 'dark:bg-amber-800'];
-				case 'error':
-					return ['bg-red-200', 'dark:bg-red-800'];
-			}
-		};
-		const duration = (type) => {
-			switch (type) {
-				case 'info':
-					return 4000;
-				case 'success':
-					return 3000;
-				case 'warning':
-					return 6000;
-				case 'error':
-					return 8000;
-			}
-		};
-		const notification = (type, message) => {
-			const element = document.createElement('div');
-			element.classList.add('p-4', ...color(type), 'z-10');
-			const head = document.createElement('h2');
-			head.classList.add('m-0', 'mb-1', 'font-semibold');
-			const text = document.createElement('p');
-			text.classList.add('m-0', 'font-normal');
-			element.appendChild(head);
-			element.appendChild(text);
-			element.children[0].innerText = kind(type);
-			element.children[1].innerText = message;
-			if (notifications.children.length > 0) {
-				notifications.children[0].remove();
-			}
-			notifications.appendChild(element);
-			setTimeout(() => element.remove(), duration(type));
 		};
 	</script>
 </html>

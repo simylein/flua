@@ -5,542 +5,100 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="Flight statistics for paragliders including igc file upload" />
 		<title>Flight statistics</title>
-		<style>
-			.font-sans {
-				font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-			}
-			.box-border {
-				box-sizing: border-box;
-			}
-			.relative {
-				position: relative;
-			}
-			.absolute {
-				position: absolute;
-			}
-			.sticky {
-				position: sticky;
-			}
-			.fixed {
-				position: fixed;
-			}
-			.top-0 {
-				top: 0px;
-			}
-			.right-0 {
-				right: 0px;
-			}
-			.w-9 {
-				width: 36px;
-			}
-			.w-10 {
-				width: 40px;
-			}
-			.w-12 {
-				width: 48px;
-			}
-			.w-16 {
-				width: 64px;
-			}
-			.w-20 {
-				width: 80px;
-			}
-			.w-32 {
-				width: 128px;
-			}
-			.w-64 {
-				width: 256px;
-			}
-			.w-full {
-				width: 100%;
-			}
-			.min-w-7 {
-				min-width: 28px;
-			}
-			.max-w-screen-2xl {
-				max-width: 1536px;
-			}
-			.h-4 {
-				height: 16px;
-			}
-			.h-5 {
-				height: 20px;
-			}
-			.h-6 {
-				height: 24px;
-			}
-			.h-7 {
-				height: 28px;
-			}
-			.h-8 {
-				height: 32px;
-			}
-			.h-38 {
-				height: 152px;
-			}
-			.h-full {
-				height: 100%;
-			}
-			.size-2 {
-				width: 8px;
-				height: 8px;
-			}
-			.flex {
-				display: flex;
-			}
-			.grid {
-				display: grid;
-			}
-			.hidden {
-				display: none;
-			}
-			.flex-1 {
-				flex: 1 1 0%;
-			}
-			.flex-col {
-				flex-direction: column;
-			}
-			.flex-wrap {
-				flex-wrap: wrap;
-			}
-			.flex-col-reverse {
-				flex-direction: column-reverse;
-			}
-			.items-center {
-				align-items: center;
-			}
-			.items-end {
-				align-items: flex-end;
-			}
-			.justify-around {
-				justify-content: space-around;
-			}
-			.justify-between {
-				justify-content: space-between;
-			}
-			.gap-1 {
-				gap: 4px;
-			}
-			.gap-2 {
-				gap: 8px;
-			}
-			.gap-4 {
-				gap: 16px;
-			}
-			.m-0 {
-				margin: 0px;
-			}
-			.m-2 {
-				margin: 8px;
-			}
-			.m-4 {
-				margin: 16px;
-			}
-			.mt-4 {
-				margin-top: 16px;
-			}
-			.mr-2 {
-				margin-right: 8px;
-			}
-			.mb-1 {
-				margin-bottom: 4px;
-			}
-			.p-0 {
-				padding: 0px;
-			}
-			.p-1 {
-				padding: 4px;
-			}
-			.p-2 {
-				padding: 8px;
-			}
-			.p-4 {
-				padding: 16px;
-			}
-			.pr-1 {
-				padding-right: 4px;
-			}
-			.pb-1 {
-				padding-bottom: 4px;
-			}
-			.border-0 {
-				border-width: 0px;
-			}
-			.border-b {
-				border-bottom-width: 1px;
-			}
-			.border-solid {
-				border-style: solid;
-			}
-			.border-none {
-				border-style: none;
-			}
-			.border-spacing-0 {
-				border-spacing: 0px;
-			}
-			.overflow-x-scroll {
-				overflow-x: scroll;
-			}
-			.overflow-y-scroll {
-				overflow-y: scroll;
-			}
-			.scrollbar-none {
-				scrollbar-width: none;
-			}
-			.text-xs {
-				font-size: 12px;
-				line-height: 16px;
-			}
-			.text-sm {
-				font-size: 14px;
-				line-height: 20px;
-			}
-			.text-base {
-				font-size: 16px;
-				line-height: 24px;
-			}
-			.text-lg {
-				font-size: 18px;
-				line-height: 28px;
-			}
-			.text-start {
-				text-align: start;
-			}
-			.text-end {
-				text-align: end;
-			}
-			.text-nowrap {
-				text-wrap: nowrap;
-			}
-			.font-normal {
-				font-weight: 400;
-			}
-			.font-semibold {
-				font-weight: 600;
-			}
-			.no-underline {
-				text-decoration-line: none;
-			}
-			.text-black {
-				color: #000000;
-			}
-			.text-neutral-600 {
-				color: #525252;
-			}
-			.text-blue-600 {
-				color: #2563eb;
-			}
-			.bg-white {
-				background-color: #ffffff;
-			}
-			.bg-neutral-100 {
-				background-color: #f5f5f5;
-			}
-			.bg-neutral-200 {
-				background-color: #e5e5e5;
-			}
-			.bg-red-200 {
-				background-color: #fecaca;
-			}
-			.bg-amber-200 {
-				background-color: #fde68a;
-			}
-			.bg-amber-400\/80 {
-				background-color: #fbbf24cc;
-			}
-			.bg-lime-400\/80 {
-				background-color: #a3e635cc;
-			}
-			.bg-green-200 {
-				background-color: #bbf7d0;
-			}
-			.bg-green-400\/80 {
-				background-color: #4ade80cc;
-			}
-			.bg-emerald-400\/80 {
-				background-color: #34d399cc;
-			}
-			.bg-teal-400\/80 {
-				background-color: #2dd4bfcc;
-			}
-			.bg-cyan-400\/80 {
-				background-color: #22d3eecc;
-			}
-			.bg-sky-400\/80 {
-				background-color: #38bdf8cc;
-			}
-			.bg-blue-200 {
-				background-color: #bfdbfe;
-			}
-			.bg-blue-400\/80 {
-				background-color: #60a5facc;
-			}
-			.bg-indigo-400\/80 {
-				background-color: #818cf8cc;
-			}
-			.bg-purple-400\/80 {
-				background-color: #c084fccc;
-			}
-			.border-neutral-300 {
-				border-color: #d4d4d4;
-			}
-			.active\:scale-95:active {
-				transform: scale(0.95);
-			}
-			.cursor-default {
-				cursor: default;
-			}
-			.cursor-pointer {
-				cursor: pointer;
-			}
-			.cursor-not-allowed {
-				cursor: not-allowed;
-			}
-			.z-10 {
-				z-index: 10;
-			}
-			@media (min-width: 640px) {
-				.sm\:block {
-					display: block;
-				}
-				.sm\:inline {
-					display: inline;
-				}
-				.sm\:hidden {
-					display: none;
-				}
-				.sm\:gap-2 {
-					gap: 8px;
-				}
-				.sm\:mr-4 {
-					margin-right: 16px;
-				}
-			}
-			@media (min-width: 768px) {
-				.md\:hidden {
-					display: none;
-				}
-				.md\:flex-row {
-					flex-direction: row;
-				}
-				.md\:gap-1 {
-					gap: 4px;
-				}
-				.md\:gap-3 {
-					gap: 12px;
-				}
-				.md\:gap-6 {
-					gap: 24px;
-				}
-				.md\:m-4 {
-					margin: 16px;
-				}
-				.md\:m-6 {
-					margin: 24px;
-				}
-				.md\:mr-2 {
-					margin-right: 8px;
-				}
-				.md\:p-1\.5 {
-					padding: 6px;
-				}
-				.md\:p-3 {
-					padding: 12px;
-				}
-				.md\:pr-1\.5 {
-					padding-right: 6px;
-				}
-			}
-			@media (min-width: 1024px) {
-				.lg\:gap-2 {
-					gap: 8px;
-				}
-				.lg\:gap-4 {
-					gap: 16px;
-				}
-				.lg\:gap-8 {
-					gap: 32px;
-				}
-				.lg\:m-8 {
-					margin: 32px;
-				}
-				.lg\:mr-4 {
-					margin-right: 16px;
-				}
-				.lg\:p-2 {
-					padding: 8px;
-				}
-				.lg\:p-4 {
-					padding: 16px;
-				}
-				.lg\:pr-2 {
-					padding-right: 8px;
-				}
-			}
-			@media (min-width: 1280px) {
-				.xl\:inline {
-					display: inline;
-				}
-				.xl\:gap-3 {
-					gap: 12px;
-				}
-			}
-			@media (prefers-color-scheme: dark) {
-				.dark\:text-white {
-					color: #ffffff;
-				}
-				.dark\:text-neutral-400 {
-					color: #a3a3a3;
-				}
-				.dark\:text-blue-400 {
-					color: #60a5fa;
-				}
-				.dark\:bg-black {
-					background-color: #000000;
-				}
-				.dark\:bg-neutral-800 {
-					background-color: #262626;
-				}
-				.dark\:bg-neutral-900 {
-					background-color: #171717;
-				}
-				.dark\:bg-red-800 {
-					background-color: #991b1b;
-				}
-				.dark\:bg-amber-600\/80 {
-					background-color: #d97706cc;
-				}
-				.dark\:bg-amber-800 {
-					background-color: #92400e;
-				}
-				.dark\:bg-lime-600\/80 {
-					background-color: #65a30dcc;
-				}
-				.dark\:bg-green-600\/80 {
-					background-color: #16a34acc;
-				}
-				.dark\:bg-green-800 {
-					background-color: #166534;
-				}
-				.dark\:bg-emerald-600\/80 {
-					background-color: #059669cc;
-				}
-				.dark\:bg-teal-600\/80 {
-					background-color: #0d9488cc;
-				}
-				.dark\:bg-cyan-600\/80 {
-					background-color: #0891b2cc;
-				}
-				.dark\:bg-sky-600\/80 {
-					background-color: #0284c7cc;
-				}
-				.dark\:bg-blue-600\/80 {
-					background-color: #2563ebcc;
-				}
-				.dark\:bg-blue-800 {
-					background-color: #1e40af;
-				}
-				.dark\:bg-indigo-600\/80 {
-					background-color: #4f46e5cc;
-				}
-				.dark\:bg-purple-600\/80 {
-					background-color: #9333eacc;
-				}
-				.dark\:border-neutral-600 {
-					border-color: #525252;
-				}
-			}
-		</style>
+		<style></style>
 	</head>
-	<body class="font-sans flex flex-col m-0 text-black bg-white dark:text-white dark:bg-black" onload="paintTitle(); loadYears(); loadFlights();">
+	<body
+		class="font-sans flex flex-col m-0 text-base leading-none text-black background-white dark:text-white dark:background-black"
+		onload="paintTitle(); loadYears(); loadFlights();"
+	>
+		<notifications ref="./src/app/components/notifications.html" />
 		<main class="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 m-4 md:m-6 lg:m-8">
-			<div id="notifications" class="top-0 right-0 fixed m-2 md:m-4"></div>
-			<div class="w-full max-w-screen-2xl flex gap-4 md:gap-6 lg:gap-8 items-end justify-between">
-				<h1 id="title" class="w-64 h-7 m-0 text-lg font-normal bg-neutral-200 dark:bg-neutral-800"></h1>
+			<div class="w-full max-w-2xl flex gap-4 md:gap-6 lg:gap-8 items-end justify-between">
+				<h1 id="title" class="w-64 h-4.5 m-0 text-lg font-normal background-neutral-200 dark:background-neutral-800"></h1>
 				<a href="/settings" class="no-underline text-base font-normal text-blue-600 dark:text-blue-400">settings</a>
 			</div>
-			<div class="w-full max-w-screen-2xl flex gap-4 md:gap-6 lg:gap-8 justify-between">
-				<div id="years" class="flex gap-2 md:gap-3 lg:gap-4 overflow-x-scroll scrollbar-none">
-					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
-						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+			<div class="w-full max-w-2xl flex gap-4 md:gap-6 lg:gap-8 justify-between">
+				<div id="ranges" class="flex gap-2 md:gap-3 lg:gap-4 overflow-x-scroll scrollbar-none">
+					<button class="p-1 md:p-1.5 lg:p-2 border-none background-neutral-100 dark:background-neutral-900 cursor-default">
+						<p class="m-0 h-4 w-9 text-base leading-none font-normal text-black dark:text-white background-neutral-200 dark:background-neutral-800"></p>
 					</button>
-					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
-						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none background-neutral-100 dark:background-neutral-900 cursor-default">
+						<p class="m-0 h-4 w-9 text-base leading-none font-normal text-black dark:text-white background-neutral-200 dark:background-neutral-800"></p>
 					</button>
-					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
-						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none background-neutral-100 dark:background-neutral-900 cursor-default">
+						<p class="m-0 h-4 w-9 text-base leading-none font-normal text-black dark:text-white background-neutral-200 dark:background-neutral-800"></p>
 					</button>
-					<button class="p-1 md:p-1.5 lg:p-2 border-none bg-neutral-100 dark:bg-neutral-900 cursor-default">
-						<p class="m-0 h-6 w-9 text-base font-normal text-black dark:text-white bg-neutral-200 dark:bg-neutral-800"></p>
+					<button class="p-1 md:p-1.5 lg:p-2 border-none background-neutral-100 dark:background-neutral-900 cursor-default">
+						<p class="m-0 h-4 w-9 text-base leading-none font-normal text-black dark:text-white background-neutral-200 dark:background-neutral-800"></p>
 					</button>
 				</div>
-				<button id="upload" class="flex items-center justify-center border-none p-0 bg-blue-200 dark:bg-blue-800 active:scale-95">
+				<button id="upload" class="flex items-center justify-center border-none p-0 background-blue-200 dark:background-blue-800">
 					<label for="file-upload" class="p-1 md:p-1.5 lg:p-2 text-base font-normal text-black dark:text-white cursor-pointer">Upload</label>
 					<input id="file-upload" type="file" class="hidden" accept=".igc" multiple onchange="uploadFlights(event)" />
 				</button>
 			</div>
-			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+			<div class="w-full max-w-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Flights</h2>
-						<p id="flight-count" class="w-10 h-6 m-0 text-base font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="flight-count" class="w-10 h-4 m-0 text-base font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: auto 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="flight-scale" class="flex flex-col text-xs text-end">
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
 						</div>
 						<div class="relative flex flex-col">
 							<div class="absolute w-full h-full">
 								<div id="flight-graph" class="flex justify-between w-full h-full gap-1 sm:gap-2 md:gap-1 lg:gap-2 xl:gap-3">
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 8%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 17%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 17%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 42%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 42%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 69%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 69%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 82%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 82%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 73%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 73%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 56%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 56%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 37%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 37%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 16%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 16%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 8%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 								</div>
 							</div>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
 						</div>
 						<div></div>
 						<div class="w-full flex justify-around text-xs">
@@ -595,67 +153,67 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Airtime</h2>
-						<p id="airtime-count" class="w-10 h-6 m-0 text-base font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="airtime-count" class="w-10 h-4 m-0 text-base font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: auto 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
 						<div id="airtime-scale" class="flex flex-col text-xs text-end">
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
-							<label class="min-w-7 h-4 mt-4 text-neutral-600 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
+							<label class="min-w-7 h-3 mt-5 text-neutral-600 dark:text-neutral-400 background-neutral-200 dark:background-neutral-800"></label>
 						</div>
 						<div class="relative flex flex-col">
 							<div class="absolute w-full h-full">
 								<div id="airtime-graph" class="flex justify-between w-full h-full gap-1 sm:gap-2 md:gap-1 lg:gap-2 xl:gap-3">
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 8%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 17%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 17%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 42%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 42%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 69%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 69%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 82%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 82%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 73%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 73%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 56%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 56%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 37%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 37%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 16%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 16%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 									<div class="flex flex-col-reverse w-full h-full">
-										<div style="height: 8%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+										<div style="height: 8%" class="background-neutral-200 dark:background-neutral-800"></div>
 									</div>
 								</div>
 							</div>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
-							<span class="box-border h-8 border-0 border-b border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
+							<span class="box-border h-8 border-0 border-b-1 border-solid border-neutral-300 dark:border-neutral-600"></span>
 						</div>
 						<div></div>
 						<div class="w-full flex justify-around text-xs">
@@ -711,278 +269,278 @@
 					</div>
 				</div>
 			</div>
-			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between items-end gap-2 mb-1">
+			<div class="w-full max-w-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between items-end gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Altitude</h2>
-						<p id="altitude-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="altitude-stats" class="w-32 h-3.5 m-0 text-sm font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
-						<div id="altitude-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+						<div id="altitude-scale" class="h-3 flex flex-wrap text-xs background-neutral-200 dark:background-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<span class="w-2 h-2 background-green-400/80 dark:background-green-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">0<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-teal-400/80 dark:bg-teal-600/80"></span>
+								<span class="w-2 h-2 background-teal-400/80 dark:background-teal-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">1<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-sky-400/80 dark:bg-sky-600/80"></span>
+								<span class="w-2 h-2 background-sky-400/80 dark:background-sky-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">2<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-indigo-400/80 dark:bg-indigo-600/80"></span>
+								<span class="w-2 h-2 background-indigo-400/80 dark:background-indigo-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">3<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-purple-400/80 dark:bg-purple-600/80"></span>
+								<span class="w-2 h-2 background-purple-400/80 dark:background-purple-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">4<span class="hidden sm:inline md:hidden xl:inline">km</span></label>
 								<p class="m-0"></p>
 							</div>
 						</div>
 						<div id="altitude-graph" class="flex flex-col">
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between items-end gap-2 mb-1">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between items-end gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Thermal</h2>
-						<p id="thermal-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="thermal-stats" class="w-32 h-3.5 m-0 text-sm font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
-						<div id="thermal-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+						<div id="thermal-scale" class="h-3 flex flex-wrap text-xs background-neutral-200 dark:background-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-amber-400/80 dark:bg-amber-600/80"></span>
+								<span class="w-2 h-2 background-amber-400/80 dark:background-amber-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">0<span class="hidden sm:inline md:hidden xl:inline">m/s</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-lime-400/80 dark:bg-lime-600/80"></span>
+								<span class="w-2 h-2 background-lime-400/80 dark:background-lime-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">1<span class="hidden sm:inline md:hidden xl:inline">m/s</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-emerald-400/80 dark:bg-emerald-600/80"></span>
+								<span class="w-2 h-2 background-emerald-400/80 dark:background-emerald-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">2<span class="hidden sm:inline md:hidden xl:inline">m/s</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-cyan-400/80 dark:bg-cyan-600/80"></span>
+								<span class="w-2 h-2 background-cyan-400/80 dark:background-cyan-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">3<span class="hidden sm:inline md:hidden xl:inline">m/s</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-blue-400/80 dark:bg-blue-600/80"></span>
+								<span class="w-2 h-2 background-blue-400/80 dark:background-blue-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">4<span class="hidden sm:inline md:hidden xl:inline">m/s</span></label>
 								<p class="m-0"></p>
 							</div>
 						</div>
 						<div id="thermal-graph" class="flex flex-col">
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="w-full max-w-screen-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between items-end gap-2 mb-1">
+			<div class="w-full max-w-2xl flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between items-end gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Speed</h2>
-						<p id="speed-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="speed-stats" class="w-32 h-3.5 m-0 text-sm font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
-						<div id="speed-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+						<div id="speed-scale" class="h-3 flex flex-wrap text-xs background-neutral-200 dark:background-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-green-400/80 dark:bg-green-600/80"></span>
+								<span class="w-2 h-2 background-green-400/80 dark:background-green-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">20<span class="hidden sm:inline md:hidden xl:inline">km/h</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-teal-400/80 dark:bg-teal-600/80"></span>
+								<span class="w-2 h-2 background-teal-400/80 dark:background-teal-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">30<span class="hidden sm:inline md:hidden xl:inline">km/h</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-sky-400/80 dark:bg-sky-600/80"></span>
+								<span class="w-2 h-2 background-sky-400/80 dark:background-sky-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">40<span class="hidden sm:inline md:hidden xl:inline">km/h</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-indigo-400/80 dark:bg-indigo-600/80"></span>
+								<span class="w-2 h-2 background-indigo-400/80 dark:background-indigo-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">50<span class="hidden sm:inline md:hidden xl:inline">km/h</span></label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-purple-400/80 dark:bg-purple-600/80"></span>
+								<span class="w-2 h-2 background-purple-400/80 dark:background-purple-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400">60<span class="hidden sm:inline md:hidden xl:inline">km/h</span></label>
 								<p class="m-0"></p>
 							</div>
 						</div>
 						<div id="speed-graph" class="flex flex-col">
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="flex-1 p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between items-end gap-2 mb-1">
+				<div class="flex-1 p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between items-end gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Glide</h2>
-						<p id="glide-stats" class="w-32 h-5 m-0 text-sm font-normal bg-neutral-200 dark:bg-neutral-800"></p>
+						<p id="glide-stats" class="w-32 h-3.5 m-0 text-sm font-normal background-neutral-200 dark:background-neutral-800"></p>
 					</div>
 					<div style="grid-template-columns: 1fr; grid-template-rows: auto auto" class="grid gap-1 sm:gap-2 md:gap-1 lg:gap-2">
-						<div id="glide-scale" class="h-4 flex flex-wrap text-xs bg-neutral-200 dark:bg-neutral-800">
+						<div id="glide-scale" class="h-3 flex flex-wrap text-xs background-neutral-200 dark:background-neutral-800">
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-amber-400/80 dark:bg-amber-600/80"></span>
+								<span class="w-2 h-2 background-amber-400/80 dark:background-amber-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400"><span class="hidden sm:inline md:hidden xl:inline">1/</span>4</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-lime-400/80 dark:bg-lime-600/80"></span>
+								<span class="w-2 h-2 background-lime-400/80 dark:background-lime-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400"><span class="hidden sm:inline md:hidden xl:inline">1/</span>6</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-emerald-400/80 dark:bg-emerald-600/80"></span>
+								<span class="w-2 h-2 background-emerald-400/80 dark:background-emerald-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400"><span class="hidden sm:inline md:hidden xl:inline">1/</span>8</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-cyan-400/80 dark:bg-cyan-600/80"></span>
+								<span class="w-2 h-2 background-cyan-400/80 dark:background-cyan-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400"><span class="hidden sm:inline md:hidden xl:inline">1/</span>10</label>
 								<p class="m-0"></p>
 							</div>
 							<div class="hidden items-center gap-1 mr-2 sm:mr-4 md:mr-2 lg:mr-4">
-								<span class="size-2 bg-blue-400/80 dark:bg-blue-600/80"></span>
+								<span class="w-2 h-2 background-blue-400/80 dark:background-blue-600/80"></span>
 								<label class="text-neutral-600 dark:text-neutral-400"><span class="hidden sm:inline md:hidden xl:inline">1/</span>12</label>
 								<p class="m-0"></p>
 							</div>
 						</div>
 						<div id="glide-graph" class="flex flex-col">
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 							<div class="flex w-full h-4">
-								<div style="width: 12%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 24%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 40%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 20%" class="bg-neutral-200 dark:bg-neutral-800"></div>
-								<div style="width: 4%" class="bg-neutral-200 dark:bg-neutral-800"></div>
+								<div style="width: 12%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 24%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 40%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 20%" class="background-neutral-200 dark:background-neutral-800"></div>
+								<div style="width: 4%" class="background-neutral-200 dark:background-neutral-800"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="w-full max-w-screen-2xl">
-				<div class="p-2 md:p-3 lg:p-4 bg-neutral-100 dark:bg-neutral-900">
-					<div class="flex justify-between gap-2 mb-1">
+			<div class="w-full max-w-2xl">
+				<div class="p-2 md:p-3 lg:p-4 background-neutral-100 dark:background-neutral-900">
+					<div class="flex justify-between gap-2 mb-2">
 						<h2 class="m-0 text-base font-normal">Logbook</h2>
 					</div>
-					<div class="h-38 overflow-y-scroll scrollbar-none">
+					<div class="h-40 overflow-y-scroll scrollbar-none">
 						<table class="w-full border-spacing-0">
-							<thead class="sticky top-0 text-nowrap bg-neutral-100 dark:bg-neutral-900">
+							<thead class="sticky top-0 text-nowrap background-neutral-100 dark:background-neutral-900">
 								<tr>
 									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Date</th>
 									<th class="p-0 pb-1 pr-1 md:pr-1.5 lg:pr-2 text-start text-sm font-normal">Takeoff</th>
@@ -998,100 +556,100 @@
 							</thead>
 							<tbody id="logbook-body" class="overflow-x-scroll scrollbar-none text-nowrap">
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 								<tr>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
-									<td class="w-20 h-4 p-0 text-xs font-normal bg-neutral-200 dark:bg-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-9 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-10 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-12 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-16 h-4 p-0 pr-1 md:pr-1.5 lg:pr-2 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
+									<td class="w-20 h-4 p-0 text-xs font-normal background-neutral-200 dark:background-neutral-800"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -1101,68 +659,77 @@
 		</main>
 	</body>
 	<script>
-		let yearRetries = 0;
-		let flightRetries = 0;
-		let yearTimeout = null;
-		let flightTimeout = null;
-		let yearController = null;
-		let flightController = null;
+		import './src/app/scripts/array.js';
+		import './src/app/scripts/state.js';
+		import './src/app/scripts/fetcher.js';
+		import './src/app/scripts/fetching.js';
+		import './src/app/scripts/report.js';
+		import './src/app/scripts/notification.js';
+		const years = { retries: 0, reload: null, timeout: null, controller: null, data: null };
+		const flights = { retries: 0, reload: null, timeout: null, controller: null, data: null };
 		const verticalSkeletons = [4, 8, 17, 24, 42, 69, 82, 73, 56, 37, 16, 8];
 		const horizontalSkeletons = [12, 24, 40, 20, 4];
 		const title = document.getElementById('title');
-		const years = document.getElementById('years');
-		const flightCount = document.getElementById('flight-count');
-		const flightScale = document.getElementById('flight-scale');
-		const flightGraph = document.getElementById('flight-graph');
-		const airtimeCount = document.getElementById('airtime-count');
-		const airtimeScale = document.getElementById('airtime-scale');
-		const airtimeGraph = document.getElementById('airtime-graph');
-		const altitudeStats = document.getElementById('altitude-stats');
-		const altitudeScale = document.getElementById('altitude-scale');
-		const altitudeGraph = document.getElementById('altitude-graph');
-		const altitudeColors = [
-			['bg-green-400/80', 'dark:bg-green-600/80'],
-			['bg-teal-400/80', 'dark:bg-teal-600/80'],
-			['bg-sky-400/80', 'dark:bg-sky-600/80'],
-			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
-			['bg-purple-400/80', 'dark:bg-purple-600/80'],
-		];
-		const thermalStats = document.getElementById('thermal-stats');
-		const thermalScale = document.getElementById('thermal-scale');
-		const thermalGraph = document.getElementById('thermal-graph');
-		const thermalColors = [
-			['bg-amber-400/80', 'dark:bg-amber-600/80'],
-			['bg-lime-400/80', 'dark:bg-lime-600/80'],
-			['bg-emerald-400/80', 'dark:bg-emerald-600/80'],
-			['bg-cyan-400/80', 'dark:bg-cyan-600/80'],
-			['bg-blue-400/80', 'dark:bg-blue-600/80'],
-		];
-		const speedStats = document.getElementById('speed-stats');
-		const speedScale = document.getElementById('speed-scale');
-		const speedGraph = document.getElementById('speed-graph');
-		const speedColors = [
-			['bg-green-400/80', 'dark:bg-green-600/80'],
-			['bg-teal-400/80', 'dark:bg-teal-600/80'],
-			['bg-sky-400/80', 'dark:bg-sky-600/80'],
-			['bg-indigo-400/80', 'dark:bg-indigo-600/80'],
-			['bg-purple-400/80', 'dark:bg-purple-600/80'],
-		];
-		const glideStats = document.getElementById('glide-stats');
-		const glideScale = document.getElementById('glide-scale');
-		const glideGraph = document.getElementById('glide-graph');
-		const glideColors = [
-			['bg-amber-400/80', 'dark:bg-amber-600/80'],
-			['bg-lime-400/80', 'dark:bg-lime-600/80'],
-			['bg-emerald-400/80', 'dark:bg-emerald-600/80'],
-			['bg-cyan-400/80', 'dark:bg-cyan-600/80'],
-			['bg-blue-400/80', 'dark:bg-blue-600/80'],
-		];
-		const logbookBody = document.getElementById('logbook-body');
-		const array = (length) => {
-			return Array(length)
-				.fill(null)
-				.map((__, ind) => ind);
+		const ranges = document.getElementById('ranges');
+		const flight = {
+			count: document.getElementById('flight-count'),
+			scale: document.getElementById('flight-scale'),
+			graph: document.getElementById('flight-graph'),
 		};
+		const airtime = {
+			count: document.getElementById('airtime-count'),
+			scale: document.getElementById('airtime-scale'),
+			graph: document.getElementById('airtime-graph'),
+		};
+		const altitude = {
+			stats: document.getElementById('altitude-stats'),
+			scale: document.getElementById('altitude-scale'),
+			graph: document.getElementById('altitude-graph'),
+		};
+		const altitudeColors = [
+			['background-green-400/80', 'dark:background-green-600/80'],
+			['background-teal-400/80', 'dark:background-teal-600/80'],
+			['background-sky-400/80', 'dark:background-sky-600/80'],
+			['background-indigo-400/80', 'dark:background-indigo-600/80'],
+			['background-purple-400/80', 'dark:background-purple-600/80'],
+		];
+		const thermal = {
+			stats: document.getElementById('thermal-stats'),
+			scale: document.getElementById('thermal-scale'),
+			graph: document.getElementById('thermal-graph'),
+		};
+		const thermalColors = [
+			['background-amber-400/80', 'dark:background-amber-600/80'],
+			['background-lime-400/80', 'dark:background-lime-600/80'],
+			['background-emerald-400/80', 'dark:background-emerald-600/80'],
+			['background-cyan-400/80', 'dark:background-cyan-600/80'],
+			['background-blue-400/80', 'dark:background-blue-600/80'],
+		];
+		const speed = {
+			stats: document.getElementById('speed-stats'),
+			scale: document.getElementById('speed-scale'),
+			graph: document.getElementById('speed-graph'),
+		};
+		const speedColors = [
+			['background-green-400/80', 'dark:background-green-600/80'],
+			['background-teal-400/80', 'dark:background-teal-600/80'],
+			['background-sky-400/80', 'dark:background-sky-600/80'],
+			['background-indigo-400/80', 'dark:background-indigo-600/80'],
+			['background-purple-400/80', 'dark:background-purple-600/80'],
+		];
+		const glide = {
+			stats: document.getElementById('glide-stats'),
+			scale: document.getElementById('glide-scale'),
+			graph: document.getElementById('glide-graph'),
+		};
+		const glideColors = [
+			['background-amber-400/80', 'dark:background-amber-600/80'],
+			['background-lime-400/80', 'dark:background-lime-600/80'],
+			['background-emerald-400/80', 'dark:background-emerald-600/80'],
+			['background-cyan-400/80', 'dark:background-cyan-600/80'],
+			['background-blue-400/80', 'dark:background-blue-600/80'],
+		];
+		const logbook = { body: document.getElementById('logbook-body') };
 		const units = (amount) => {
 			switch (true) {
 				case amount >= 1e4:
@@ -1202,36 +769,6 @@
 				index++;
 			}
 		};
-		const loading = (element, add, remove, text, height, width) => {
-			element.classList.add(...add, 'bg-neutral-200', 'dark:bg-neutral-800');
-			element.classList.remove('bg-red-200', 'dark:bg-red-800', ...remove);
-			if (text !== undefined && text !== null) {
-				element.innerText = text;
-			}
-			if (height !== undefined && height !== null) {
-				element.style.height = `${height}%`;
-			}
-			if (width !== undefined && width !== null) {
-				element.style.width = `${width}%`;
-			}
-		};
-		const paint = (element, add, remove, text, height, width) => {
-			element.classList.add(...add);
-			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800', ...remove);
-			if (text !== undefined && text !== null) {
-				element.innerText = text;
-			}
-			if (height !== undefined && height !== null) {
-				element.style.height = `${height}%`;
-			}
-			if (width !== undefined && width !== null) {
-				element.style.width = `${width}%`;
-			}
-		};
-		const error = (element) => {
-			element.classList.add('bg-red-200', 'dark:bg-red-800');
-			element.classList.remove('bg-neutral-200', 'dark:bg-neutral-800');
-		};
 		const getUser = () => {
 			const user = window.location.pathname.substring(1);
 			return user ?? null;
@@ -1249,32 +786,32 @@
 			window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
 		};
 		const highlightYear = (year) => {
-			array(years.children.length).forEach((ind) => {
-				if (+years.children[ind].children[0].innerText === year) {
-					years.children[ind].children[0].classList.add('text-blue-600', 'dark:text-blue-400');
+			array(ranges.children.length).forEach((ind) => {
+				if (+ranges.children[ind].children[0].innerText === year) {
+					ranges.children[ind].children[0].classList.add('text-blue-600', 'dark:text-blue-400');
 				} else {
-					years.children[ind].children[0].classList.remove('text-blue-600', 'dark:text-blue-400');
+					ranges.children[ind].children[0].classList.remove('text-blue-600', 'dark:text-blue-400');
 				}
 			});
 		};
 		const loadingYears = () => {
-			resize(years, years.children.length);
-			array(years.children.length).forEach((ind) => {
-				years.children[ind].onclick = null;
-				years.children[ind].classList.remove('cursor-pointer', 'cursor-not-allowed');
-				years.children[ind].classList.add('cursor-default');
-				loading(years.children[ind].children[0], ['w-9', 'h-6'], [], '');
+			resize(ranges, ranges.children.length);
+			array(ranges.children.length).forEach((ind) => {
+				ranges.children[ind].onclick = null;
+				ranges.children[ind].classList.remove('cursor-pointer', 'cursor-not-allowed');
+				ranges.children[ind].classList.add('cursor-default');
+				loading(ranges.children[ind].children[0], ['w-9', 'h-4'], [], '');
 			});
 		};
 		const paintYears = (data) => {
-			resize(years, data.length);
-			array(years.children.length).forEach((ind) => {
+			resize(ranges, data.length);
+			array(ranges.children.length).forEach((ind) => {
 				if (data[ind]) {
-					years.children[ind].classList.remove('cursor-default');
-					years.children[ind].classList.add('cursor-pointer');
-					years.children[ind].children[0].classList.remove('w-9', 'h-6', 'bg-neutral-200', 'dark:bg-neutral-800');
-					years.children[ind].children[0].innerText = data[ind].year;
-					years.children[ind].onclick = () => {
+					ranges.children[ind].classList.remove('cursor-default');
+					ranges.children[ind].classList.add('cursor-pointer');
+					ranges.children[ind].children[0].classList.remove('w-9', 'h-4', 'background-neutral-200', 'dark:background-neutral-800');
+					ranges.children[ind].children[0].innerText = data[ind].year;
+					ranges.children[ind].onclick = () => {
 						highlightYear(data[ind].year);
 						setYear(data[ind].year);
 						loadFlights();
@@ -1284,294 +821,314 @@
 			highlightYear(getYear());
 		};
 		const errorYears = () => {
-			array(years.children.length).forEach((ind) => {
-				years.children[ind].classList.remove('cursor-default');
-				years.children[ind].classList.add('cursor-not-allowed');
-				error(years.children[ind].children[0]);
+			array(ranges.children.length).forEach((ind) => {
+				ranges.children[ind].classList.remove('cursor-default');
+				ranges.children[ind].classList.add('cursor-not-allowed');
+				error(ranges.children[ind].children[0]);
 			});
 		};
-		const loadingFlight = () => {
-			loading(flightCount, ['w-10', 'h-6'], [], '');
-			array(flightScale.children.length).forEach((ind) => {
-				loading(flightScale.children[ind], ['h-4'], [], '');
+		const loadingFlight = (element) => {
+			loading(element.count, ['w-10', 'h-4'], [], '');
+			array(element.scale.children.length).forEach((ind) => {
+				loading(element.scale.children[ind], ['h-3'], [], '');
 			});
-			array(flightGraph.children.length).forEach((ind) => {
-				loading(flightGraph.children[ind].children[0], [], ['bg-green-400/80', 'dark:bg-green-600/80'], null, verticalSkeletons[ind]);
+			array(element.graph.children.length).forEach((ind) => {
+				loading(element.graph.children[ind].children[0], [], ['background-green-400/80', 'dark:background-green-600/80'], null, verticalSkeletons[ind]);
 			});
 		};
-		const paintFlight = (flight) => {
-			paint(flightCount, [], ['w-10', 'h-6'], units(flight.sum));
+		const paintFlight = (element, flight) => {
+			paint(element.count, [], ['w-10', 'h-4'], units(flight.sum));
 			const max = Math.max(...flight.bins);
-			array(flightScale.children.length).forEach((ind) => {
-				paint(flightScale.children[ind], [], ['h-4'], units((max / flightScale.children.length) * (5 - ind)));
+			array(element.scale.children.length).forEach((ind) => {
+				paint(element.scale.children[ind], [], ['h-3'], units((max / element.scale.children.length) * (5 - ind)));
 			});
-			array(flightGraph.children.length).forEach((index) => {
-				array(flightGraph.children[index].children.length).forEach((ind) => {
-					flightGraph.children[index].children[ind].style.height = null;
+			array(element.graph.children.length).forEach((index) => {
+				array(element.graph.children[index].children.length).forEach((ind) => {
+					element.graph.children[index].children[ind].style.height = null;
 				});
 				const percent = (flight.bins[index] / max) * 100;
-				paint(flightGraph.children[index].children[0], ['bg-green-400/80', 'dark:bg-green-600/80'], [], null, percent);
+				paint(element.graph.children[index].children[0], ['background-green-400/80', 'dark:background-green-600/80'], [], null, percent);
 			});
 		};
-		const errorFlight = () => {
-			error(flightCount);
-			array(flightScale.children.length).forEach((ind) => {
-				error(flightScale.children[ind]);
+		const errorFlight = (element) => {
+			error(element.count);
+			array(element.scale.children.length).forEach((ind) => {
+				error(element.scale.children[ind]);
 			});
-			array(flightGraph.children.length).forEach((ind) => {
-				error(flightGraph.children[ind].children[0]);
-			});
-		};
-		const loadingAirtime = () => {
-			loading(airtimeCount, ['w-10', 'h-6'], [], '');
-			array(airtimeScale.children.length).forEach((ind) => {
-				loading(airtimeScale.children[ind], ['h-4'], [], '');
-			});
-			array(airtimeGraph.children.length).forEach((ind) => {
-				loading(airtimeGraph.children[ind].children[0], [], ['bg-blue-400/80', 'dark:bg-blue-600/80'], null, verticalSkeletons[ind]);
+			array(element.graph.children.length).forEach((ind) => {
+				error(element.graph.children[ind].children[0]);
 			});
 		};
-		const paintAirtime = (airtime) => {
-			paint(airtimeCount, [], ['w-10', 'h-6'], times(airtime.sum));
+		const loadingAirtime = (element) => {
+			loading(element.count, ['w-10', 'h-4'], [], '');
+			array(element.scale.children.length).forEach((ind) => {
+				loading(element.scale.children[ind], ['h-3'], [], '');
+			});
+			array(element.graph.children.length).forEach((ind) => {
+				loading(element.graph.children[ind].children[0], [], ['background-blue-400/80', 'dark:background-blue-600/80'], null, verticalSkeletons[ind]);
+			});
+		};
+		const paintAirtime = (element, airtime) => {
+			paint(element.count, [], ['w-10', 'h-4'], times(airtime.sum));
 			const max = Math.max(...airtime.bins);
-			array(airtimeScale.children.length).forEach((ind) => {
-				paint(airtimeScale.children[ind], [], ['h-4'], times((max / airtimeScale.children.length) * (5 - ind)));
+			array(element.scale.children.length).forEach((ind) => {
+				paint(element.scale.children[ind], [], ['h-3'], times((max / element.scale.children.length) * (5 - ind)));
 			});
-			array(airtimeGraph.children.length).forEach((index) => {
-				array(airtimeGraph.children[index].children.length).forEach((ind) => {
-					airtimeGraph.children[index].children[ind].style.height = null;
+			array(element.graph.children.length).forEach((index) => {
+				array(element.graph.children[index].children.length).forEach((ind) => {
+					element.graph.children[index].children[ind].style.height = null;
 				});
 				const percent = (airtime.bins[index] / max) * 100;
-				paint(airtimeGraph.children[index].children[0], ['bg-blue-400/80', 'dark:bg-blue-600/80'], [], null, percent);
+				paint(element.graph.children[index].children[0], ['background-blue-400/80', 'dark:background-blue-600/80'], [], null, percent);
 			});
 		};
-		const errorAirtime = () => {
-			error(airtimeCount);
-			array(airtimeScale.children.length).forEach((ind) => {
-				error(airtimeScale.children[ind]);
+		const errorAirtime = (element) => {
+			error(element.count);
+			array(element.scale.children.length).forEach((ind) => {
+				error(element.scale.children[ind]);
 			});
-			array(airtimeGraph.children.length).forEach((ind) => {
-				error(airtimeGraph.children[ind].children[0]);
+			array(element.graph.children.length).forEach((ind) => {
+				error(element.graph.children[ind].children[0]);
 			});
 		};
-		const loadingAltitude = () => {
-			loading(altitudeStats, ['w-32', 'h-5'], [], '');
-			loading(altitudeScale, ['h-4'], []);
-			array(altitudeScale.children.length).forEach((ind) => {
-				altitudeScale.children[ind].classList.add('hidden');
-				altitudeScale.children[ind].classList.remove('flex');
+		const loadingAltitude = (element) => {
+			loading(element.stats, ['w-32', 'h-3.5'], [], '');
+			loading(element.scale, ['h-3'], []);
+			array(element.scale.children.length).forEach((ind) => {
+				element.scale.children[ind].classList.add('hidden');
+				element.scale.children[ind].classList.remove('flex');
 			});
-			array(altitudeGraph.children.length).forEach((ind) => {
-				array(altitudeGraph.children[ind].children.length).forEach((i) => {
-					loading(altitudeGraph.children[ind].children[i], [], altitudeColors[i], null, null, horizontalSkeletons[i]);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					loading(element.graph.children[ind].children[i], [], altitudeColors[i], null, null, horizontalSkeletons[i]);
 				});
 			});
 		};
-		const paintAltitude = (altitude) => {
-			paint(altitudeStats, [], ['w-32', 'h-5'], altitude.min === null || altitude.max === null ? '' : `${altitude.min}m - ${altitude.max}m`);
+		const paintAltitude = (element, altitude) => {
+			paint(element.stats, [], ['w-32', 'h-3.5'], altitude.min === null || altitude.max === null ? '' : `${altitude.min}m - ${altitude.max}m`);
 			const sumMax = altitude.sum.reduce((accumulator, altitude) => accumulator + altitude, 0);
 			if (sumMax > 0) {
-				altitudeScale.classList.remove('h-4');
+				element.scale.classList.remove('h-3');
 			}
-			paint(altitudeScale, [], []);
-			array(altitudeScale.children.length).forEach((ind) => {
+			paint(element.scale, [], []);
+			array(element.scale.children.length).forEach((ind) => {
 				if (altitude.sum[ind] > 0) {
-					paint(altitudeScale.children[ind], ['flex'], ['hidden']);
+					paint(element.scale.children[ind], ['flex'], ['hidden']);
 				} else {
-					paint(altitudeScale.children[ind], ['hidden'], ['flex']);
+					paint(element.scale.children[ind], ['hidden'], ['flex']);
 				}
-				altitudeScale.children[ind].children[2].innerHTML = times(altitude.sum[ind]);
+				element.scale.children[ind].children[2].innerHTML = times(altitude.sum[ind]);
 			});
-			array(altitudeGraph.children.length).forEach((ind) => {
+			array(element.graph.children.length).forEach((ind) => {
 				const binMax = altitude.bins[ind].reduce((accumulator, altitudeBin) => accumulator + altitudeBin, 0);
-				array(altitudeGraph.children[ind].children.length).forEach((i) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
 					const percent = binMax === 0 ? 0 : (altitude.bins[ind][i] / binMax) * 100;
-					paint(altitudeGraph.children[ind].children[i], altitudeColors[i], [], null, null, percent);
+					paint(element.graph.children[ind].children[i], altitudeColors[i], [], null, null, percent);
 				});
 			});
 		};
-		const errorAltitude = () => {
-			error(altitudeStats);
-			error(altitudeScale);
-			array(altitudeGraph.children.length).forEach((ind) => {
-				array(altitudeGraph.children[ind].children.length).forEach((i) => {
-					error(altitudeGraph.children[ind].children[i]);
+		const errorAltitude = (element) => {
+			error(element.stats);
+			error(element.scale);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					error(element.graph.children[ind].children[i]);
 				});
 			});
 		};
-		const loadingThermal = () => {
-			loading(thermalStats, ['w-32', 'h-5'], [], '');
-			loading(thermalScale, ['h-4'], []);
-			array(thermalScale.children.length).forEach((ind) => {
-				thermalScale.children[ind].classList.add('hidden');
-				thermalScale.children[ind].classList.remove('flex');
+		const loadingThermal = (element) => {
+			loading(element.stats, ['w-32', 'h-3.5'], [], '');
+			loading(element.scale, ['h-3'], []);
+			array(element.scale.children.length).forEach((ind) => {
+				element.scale.children[ind].classList.add('hidden');
+				element.scale.children[ind].classList.remove('flex');
 			});
-			array(thermalGraph.children.length).forEach((ind) => {
-				array(thermalGraph.children[ind].children.length).forEach((i) => {
-					loading(thermalGraph.children[ind].children[i], [], thermalColors[i], null, null, horizontalSkeletons[i]);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					loading(element.graph.children[ind].children[i], [], thermalColors[i], null, null, horizontalSkeletons[i]);
 				});
 			});
 		};
-		const paintThermal = (thermal) => {
-			paint(thermalStats, [], ['w-32', 'h-5'], thermal.climb === null || thermal.sink === null ? '' : `+${(thermal.climb / 10).toFixed(1)}m/s -${(thermal.sink / 10).toFixed(1)}m/s`);
+		const paintThermal = (element, thermal) => {
+			paint(
+				element.stats,
+				[],
+				['w-32', 'h-3.5'],
+				thermal.climb === null || thermal.sink === null ? '' : `+${(thermal.climb / 10).toFixed(1)}m/s -${(thermal.sink / 10).toFixed(1)}m/s`
+			);
 			const sumMax = thermal.sum.reduce((accumulator, thermal) => accumulator + thermal, 0);
 			if (sumMax > 0) {
-				thermalScale.classList.remove('h-4');
+				element.scale.classList.remove('h-3');
 			}
-			paint(thermalScale, [], []);
-			array(thermalScale.children.length).forEach((ind) => {
+			paint(element.scale, [], []);
+			array(element.scale.children.length).forEach((ind) => {
 				if (thermal.sum[ind] > 0) {
-					paint(thermalScale.children[ind], ['flex'], ['hidden']);
+					paint(element.scale.children[ind], ['flex'], ['hidden']);
 				} else {
-					paint(thermalScale.children[ind], ['hidden'], ['flex']);
+					paint(element.scale.children[ind], ['hidden'], ['flex']);
 				}
-				thermalScale.children[ind].children[2].innerHTML = times(thermal.sum[ind]);
+				element.scale.children[ind].children[2].innerHTML = times(thermal.sum[ind]);
 			});
-			array(thermalGraph.children.length).forEach((ind) => {
+			array(element.graph.children.length).forEach((ind) => {
 				const binMax = thermal.bins[ind].reduce((accumulator, thermalBin) => accumulator + thermalBin, 0);
-				array(thermalGraph.children[ind].children.length).forEach((i) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
 					const percent = binMax === 0 ? 0 : (thermal.bins[ind][i] / binMax) * 100;
-					paint(thermalGraph.children[ind].children[i], thermalColors[i], [], null, null, percent);
+					paint(element.graph.children[ind].children[i], thermalColors[i], [], null, null, percent);
 				});
 			});
 		};
-		const errorThermal = () => {
-			error(thermalStats);
-			error(thermalScale);
-			array(thermalGraph.children.length).forEach((ind) => {
-				array(thermalGraph.children[ind].children.length).forEach((i) => {
-					error(thermalGraph.children[ind].children[i]);
+		const errorThermal = (element) => {
+			error(element.stats);
+			error(element.scale);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					error(element.graph.children[ind].children[i]);
 				});
 			});
 		};
-		const loadingSpeed = () => {
-			loading(speedStats, ['w-32', 'h-5'], [], '');
-			loading(speedScale, ['h-4'], []);
-			array(speedScale.children.length).forEach((ind) => {
-				speedScale.children[ind].classList.add('hidden');
-				speedScale.children[ind].classList.remove('flex');
+		const loadingSpeed = (element) => {
+			loading(element.stats, ['w-32', 'h-3.5'], [], '');
+			loading(element.scale, ['h-3'], []);
+			array(element.scale.children.length).forEach((ind) => {
+				element.scale.children[ind].classList.add('hidden');
+				element.scale.children[ind].classList.remove('flex');
 			});
-			array(speedGraph.children.length).forEach((ind) => {
-				array(speedGraph.children[ind].children.length).forEach((i) => {
-					loading(speedGraph.children[ind].children[i], [], speedColors[i], null, null, horizontalSkeletons[i]);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					loading(element.graph.children[ind].children[i], [], speedColors[i], null, null, horizontalSkeletons[i]);
 				});
 			});
 		};
-		const paintSpeed = (speed) => {
-			paint(speedStats, [], ['w-32', 'h-5'], speed.avg === null ? '' : `${speed.avg.toFixed(2)}km/h`);
+		const paintSpeed = (element, speed) => {
+			paint(element.stats, [], ['w-32', 'h-3.5'], speed.avg === null ? '' : `${speed.avg.toFixed(2)}km/h`);
 			const sumMax = speed.sum.reduce((accumulator, speed) => accumulator + speed, 0);
 			if (sumMax > 0) {
-				speedScale.classList.remove('h-4');
+				element.scale.classList.remove('h-3');
 			}
-			paint(speedScale, [], []);
-			array(speedScale.children.length).forEach((ind) => {
+			paint(element.scale, [], []);
+			array(element.scale.children.length).forEach((ind) => {
 				if (speed.sum[ind] > 0) {
-					paint(speedScale.children[ind], ['flex'], ['hidden']);
+					paint(element.scale.children[ind], ['flex'], ['hidden']);
 				} else {
-					paint(speedScale.children[ind], ['hidden'], ['flex']);
+					paint(element.scale.children[ind], ['hidden'], ['flex']);
 				}
-				speedScale.children[ind].children[2].innerHTML = times(speed.sum[ind]);
+				element.scale.children[ind].children[2].innerHTML = times(speed.sum[ind]);
 			});
-			array(speedGraph.children.length).forEach((ind) => {
+			array(element.graph.children.length).forEach((ind) => {
 				const binMax = speed.bins[ind].reduce((accumulator, speedBin) => accumulator + speedBin, 0);
-				array(speedGraph.children[ind].children.length).forEach((i) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
 					const percent = binMax === 0 ? 0 : (speed.bins[ind][i] / binMax) * 100;
-					paint(speedGraph.children[ind].children[i], speedColors[i], [], null, null, percent);
+					paint(element.graph.children[ind].children[i], speedColors[i], [], null, null, percent);
 				});
 			});
 		};
-		const errorSpeed = () => {
-			error(speedStats);
-			error(speedScale);
-			array(speedGraph.children.length).forEach((ind) => {
-				array(speedGraph.children[ind].children.length).forEach((i) => {
-					error(speedGraph.children[ind].children[i]);
+		const errorSpeed = (element) => {
+			error(element.stats);
+			error(element.scale);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					error(element.graph.children[ind].children[i]);
 				});
 			});
 		};
-		const loadingGlide = () => {
-			loading(glideStats, ['w-32', 'h-5'], [], '');
-			loading(glideScale, ['h-4'], []);
-			array(glideScale.children.length).forEach((ind) => {
-				glideScale.children[ind].classList.add('hidden');
-				glideScale.children[ind].classList.remove('flex');
+		const loadingGlide = (element) => {
+			loading(element.stats, ['w-32', 'h-3.5'], [], '');
+			loading(element.scale, ['h-3'], []);
+			array(element.scale.children.length).forEach((ind) => {
+				element.scale.children[ind].classList.add('hidden');
+				element.scale.children[ind].classList.remove('flex');
 			});
-			array(glideGraph.children.length).forEach((ind) => {
-				array(glideGraph.children[ind].children.length).forEach((i) => {
-					loading(glideGraph.children[ind].children[i], [], glideColors[i], null, null, horizontalSkeletons[i]);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					loading(element.graph.children[ind].children[i], [], glideColors[i], null, null, horizontalSkeletons[i]);
 				});
 			});
 		};
-		const paintGlide = (glide) => {
-			paint(glideStats, [], ['w-32', 'h-5'], glide.distance === 0 ? '' : `${(glide.distance / 1000).toFixed(2)}km`);
+		const paintGlide = (element, glide) => {
+			paint(element.stats, [], ['w-32', 'h-3.5'], glide.distance === 0 ? '' : `${(glide.distance / 1000).toFixed(2)}km`);
 			const sumMax = glide.sum.reduce((accumulator, glide) => accumulator + glide, 0);
 			if (sumMax > 0) {
-				glideScale.classList.remove('h-4');
+				element.scale.classList.remove('h-3');
 			}
-			paint(glideScale, [], []);
-			array(glideScale.children.length).forEach((ind) => {
+			paint(element.scale, [], []);
+			array(element.scale.children.length).forEach((ind) => {
 				if (glide.sum[ind] > 0) {
-					paint(glideScale.children[ind], ['flex'], ['hidden']);
+					paint(element.scale.children[ind], ['flex'], ['hidden']);
 				} else {
-					paint(glideScale.children[ind], ['hidden'], ['flex']);
+					paint(element.scale.children[ind], ['hidden'], ['flex']);
 				}
-				glideScale.children[ind].children[2].innerHTML = times(glide.sum[ind]);
+				element.scale.children[ind].children[2].innerHTML = times(glide.sum[ind]);
 			});
-			array(glideGraph.children.length).forEach((ind) => {
+			array(element.graph.children.length).forEach((ind) => {
 				const binMax = glide.bins[ind].reduce((accumulator, glideBin) => accumulator + glideBin, 0);
-				array(glideGraph.children[ind].children.length).forEach((i) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
 					const percent = binMax === 0 ? 0 : (glide.bins[ind][i] / binMax) * 100;
-					paint(glideGraph.children[ind].children[i], glideColors[i], [], null, null, percent);
+					paint(element.graph.children[ind].children[i], glideColors[i], [], null, null, percent);
 				});
 			});
 		};
-		const errorGlide = () => {
-			error(glideStats);
-			error(glideScale);
-			array(glideGraph.children.length).forEach((ind) => {
-				array(glideGraph.children[ind].children.length).forEach((i) => {
-					error(glideGraph.children[ind].children[i]);
+		const errorGlide = (element) => {
+			error(element.stats);
+			error(element.scale);
+			array(element.graph.children.length).forEach((ind) => {
+				array(element.graph.children[ind].children.length).forEach((i) => {
+					error(element.graph.children[ind].children[i]);
 				});
 			});
 		};
-		const loadingLogbook = () => {
-			resize(logbookBody, 8);
-			array(logbookBody.children.length).forEach((ind) => {
-				loading(logbookBody.children[ind].children[0], ['w-9', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[1], ['w-9', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[2], ['w-9', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[3], ['w-10', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[4], ['w-10', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[5], ['w-12', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[6], ['w-12', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[7], ['w-16', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[8], ['w-16', 'h-4'], [], '');
-				loading(logbookBody.children[ind].children[9], ['w-20', 'h-4'], [], '');
+		const loadingLogbook = (element) => {
+			resize(element.body, 8);
+			array(element.body.children.length).forEach((ind) => {
+				loading(element.body.children[ind].children[0], ['w-9', 'h-4'], [], '');
+				loading(element.body.children[ind].children[1], ['w-9', 'h-4'], [], '');
+				loading(element.body.children[ind].children[2], ['w-9', 'h-4'], [], '');
+				loading(element.body.children[ind].children[3], ['w-10', 'h-4'], [], '');
+				loading(element.body.children[ind].children[4], ['w-10', 'h-4'], [], '');
+				loading(element.body.children[ind].children[5], ['w-12', 'h-4'], [], '');
+				loading(element.body.children[ind].children[6], ['w-12', 'h-4'], [], '');
+				loading(element.body.children[ind].children[7], ['w-16', 'h-4'], [], '');
+				loading(element.body.children[ind].children[8], ['w-16', 'h-4'], [], '');
+				loading(element.body.children[ind].children[9], ['w-20', 'h-4'], [], '');
 			});
 		};
-		const paintLogbook = (data) => {
-			resize(logbookBody, data.length);
-			array(logbookBody.children.length).forEach((ind) => {
+		const paintLogbook = (element, data) => {
+			resize(element.body, data.length);
+			array(element.body.children.length).forEach((ind) => {
 				if (data[ind]) {
 					const startsAt = new Date(Number(data[ind].startsAt) * 1000);
 					const endsAt = new Date(Number(data[ind].endsAt) * 1000);
-					paint(logbookBody.children[ind].children[0], [], ['w-9', 'h-4'], `${startsAt.getDate().toString().padStart(2, '0')}.${(startsAt.getMonth() + 1).toString().padStart(2, '0')}`);
-					paint(logbookBody.children[ind].children[1], [], ['w-9', 'h-4'], `${startsAt.getHours().toString().padStart(2, '0')}:${startsAt.getMinutes().toString().padStart(2, '0')}`);
-					paint(logbookBody.children[ind].children[2], [], ['w-9', 'h-4'], `${endsAt.getHours().toString().padStart(2, '0')}:${endsAt.getMinutes().toString().padStart(2, '0')}`);
-					paint(logbookBody.children[ind].children[3], [], ['w-10', 'h-4'], `${data[ind].altitudeMin}m`);
-					paint(logbookBody.children[ind].children[4], [], ['w-10', 'h-4'], `${data[ind].altitudeMax}m`);
-					paint(logbookBody.children[ind].children[5], [], ['w-12', 'h-4'], `${(data[ind].maxClimb / 10).toFixed(1)}m/s`);
-					paint(logbookBody.children[ind].children[6], [], ['w-12', 'h-4'], `${(data[ind].maxSink / 10).toFixed(1)}m/s`);
-					paint(logbookBody.children[ind].children[7], [], ['w-16', 'h-4'], `${(data[ind].speedAvg / 100).toFixed(2)}km/h`);
-					paint(logbookBody.children[ind].children[8], [], ['w-16', 'h-4'], `${(data[ind].speedMax / 100).toFixed(2)}km/h`);
-					paint(logbookBody.children[ind].children[9], [], ['w-20', 'h-4'], `${(data[ind].distanceFlown / 1000).toFixed(2)}km`);
+					paint(
+						element.body.children[ind].children[0],
+						[],
+						['w-9', 'h-4'],
+						`${startsAt.getDate().toString().padStart(2, '0')}.${(startsAt.getMonth() + 1).toString().padStart(2, '0')}`
+					);
+					paint(
+						element.body.children[ind].children[1],
+						[],
+						['w-9', 'h-4'],
+						`${startsAt.getHours().toString().padStart(2, '0')}:${startsAt.getMinutes().toString().padStart(2, '0')}`
+					);
+					paint(
+						element.body.children[ind].children[2],
+						[],
+						['w-9', 'h-4'],
+						`${endsAt.getHours().toString().padStart(2, '0')}:${endsAt.getMinutes().toString().padStart(2, '0')}`
+					);
+					paint(element.body.children[ind].children[3], [], ['w-10', 'h-4'], `${data[ind].altitudeMin}m`);
+					paint(element.body.children[ind].children[4], [], ['w-10', 'h-4'], `${data[ind].altitudeMax}m`);
+					paint(element.body.children[ind].children[5], [], ['w-12', 'h-4'], `${(data[ind].maxClimb / 10).toFixed(1)}m/s`);
+					paint(element.body.children[ind].children[6], [], ['w-12', 'h-4'], `${(data[ind].maxSink / 10).toFixed(1)}m/s`);
+					paint(element.body.children[ind].children[7], [], ['w-16', 'h-4'], `${(data[ind].speedAvg / 100).toFixed(2)}km/h`);
+					paint(element.body.children[ind].children[8], [], ['w-16', 'h-4'], `${(data[ind].speedMax / 100).toFixed(2)}km/h`);
+					paint(element.body.children[ind].children[9], [], ['w-20', 'h-4'], `${(data[ind].distanceFlown / 1000).toFixed(2)}km`);
 				}
 			});
 		};
-		const errorLogbook = () => {
-			array(logbookBody.children.length).forEach((ind) => {
-				array(logbookBody.children[ind].children.length).forEach((i) => {
-					error(logbookBody.children[ind].children[i]);
+		const errorLogbook = (element) => {
+			array(element.body.children.length).forEach((ind) => {
+				array(element.body.children[ind].children.length).forEach((i) => {
+					error(element.body.children[ind].children[i]);
 				});
 			});
 		};
@@ -1634,154 +1191,146 @@
 				const paddingBits = readBits(1);
 				const startsAt = readBigBits(startsAtBits);
 				const endsAt = readBigBits(endsAtBits);
-				const altitudeBins = [readBits(altitudeBinsBits[0]), readBits(altitudeBinsBits[1]), readBits(altitudeBinsBits[2]), readBits(altitudeBinsBits[3]), readBits(altitudeBinsBits[4])];
+				const altitudeBins = [
+					readBits(altitudeBinsBits[0]),
+					readBits(altitudeBinsBits[1]),
+					readBits(altitudeBinsBits[2]),
+					readBits(altitudeBinsBits[3]),
+					readBits(altitudeBinsBits[4]),
+				];
 				const altitudeMin = readBits(altitudeMinBits);
 				const altitudeMax = readBits(altitudeMaxBits);
-				const thermalBins = [readBits(thermalBinsBits[0]), readBits(thermalBinsBits[1]), readBits(thermalBinsBits[2]), readBits(thermalBinsBits[3]), readBits(thermalBinsBits[4])];
+				const thermalBins = [
+					readBits(thermalBinsBits[0]),
+					readBits(thermalBinsBits[1]),
+					readBits(thermalBinsBits[2]),
+					readBits(thermalBinsBits[3]),
+					readBits(thermalBinsBits[4]),
+				];
 				const maxClimb = readBits(maxClimbBits);
 				const maxSink = readBits(maxSinkBits);
-				const speedBins = [readBits(speedBinsBits[0]), readBits(speedBinsBits[1]), readBits(speedBinsBits[2]), readBits(speedBinsBits[3]), readBits(speedBinsBits[4])];
+				const speedBins = [
+					readBits(speedBinsBits[0]),
+					readBits(speedBinsBits[1]),
+					readBits(speedBinsBits[2]),
+					readBits(speedBinsBits[3]),
+					readBits(speedBinsBits[4]),
+				];
 				const speedAvg = readBits(speedAvgBits);
 				const speedMax = readBits(speedMaxBits);
-				const glideBins = [readBits(glideBinsBits[0]), readBits(glideBinsBits[1]), readBits(glideBinsBits[2]), readBits(glideBinsBits[3]), readBits(glideBinsBits[4])];
+				const glideBins = [
+					readBits(glideBinsBits[0]),
+					readBits(glideBinsBits[1]),
+					readBits(glideBinsBits[2]),
+					readBits(glideBinsBits[3]),
+					readBits(glideBinsBits[4]),
+				];
 				const distanceFlown = readBits(distanceFlownBits);
-				flights.push({ startsAt, endsAt, altitudeBins, altitudeMin, altitudeMax, thermalBins, maxClimb, maxSink, speedBins, speedAvg, speedMax, glideBins, distanceFlown });
+				flights.push({
+					startsAt,
+					endsAt,
+					altitudeBins,
+					altitudeMin,
+					altitudeMax,
+					thermalBins,
+					maxClimb,
+					maxSink,
+					speedBins,
+					speedAvg,
+					speedMax,
+					glideBins,
+					distanceFlown,
+				});
 			}
 			return flights;
 		};
-		const loadYears = async () => {
-			if (yearTimeout) {
-				clearTimeout(yearTimeout);
-				yearTimeout = null;
-			}
-			if (yearController) {
-				yearController.abort();
-			}
-			yearController = new AbortController();
-			window.requestAnimationFrame(() => loadingYears());
-			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
-				}
-				const response = await fetch(`/api/year?user=${getUser()}`, { signal: yearController.signal });
-				if (response.status < 200 || response.status > 299) {
-					throw Error(response);
-				}
-				const data = await parseYears(response);
-				window.requestAnimationFrame(() => paintYears(data.length > 0 ? data : [null]));
-			} catch (err) {
-				if (err?.name !== 'AbortError') {
-					window.requestAnimationFrame(() => errorYears());
-					if (yearRetries < 4) {
-						yearTimeout = setTimeout(() => {
-							yearRetries++;
-							loadYears();
-						}, 2 ** yearRetries * 1000);
-					}
-				}
-			}
-		};
-		const loadFlights = async () => {
-			if (flightTimeout) {
-				clearTimeout(flightTimeout);
-				flightTimeout = null;
-			}
-			if (flightController) {
-				flightController.abort();
-			}
-			flightController = new AbortController();
-			window.requestAnimationFrame(() => loadingFlight());
-			window.requestAnimationFrame(() => loadingAirtime());
-			window.requestAnimationFrame(() => loadingAltitude());
-			window.requestAnimationFrame(() => loadingThermal());
-			window.requestAnimationFrame(() => loadingSpeed());
-			window.requestAnimationFrame(() => loadingGlide());
-			window.requestAnimationFrame(() => loadingLogbook());
-			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
-				}
-				const response = await fetch(`/api/flight?user=${getUser()}&year=${getYear()}`, { signal: flightController.signal });
-				if (response.status < 200 || response.status > 299) {
-					throw Error(response);
-				}
-				const data = await parseFlights(response);
-				const flight = { sum: 0, bins: array(12).map(() => 0) };
-				const airtime = { sum: 0, bins: array(12).map(() => 0) };
-				const altitude = { min: null, max: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const thermal = { climb: null, sink: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const speed = { avg: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				const glide = { distance: 0, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) };
-				for (const item of data) {
+		const loadYears = fetching(
+			years,
+			(context) => window.requestAnimationFrame(() => loadingYears()),
+			(context) => fetcher('get', `/api/year?user=${getUser()}`, null, { controller: context.controller }),
+			async (context, response) => (context.data = await parseYears(response)),
+			(context) => window.requestAnimationFrame(() => paintYears(context.data.length > 0 ? context.data : [null])),
+			(context) => window.requestAnimationFrame(() => errorYears())
+		);
+		const loadFlights = fetching(
+			flights,
+			(context) => {
+				window.requestAnimationFrame(() => loadingFlight(flight));
+				window.requestAnimationFrame(() => loadingAirtime(airtime));
+				window.requestAnimationFrame(() => loadingAltitude(altitude));
+				window.requestAnimationFrame(() => loadingThermal(thermal));
+				window.requestAnimationFrame(() => loadingSpeed(speed));
+				window.requestAnimationFrame(() => loadingGlide(glide));
+				window.requestAnimationFrame(() => loadingLogbook(logbook));
+			},
+			(context) => fetcher('get', `/api/flight?user=${getUser()}&year=${getYear()}`, null, { controller: context.controller }),
+			async (context, response) => (context.data = await parseFlights(response)),
+			(context) => {
+				const summary = {
+					flight: { sum: 0, bins: array(12).map(() => 0) },
+					airtime: { sum: 0, bins: array(12).map(() => 0) },
+					altitude: { min: null, max: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) },
+					thermal: { climb: null, sink: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) },
+					speed: { avg: null, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) },
+					glide: { distance: 0, sum: array(5).map(() => 0), bins: array(4).map((ind) => array(5).map(() => 0)) },
+				};
+				for (const item of context.data) {
 					const month = new Date(Number(item.startsAt) * 1000).getMonth();
-					flight.sum++;
-					flight.bins[month]++;
+					summary.flight.sum++;
+					summary.flight.bins[month]++;
 					const seconds = Number(item.endsAt - item.startsAt);
-					airtime.sum += seconds;
-					airtime.bins[month] += seconds;
+					summary.airtime.sum += seconds;
+					summary.airtime.bins[month] += seconds;
 					const quarter = Math.floor(month / 3);
-					if (altitude.min === null || altitude.min > item.altitudeMin) {
-						altitude.min = item.altitudeMin;
+					if (summary.altitude.min === null || summary.altitude.min > item.altitudeMin) {
+						summary.altitude.min = item.altitudeMin;
 					}
-					if (altitude.max === null || altitude.max < item.altitudeMax) {
-						altitude.max = item.altitudeMax;
+					if (summary.altitude.max === null || summary.altitude.max < item.altitudeMax) {
+						summary.altitude.max = item.altitudeMax;
 					}
-					for (let ind = 0; ind < altitude.sum.length; ind++) {
-						altitude.sum[ind] += item.altitudeBins[ind];
-						altitude.bins[quarter][ind] += item.altitudeBins[ind];
+					for (let ind = 0; ind < summary.altitude.sum.length; ind++) {
+						summary.altitude.sum[ind] += item.altitudeBins[ind];
+						summary.altitude.bins[quarter][ind] += item.altitudeBins[ind];
 					}
-					if (thermal.climb === null || thermal.climb < item.maxClimb) {
-						thermal.climb = item.maxClimb;
+					if (summary.thermal.climb === null || summary.thermal.climb < item.maxClimb) {
+						summary.thermal.climb = item.maxClimb;
 					}
-					if (thermal.sink === null || thermal.sink < item.maxSink) {
-						thermal.sink = item.maxSink;
+					if (summary.thermal.sink === null || summary.thermal.sink < item.maxSink) {
+						summary.thermal.sink = item.maxSink;
 					}
-					for (let ind = 0; ind < thermal.sum.length; ind++) {
-						thermal.sum[ind] += item.thermalBins[ind];
-						thermal.bins[quarter][ind] += item.thermalBins[ind];
+					for (let ind = 0; ind < summary.thermal.sum.length; ind++) {
+						summary.thermal.sum[ind] += item.thermalBins[ind];
+						summary.thermal.bins[quarter][ind] += item.thermalBins[ind];
 					}
-					for (let ind = 0; ind < speed.sum.length; ind++) {
-						speed.sum[ind] += item.speedBins[ind];
-						speed.bins[quarter][ind] += item.speedBins[ind];
+					for (let ind = 0; ind < summary.speed.sum.length; ind++) {
+						summary.speed.sum[ind] += item.speedBins[ind];
+						summary.speed.bins[quarter][ind] += item.speedBins[ind];
 					}
-					glide.distance += item.distanceFlown;
-					for (let ind = 0; ind < glide.sum.length; ind++) {
-						glide.sum[ind] += item.glideBins[ind];
-						glide.bins[quarter][ind] += item.glideBins[ind];
-					}
-				}
-				speed.avg = glide.distance === 0 ? null : (glide.distance / airtime.sum) * 3.6;
-				window.requestAnimationFrame(() => paintFlight(flight));
-				window.requestAnimationFrame(() => paintAirtime(airtime));
-				window.requestAnimationFrame(() => paintAltitude(altitude));
-				window.requestAnimationFrame(() => paintThermal(thermal));
-				window.requestAnimationFrame(() => paintSpeed(speed));
-				window.requestAnimationFrame(() => paintGlide(glide));
-				window.requestAnimationFrame(() => paintLogbook(data.length > 0 ? data : [null]));
-			} catch (err) {
-				if (err?.name !== 'AbortError') {
-					window.requestAnimationFrame(() => errorFlight());
-					window.requestAnimationFrame(() => errorAirtime());
-					window.requestAnimationFrame(() => errorAltitude());
-					window.requestAnimationFrame(() => errorThermal());
-					window.requestAnimationFrame(() => errorSpeed());
-					window.requestAnimationFrame(() => errorGlide());
-					window.requestAnimationFrame(() => errorLogbook());
-					if (flightRetries < 4) {
-						flightTimeout = setTimeout(() => {
-							flightRetries++;
-							loadFlights();
-						}, 2 ** flightRetries * 1000);
+					summary.glide.distance += item.distanceFlown;
+					for (let ind = 0; ind < summary.glide.sum.length; ind++) {
+						summary.glide.sum[ind] += item.glideBins[ind];
+						summary.glide.bins[quarter][ind] += item.glideBins[ind];
 					}
 				}
+				summary.speed.avg = summary.glide.distance === 0 ? null : (summary.glide.distance / summary.airtime.sum) * 3.6;
+				window.requestAnimationFrame(() => paintFlight(flight, summary.flight));
+				window.requestAnimationFrame(() => paintAirtime(airtime, summary.airtime));
+				window.requestAnimationFrame(() => paintAltitude(altitude, summary.altitude));
+				window.requestAnimationFrame(() => paintThermal(thermal, summary.thermal));
+				window.requestAnimationFrame(() => paintSpeed(speed, summary.speed));
+				window.requestAnimationFrame(() => paintGlide(glide, summary.glide));
+				window.requestAnimationFrame(() => paintLogbook(logbook, context.data.length > 0 ? context.data : [null]));
+			},
+			(context) => {
+				window.requestAnimationFrame(() => errorFlight(flight));
+				window.requestAnimationFrame(() => errorAirtime(airtime));
+				window.requestAnimationFrame(() => errorAltitude(altitude));
+				window.requestAnimationFrame(() => errorThermal(thermal));
+				window.requestAnimationFrame(() => errorSpeed(speed));
+				window.requestAnimationFrame(() => errorGlide(glide));
+				window.requestAnimationFrame(() => errorLogbook(logbook));
 			}
-		};
+		);
 		const upload = document.getElementById('upload');
 		const readFile = (file) => {
 			return new Promise((resolve) => {
@@ -1826,33 +1375,18 @@
 			}
 			view.setUint32(98, flight.distanceFlown);
 			try {
-				if (window.localStorage.getItem('develop')) {
-					await new Promise((resolve) => setTimeout(resolve, 400 + Math.random() * 800));
-					if (Math.random() < 0.1) {
-						throw { status: Math.floor(Math.random() * 200) + 400, statusText: 'Develop' };
-					}
+				const response = await fetcher('post', '/api/flight', buffer, { headers: { 'content-type': 'application/octet-stream' } });
+				notification('success', `Successfully uploaded flight ${hash.hex.substring(0, 8)}`);
+				if (
+					array(ranges.children.length).every((ind) => +ranges.children[ind].children[0].innerText !== new Date(Number(flight.startsAt) * 1000).getFullYear())
+				) {
+					loadYears();
 				}
-				const response = await fetch('/api/flight', { method: 'post', body: buffer, headers: { 'content-type': 'application/octet-stream' } });
-				if (response.status >= 200 && response.status <= 299) {
-					notification('success', `Successfully uploaded flight ${hash.hex.substring(0, 8)}`);
-					if (array(years.children.length).every((ind) => +years.children[ind].children[0].innerText !== new Date(Number(flight.startsAt) * 1000).getFullYear())) {
-						loadYears();
-					}
-					if (getYear() === new Date(Number(flight.startsAt) * 1000).getFullYear()) {
-						loadFlights();
-					}
-					return;
+				if (getYear() === new Date(Number(flight.startsAt) * 1000).getFullYear()) {
+					loadFlights();
 				}
-				throw response;
 			} catch (err) {
-				if (err instanceof TypeError) {
-					return notification('info', 'Seems like you might be offline');
-				}
-				const message = `Request failed with ${err.status ?? 0} ${err.statusText ?? null}`;
-				if (err.status < 500) {
-					return notification('warning', message);
-				}
-				return notification('error', message);
+				report(err);
 			}
 		};
 		const uploadFlights = async (event) => {
@@ -1860,7 +1394,7 @@
 			upload.children[0].innerText = 'uploading...';
 			upload.children[1].disabled = true;
 			upload.children[0].classList.add('cursor-progress');
-			upload.children[0].classList.remove('active:scale-95', 'cursor-pointer');
+			upload.children[0].classList.remove('cursor-pointer');
 			const files = Array.from(event.target.files);
 			for (const file of files) {
 				const content = await readFile(file);
@@ -1879,7 +1413,7 @@
 			}
 			upload.children[0].innerText = store;
 			upload.children[1].disabled = false;
-			upload.children[0].classList.add('active:scale-95', 'cursor-pointer');
+			upload.children[0].classList.add('cursor-pointer');
 			upload.children[0].classList.remove('cursor-progress');
 		};
 		const parseIgcFile = (content) => {
@@ -2048,60 +1582,6 @@
 			}
 			flight.speedAvg = (flight.distanceFlown / (Number(flight.endsAt) - Number(flight.startsAt))) * 3.6;
 			return flight;
-		};
-		const notifications = document.getElementById('notifications');
-		const kind = (type) => {
-			switch (type) {
-				case 'info':
-					return 'Info';
-				case 'success':
-					return 'Success';
-				case 'warning':
-					return 'Warning';
-				case 'error':
-					return 'Error';
-			}
-		};
-		const color = (type) => {
-			switch (type) {
-				case 'info':
-					return ['bg-blue-200', 'dark:bg-blue-800'];
-				case 'success':
-					return ['bg-green-200', 'dark:bg-green-800'];
-				case 'warning':
-					return ['bg-amber-200', 'dark:bg-amber-800'];
-				case 'error':
-					return ['bg-red-200', 'dark:bg-red-800'];
-			}
-		};
-		const duration = (type) => {
-			switch (type) {
-				case 'info':
-					return 4000;
-				case 'success':
-					return 3000;
-				case 'warning':
-					return 6000;
-				case 'error':
-					return 8000;
-			}
-		};
-		const notification = (type, message) => {
-			const element = document.createElement('div');
-			element.classList.add('p-4', ...color(type), 'z-10');
-			const head = document.createElement('h2');
-			head.classList.add('m-0', 'mb-1', 'font-semibold');
-			const text = document.createElement('p');
-			text.classList.add('m-0', 'font-normal');
-			element.appendChild(head);
-			element.appendChild(text);
-			element.children[0].innerText = kind(type);
-			element.children[1].innerText = message;
-			if (notifications.children.length > 0) {
-				notifications.children[0].remove();
-			}
-			notifications.appendChild(element);
-			setTimeout(() => element.remove(), duration(type));
 		};
 	</script>
 </html>
